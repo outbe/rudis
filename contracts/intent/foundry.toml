@@ -45,7 +45,7 @@
 
 [rpc_endpoints]
   outbe-dev="https://eth.d.outbe.net"
-  bsc-testnet="https://cosmopolitan-solemn-emerald.bsc-testnet.quiknode.pro/10f3eba8ae928e9655a53773651d528c78a45b4c/"
+  bsc-testnet="${BSC_RPC_URL}"
   outbe-testnet="${OUTBE_RPC_URL}"
 
 [lint]
