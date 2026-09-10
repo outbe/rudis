@@ -1,0 +1,92 @@
+[
+  {
+    "name": "leading-whitespace",
+    "input": " {\"version\":1,\"kind\":\"StablecoinCreate\",\"issuer\":\"0x1111111111111111111111111111111111111111\",\"name\":\"X\",\"ticker\":\"XY\",\"iso4217\":840,\"decimals\":0,\"supplyCap\":\"1\",\"policyId\":\"0\"}",
+    "error": "NonCanonicalEncoding"
+  },
+  {
+    "name": "alternate-key-order",
+    "input": "{\"kind\":\"StablecoinCreate\",\"version\":1,\"issuer\":\"0x1111111111111111111111111111111111111111\",\"name\":\"X\",\"ticker\":\"XY\",\"iso4217\":840,\"decimals\":0,\"supplyCap\":\"1\",\"policyId\":\"0\"}",
+    "error": "NonCanonicalEncoding"
+  },
+  {
+    "name": "unknown-field",
+    "input": "{\"version\":1,\"kind\":\"StablecoinCreate\",\"issuer\":\"0x1111111111111111111111111111111111111111\",\"name\":\"X\",\"ticker\":\"XY\",\"iso4217\":840,\"decimals\":0,\"supplyCap\":\"1\",\"policyId\":\"0\",\"extra\":true}",
+    "error": "InvalidJson"
+  },
+  {
+    "name": "duplicate-field",
+    "input": "{\"version\":1,\"kind\":\"StablecoinCreate\",\"issuer\":\"0x1111111111111111111111111111111111111111\",\"name\":\"X\",\"ticker\":\"XY\",\"ticker\":\"XZ\",\"iso4217\":840,\"decimals\":0,\"supplyCap\":\"1\",\"policyId\":\"0\"}",
+    "error": "InvalidJson"
+  },
+  {
+    "name": "uppercase-issuer",
+    "input": "{\"version\":1,\"kind\":\"StablecoinCreate\",\"issuer\":\"0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\"name\":\"X\",\"ticker\":\"XY\",\"iso4217\":840,\"decimals\":0,\"supplyCap\":\"1\",\"policyId\":\"0\"}",
+    "error": "InvalidIssuer"
+  },
+  {
+    "name": "zero-issuer",
+    "input": "{\"version\":1,\"kind\":\"StablecoinCreate\",\"issuer\":\"0x0000000000000000000000000000000000000000\",\"name\":\"X\",\"ticker\":\"XY\",\"iso4217\":840,\"decimals\":0,\"supplyCap\":\"1\",\"policyId\":\"0\"}",
+    "error": "InvalidIssuer"
+  },
+  {
+    "name": "leading-zero-cap",
+    "input": "{\"version\":1,\"kind\":\"StablecoinCreate\",\"issuer\":\"0x1111111111111111111111111111111111111111\",\"name\":\"X\",\"ticker\":\"XY\",\"iso4217\":840,\"decimals\":0,\"supplyCap\":\"01\",\"policyId\":\"0\"}",
+    "error": "InvalidSupplyCap"
+  },
+  {
+    "name": "zero-cap",
+    "input": "{\"version\":1,\"kind\":\"StablecoinCreate\",\"issuer\":\"0x1111111111111111111111111111111111111111\",\"name\":\"X\",\"ticker\":\"XY\",\"iso4217\":840,\"decimals\":0,\"supplyCap\":\"0\",\"policyId\":\"0\"}",
+    "error": "InvalidSupplyCap"
+  },
+  {
+    "name": "signed-policy",
+    "input": "{\"version\":1,\"kind\":\"StablecoinCreate\",\"issuer\":\"0x1111111111111111111111111111111111111111\",\"name\":\"X\",\"ticker\":\"XY\",\"iso4217\":840,\"decimals\":0,\"supplyCap\":\"1\",\"policyId\":\"+1\"}",
+    "error": "InvalidPolicyId"
+  },
+  {
+    "name": "invalid-ticker",
+    "input": "{\"version\":1,\"kind\":\"StablecoinCreate\",\"issuer\":\"0x1111111111111111111111111111111111111111\",\"name\":\"X\",\"ticker\":\"xY\",\"iso4217\":840,\"decimals\":0,\"supplyCap\":\"1\",\"policyId\":\"0\"}",
+    "error": "InvalidTicker"
+  },
+  {
+    "name": "control-name",
+    "input": "{\"version\":1,\"kind\":\"StablecoinCreate\",\"issuer\":\"0x1111111111111111111111111111111111111111\",\"name\":\"X\\u0000\",\"ticker\":\"XY\",\"iso4217\":840,\"decimals\":0,\"supplyCap\":\"1\",\"policyId\":\"0\"}",
+    "error": "InvalidName"
+  },
+  {
+    "name": "decimals-too-large",
+    "input": "{\"version\":1,\"kind\":\"StablecoinCreate\",\"issuer\":\"0x1111111111111111111111111111111111111111\",\"name\":\"X\",\"ticker\":\"XY\",\"iso4217\":840,\"decimals\":19,\"supplyCap\":\"1\",\"policyId\":\"0\"}",
+    "error": "InvalidDecimals"
+  },
+  {
+    "name": "iso-zero",
+    "input": "{\"version\":1,\"kind\":\"StablecoinCreate\",\"issuer\":\"0x1111111111111111111111111111111111111111\",\"name\":\"X\",\"ticker\":\"XY\",\"iso4217\":0,\"decimals\":0,\"supplyCap\":\"1\",\"policyId\":\"0\"}",
+    "error": "InvalidIso4217"
+  },
+  {
+    "name": "iso-unassigned",
+    "input": "{\"version\":1,\"kind\":\"StablecoinCreate\",\"issuer\":\"0x1111111111111111111111111111111111111111\",\"name\":\"X\",\"ticker\":\"XY\",\"iso4217\":1,\"decimals\":0,\"supplyCap\":\"1\",\"policyId\":\"0\"}",
+    "error": "InvalidIso4217"
+  },
+  {
+    "name": "unsupported-version",
+    "input": "{\"version\":2,\"kind\":\"StablecoinCreate\",\"issuer\":\"0x1111111111111111111111111111111111111111\",\"name\":\"X\",\"ticker\":\"XY\",\"iso4217\":840,\"decimals\":0,\"supplyCap\":\"1\",\"policyId\":\"0\"}",
+    "error": "UnsupportedVersion"
+  },
+  {
+    "name": "invalid-kind",
+    "input": "{\"version\":1,\"kind\":\"Other\",\"issuer\":\"0x1111111111111111111111111111111111111111\",\"name\":\"X\",\"ticker\":\"XY\",\"iso4217\":840,\"decimals\":0,\"supplyCap\":\"1\",\"policyId\":\"0\"}",
+    "error": "InvalidKind"
+  },
+  {
+    "name": "non-string-cap",
+    "input": "{\"version\":1,\"kind\":\"StablecoinCreate\",\"issuer\":\"0x1111111111111111111111111111111111111111\",\"name\":\"X\",\"ticker\":\"XY\",\"iso4217\":840,\"decimals\":0,\"supplyCap\":1,\"policyId\":\"0\"}",
+    "error": "InvalidJson"
+  },
+  {
+    "name": "non-shortest-escape",
+    "input": "{\"version\":1,\"kind\":\"StablecoinCreate\",\"issuer\":\"0x1111111111111111111111111111111111111111\",\"name\":\"\\u0058\",\"ticker\":\"XY\",\"iso4217\":840,\"decimals\":0,\"supplyCap\":\"1\",\"policyId\":\"0\"}",
+    "error": "NonCanonicalEncoding"
+  }
+]

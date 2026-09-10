@@ -1,0 +1,38 @@
+[Unit]
+Description=Outbe validator Radicle sidecar
+After=network-online.target
+Wants=network-online.target
+PartOf=outbe-validator.target
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=outbe
+Group=outbe
+EnvironmentFile=/opt/outbe-chain/validator.env
+ExecStartPre=/usr/bin/rm -f /opt/outbe-chain/keys/radicle/node/outbe-control.sock
+ExecStart=/opt/outbe-chain/outbe-radicle \
+  --home /opt/outbe-chain/keys/radicle \
+  --control-socket /opt/outbe-chain/keys/radicle/node/outbe-control.sock \
+  --listen 0.0.0.0:8776 \
+  --status-listen 127.0.0.1:8876 \
+  --max-validators 16 \
+  --external-inbound-reserve 16 \
+  --advertise ${OUTBE_EXTERNAL_IP}:8776
+Restart=on-failure
+RestartSec=5
+RestartSteps=5
+RestartMaxDelaySec=60
+TimeoutStopSec=60
+KillSignal=SIGTERM
+UMask=0077
+LimitNOFILE=65535
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/opt/outbe-chain/keys
+
+[Install]
+WantedBy=outbe-validator.target

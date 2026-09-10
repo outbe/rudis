@@ -1,0 +1,31 @@
+{
+  "corpus_schema": "outbe.lysis-v1.reference-corpus",
+  "corpus_schema_version": 1,
+  "semantic_version": "1.0.0-poc",
+  "migration_baseline_revision": "04606071023a237e43d5a3ca47642ee202983e86",
+  "decision_reference": "outbe-plan/off-chain-poc-lysis-v1-semantics.md",
+  "reference_path": "testing/lysis-v1-reference/src/lib.rs",
+  "reference_sha256": "c64cfbc6c9651bf219651518dc72f816c042e19d8fde85daef8c7245cf74053f",
+  "case_path": "crates/core/lysis/vectors/lysis-v1/cases.jsonl",
+  "case_file_sha256": "02567e2e3d1534238b4d6482e9fd03edb88bcf74967456802ed9c118ddb21e9e",
+  "case_count": 16,
+  "required_arithmetic_vectors": [
+    "u256-wrapping-multiply",
+    "u256-checked-total",
+    "signed-truncating-divide",
+    "fixed-point-floor-root",
+    "f-allocation-over-nominal",
+    "fmax-two-f",
+    "remaining-dust"
+  ],
+  "required_identity_vectors": {
+    "status": "owned-by-OCM-02",
+    "sets": [
+      "poseidon-entity-id",
+      "nod-bucket-keccak"
+    ]
+  },
+  "protocol_codec_vectors": {
+    "status": "owned-by-OCM-02"
+  }
+}

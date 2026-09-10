@@ -1,0 +1,130 @@
+[package]
+name = "outbe-tee-enclave"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[features]
+# `mock` gates the dev/CI-only EGETKEY stub (hard-coded sealing key + fake
+# quote). The production binary is built WITHOUT this feature and therefore
+# physically contains no mock key material. See plan section "Mock build-time isolation".
+mock = []
+# Production DCAP verifier feasibility path. This forwards the exact-pinned
+# native QVL feature into the enclave crate without enabling it in dev builds.
+native-dcap = ["outbe-tee/native-dcap"]
+# Release-only profile: the measured network descriptor is mandatory and the
+# process refuses every runtime except real DCAP before any protocol command.
+production-dcap-release = ["native-dcap"]
+# Hardware-fixture capture exists only in the separate required-feature binary
+# below. The production `outbe-tee-enclave` target never routes capture commands.
+dcap-fixture-capture = ["outbe-primitives/tee-attestation-v1"]
+
+[lib]
+name = "outbe_tee_enclave"
+path = "src/lib.rs"
+
+[[bin]]
+name = "outbe-tee-enclave"
+path = "src/main.rs"
+
+# Capture-only SGX executable. Release packaging never includes this target;
+# separating it keeps arbitrary intent-driven quote generation out of the
+# production enclave ELF even in builds that enable this feature.
+[[bin]]
+name = "outbe-dcap-capture-enclave"
+path = "src/bin/outbe-dcap-capture-enclave.rs"
+required-features = ["dcap-fixture-capture"]
+
+# Dev/CI mock enclave. `required-features = ["mock"]` guarantees it is only built
+# with `--features mock`; the production binary above links no mock key material.
+[[bin]]
+name = "outbe-tee-enclave-mock"
+path = "src/mock_main.rs"
+required-features = ["mock"]
+
+# These end-to-end DKG targets inject an arbitrary network binding through the
+# mock-only transport seam. Keep them out of production-feature package tests.
+[[test]]
+name = "dkg_e2e"
+path = "tests/dkg_e2e.rs"
+required-features = ["mock"]
+
+[[test]]
+name = "dkg_ceremony_driver"
+path = "tests/dkg_ceremony_driver.rs"
+required-features = ["mock"]
+
+[dependencies]
+outbe-tee.workspace = true
+# Already in the enclave build graph transitively via `outbe-tee` (so no MRENCLAVE
+# change vs. today); declared directly only to name `tee_bootstrap::recover_signer`,
+# reused so the enclave and host recover EIP-191 signers with one identical impl.
+outbe-primitives = { workspace = true, features = ["tee-attestation-v1"] }
+outbe-consensus.workspace = true
+alloy-primitives.workspace = true
+alloy-consensus.workspace = true
+alloy-rlp.workspace = true
+reth-primitives-traits.workspace = true
+reth-trie.workspace = true
+ring.workspace = true
+x25519-dalek.workspace = true
+ed25519-dalek.workspace = true
+zeroize.workspace = true
+thiserror.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+hex.workspace = true
+
+# RCFI decay math (`RcfiAccumulator`, `t_dec`, `league_from_rcfi`) for the
+# in-enclave Fidelity cohort engine - the same arithmetic the chain uses, so the
+# two evaluation paths cannot drift. A leaf crate (not the full `outbe-fidelity`)
+# so the enclave->math edge does not cycle with fidelity's `test-enclave` seam.
+outbe-fidelity-math.workspace = true
+
+# Poseidon-BN254 (same Circom parameters as `outbe-evm::zk` and the wallet) for
+# in-enclave `tribute_id` derivation. We depend on the lightweight Poseidon
+# stack directly - NOT `outbe-zk-backend`, which pulls a heavy Barretenberg C++
+# FFI inappropriate for the enclave.
+outbe-poseidon.workspace = true
+outbe-protocol.workspace = true
+outbe-protocol-derive.workspace = true
+ark-bn254.workspace = true
+ark-ff.workspace = true
+
+# Node <-> enclave transport (Noise-IK responder over framed UDS).
+snow.workspace = true
+
+# Commonware BLS12-381 DKG primitives (feldman_desmedt). The enclave runs the
+# secret-touching DKG seams (Dealer/Player) so shares and the assembled tribute
+# key never leave SGX in plaintext. Host-side actor drives the public protocol.
+commonware-cryptography.workspace = true
+commonware-utils.workspace = true
+commonware-parallel.workspace = true
+commonware-codec.workspace = true
+commonware-consensus.workspace = true
+rand_core.workspace = true
+
+[dev-dependencies]
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+tempfile.workspace = true
+alloy-primitives.workspace = true
+tokio = { workspace = true }
+commonware-runtime.workspace = true
+outbe-consensus = { workspace = true, features = ["test-utils"] }
+criterion.workspace = true
+# Test-only: sign EIP-191 owner proofs for the DeriveAccountKeys ownership gate.
+k256.workspace = true
+alloy-trie.workspace = true
+reth-ethereum.workspace = true
+
+# Pure in-enclave compute-cost benchmark (decrypt + economics + Poseidon token_id).
+# The CPU ceiling the network can sustain inside the enclave during block
+# execution; transport (Noise/UDS) + SGX enter/exit are measured separately by the
+# `transport_throughput_offers_per_sec` ignored test in tests/transport.rs.
+[[bench]]
+name = "tribute_offer_throughput"
+harness = false
+
+[lints]
+workspace = true

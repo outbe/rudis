@@ -1,0 +1,81 @@
+[package]
+name = "outbe-consensus"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[features]
+default = []
+test-marshal-drop = []
+# Exposes `test_harness` and other in-crate test scaffolding publicly so the
+# `outbe-engine` crate can reuse the multi-node deterministic Simplex harness
+# for its own stack_tests. Always enabled by `outbe-engine`'s dev-dependencies.
+test-utils = []
+
+[dependencies]
+# Internal
+outbe-primitives.workspace = true
+
+# Commonware
+commonware-actor.workspace = true
+commonware-broadcast.workspace = true
+commonware-consensus.workspace = true
+commonware-cryptography.workspace = true
+commonware-p2p.workspace = true
+commonware-runtime.workspace = true
+commonware-storage.workspace = true
+commonware-codec.workspace = true
+commonware-utils.workspace = true
+commonware-math.workspace = true
+commonware-parallel.workspace = true
+commonware-macros.workspace = true
+commonware-resolver = { git = "https://github.com/commonwarexyz/monorepo", tag = "v2026.5.0" }
+
+# Reth
+reth-ethereum = { workspace = true, features = ["node", "node-api", "storage-api", "network"] }
+reth-node-builder.workspace = true
+reth-payload-builder.workspace = true
+reth-db.workspace = true
+
+# Alloy
+alloy-consensus.workspace = true
+alloy-primitives.workspace = true
+alloy-rlp.workspace = true
+alloy-rpc-types-engine.workspace = true
+bytes.workspace = true
+
+# Crypto (key encryption + EVM key generation)
+ring.workspace = true
+k256.workspace = true
+argon2.workspace = true
+keyring.workspace = true
+
+# Utilities
+eyre.workspace = true
+futures.workspace = true
+hex.workspace = true
+rand.workspace = true
+rand_chacha = "0.3"
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+rand_core.workspace = true
+parking_lot.workspace = true
+tracing.workspace = true
+metrics.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+commonware-resolver = { git = "https://github.com/commonwarexyz/monorepo", tag = "v2026.5.0" }
+tempfile.workspace = true
+tracing-subscriber = { version = "0.3", features = ["fmt"] }
+metrics-util = "0.20"
+proptest.workspace = true
+# Folded from former outbe-consensus-proof dev-deps.
+rand_core.workspace = true
+commonware-math.workspace = true
+
+[lints]
+workspace = true

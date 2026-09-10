@@ -1,0 +1,53 @@
+[tools]
+uv = "0.5.18"
+
+[tools."github:Cyfrin/aderyn"]
+version = "aderyn-v0.6.8"
+
+[tools."github:Cyfrin/aderyn".platforms.macos-arm64]
+bin_path = "aderyn-aarch64-apple-darwin"
+
+[tools."github:Cyfrin/aderyn".platforms.macos-x64]
+bin_path = "aderyn-x86_64-apple-darwin"
+
+[tools."github:Cyfrin/aderyn".platforms.linux-x64]
+bin_path = "aderyn-x86_64-unknown-linux-gnu"
+
+[tools."github:Cyfrin/aderyn".platforms.linux-arm64]
+bin_path = "aderyn-aarch64-unknown-linux-gnu"
+
+# Hardhat + Forge hybrid: tasks wrap the yarn scripts so intex matches the
+# Forge sub-projects (run them from here, e.g. `mise run build`).
+
+[tasks.install]
+description = "Install dependencies using yarn"
+run = "yarn install"
+
+[tasks.build]
+description = "Compile contracts (hardhat)"
+run = "yarn compile"
+
+[tasks.test]
+description = "Run Hardhat + Forge tests"
+run = "yarn test"
+
+[tasks.fmt]
+description = "Format Solidity code"
+run = "forge fmt"
+
+[tasks.lint]
+description = "Lint Solidity code (solhint)"
+run = "yarn lint"
+
+[tasks.export-abi]
+description = "Compile and extract ABIs"
+run = "yarn compile && yarn cd:extract-abi"
+
+[tasks.clean]
+description = "Clean up forge artifacts"
+run = "forge clean"
+
+[tasks.clean-all]
+description = "Clean all build artifacts, caches, and installed deps (node_modules)"
+depends = ["clean"]
+run = "rm -rf ./out ./cache ./artifacts ./types ./dist ./coverage ./bundle ./lcov.info ./node_modules"

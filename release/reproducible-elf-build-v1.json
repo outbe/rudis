@@ -1,0 +1,124 @@
+{
+  "artifacts": [
+    {
+      "classification": "production",
+      "features": [],
+      "install_profiles": ["full-node", "validator"],
+      "name": "outbe-chain",
+      "package": "outbe-chain",
+      "role": "node"
+    },
+    {
+      "classification": "production",
+      "features": [],
+      "install_profiles": ["operator-tools"],
+      "name": "outbe-cli",
+      "package": "outbe-cli",
+      "role": "operator-cli"
+    },
+    {
+      "classification": "production",
+      "features": [],
+      "install_profiles": ["operator-tools"],
+      "name": "outbe-keygen",
+      "package": "outbe-keygen",
+      "role": "key-generation"
+    },
+    {
+      "classification": "production",
+      "features": [],
+      "install_profiles": ["price-oracle"],
+      "name": "outbe-feeder",
+      "package": "outbe-feeder",
+      "role": "price-feed"
+    },
+    {
+      "classification": "production",
+      "features": ["production-dcap-release"],
+      "install_profiles": ["full-node", "validator"],
+      "name": "outbe-tee-enclave",
+      "package": "outbe-tee-enclave",
+      "role": "tee-enclave"
+    },
+    {
+      "classification": "production",
+      "features": [],
+      "install_profiles": ["validator"],
+      "name": "outbe-ocomp",
+      "package": "outbe-ocomp",
+      "role": "operator-sidecar"
+    }
+  ],
+  "builder": {
+    "base_images": [
+      "rust:1.96.0-bookworm@sha256:64d9b7f60e3abb08d477cad983d0a3743acc53a19369ba4482510184c9c807e5",
+      "gramineproject/gramine:1.9-noble@sha256:bdf2d0ef9bd09fa10684e14fbe822236df35708d58a852209c5f235842ecb6d7"
+    ],
+    "id": "https://github.com/outbe/outbe-chain/project-toolchain/v1",
+    "recipe": "Dockerfile.project-toolchain",
+    "system_packages": [
+      "build-essential=12.10ubuntu1",
+      "clang=1:18.0-59~exp2",
+      "cmake=3.28.3-1build7",
+      "gcc-14-base=14.2.0-4ubuntu2~24.04.1",
+      "git=1:2.43.0-1ubuntu7.3",
+      "libc++-dev=1:18.0-59~exp2",
+      "libc++abi-dev=1:18.0-59~exp2",
+      "libgcc-s1=14.2.0-4ubuntu2~24.04.1",
+      "libsgx-dcap-quote-verify=1.26.100.1-noble1",
+      "libsgx-dcap-quote-verify-dev=1.26.100.1-noble1",
+      "libsgx-headers=2.29.100.1-noble1",
+      "libssl-dev=3.0.13-0ubuntu3.12",
+      "libstdc++6=14.2.0-4ubuntu2~24.04.1",
+      "pkg-config=1.8.1-2build1"
+    ]
+  },
+  "cargo": {
+    "auditable": false,
+    "locked": true
+  },
+  "environment": {
+    "cflags": "-ffile-prefix-map=/workspace=/usr/src/outbe-chain -ffile-prefix-map=/usr/local/cargo/registry=/cargo/registry -ffile-prefix-map=/usr/local/cargo/git=/cargo/git -ffile-prefix-map=/usr/local/rustup=/rustup",
+    "cxxflags": "-ffile-prefix-map=/workspace=/usr/src/outbe-chain -ffile-prefix-map=/usr/local/cargo/registry=/cargo/registry -ffile-prefix-map=/usr/local/cargo/git=/cargo/git -ffile-prefix-map=/usr/local/rustup=/rustup",
+    "locale": "C",
+    "rustflags": [
+      "--remap-path-prefix=/workspace=/usr/src/outbe-chain",
+      "--remap-path-prefix=/usr/local/cargo/registry=/cargo/registry",
+      "--remap-path-prefix=/usr/local/cargo/git=/cargo/git",
+      "--remap-path-prefix=/usr/local/rustup=/rustup",
+      "-C",
+      "link-arg=-Wl,--build-id=sha1"
+    ],
+    "timezone": "UTC",
+    "zero_ar_date": "1"
+  },
+  "inputs": [
+    ".cargo/config.toml",
+    "Cargo.lock",
+    "Cargo.toml",
+    "Dockerfile.project-toolchain",
+    "crates/core/compressed-entities/vendor/sparse-merkle-tree/UPSTREAM.sha256",
+    "crates/core/compressed-entities/vendor/sparse-merkle-tree/VENDORED.sha256",
+    "release/apt/ubuntu.sources",
+    "release/release-manifest-v1.schema.json",
+    "release/reproducible-elf-candidate-gates-v1.json",
+    "release/reproducible-elf-build-v1.json",
+    "release/dcap-native-qvl-v1.json",
+    "release/project-toolchain-v1.json",
+    "release/reproducible-verifier-requirements.txt",
+    "rust-toolchain.toml",
+    "scripts/release/generate_release_manifest.py",
+    "scripts/release/build-elfs-in-container.sh",
+    "scripts/release/reproducible-build.sh",
+    "scripts/release/reproducible_build_inputs.py",
+    "scripts/release/verify_dcap_native_qvl.py",
+    "scripts/release/verify_project_toolchain.py",
+    "scripts/release/verify_reproducible_elf.py",
+    "scripts/release/verify_outbe_chain_version.py"
+  ],
+  "profile": "release",
+  "project_toolchain": "release/project-toolchain-v1.json",
+  "rust_toolchain": "1.96.0",
+  "spec_version": 1,
+  "target": "x86_64-unknown-linux-gnu"
+}

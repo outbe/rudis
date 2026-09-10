@@ -1,0 +1,44 @@
+# Production-shaped Outbe SGX manifest. It is rendered and signed during the
+# protected release job; runtime hosts never modify or re-sign it.
+
+libos.entrypoint = "{{ install_root }}/bin/outbe-tee-enclave"
+
+loader.log_level = "error"
+loader.insecure__use_cmdline_argv = true
+loader.env.LD_LIBRARY_PATH = "/qvl:/lib"
+# Avoid repeated 64 MiB glibc thread-arena attempts in the bounded SGX heap.
+loader.env.MALLOC_ARENA_MAX = "1"
+
+sys.enable_sigterm_injection = true
+
+fs.mounts = [
+  { uri = "file:{{ install_root }}/gramine/runtime/glibc", path = "/lib" },
+  { uri = "file:{{ install_root }}/gramine/runtime/qvl", path = "/qvl" },
+  { uri = "file:{{ install_root }}/bin/outbe-tee-enclave", path = "{{ install_root }}/bin/outbe-tee-enclave" },
+  { uri = "file:{{ install_root }}/network-descriptor-v1.bin", path = "{{ install_root }}/network-descriptor-v1.bin" },
+  { uri = "file:/var/lib/outbe/tee/", path = "/var/lib/outbe/tee/" },
+]
+
+sgx.debug = false
+sgx.edmm_enable = false
+sgx.max_threads = {{ max_threads }}
+
+# The production enclave exposes Gramine's DCAP quote interface. Consensus
+# verification remains enclave-resident and consumes canonical offline evidence.
+sgx.remote_attestation = "dcap"
+sgx.isvprodid = {{ isv_prod_id }}
+sgx.isvsvn = {{ isv_svn }}
+
+sgx.trusted_files = [
+  "file:{{ install_root }}/gramine/libpal.so",
+  "file:{{ install_root }}/bin/outbe-tee-enclave",
+  "file:{{ install_root }}/network-descriptor-v1.bin",
+  "file:{{ install_root }}/gramine/runtime/glibc/",
+  "file:{{ install_root }}/gramine/runtime/qvl/libsgx_dcap_quoteverify.so.1",
+  "file:{{ install_root }}/gramine/runtime/qvl/libstdc++.so.6",
+  "file:{{ install_root }}/gramine/runtime/qvl/libgcc_s.so.1",
+]
+
+sgx.allowed_files = [
+  "file:/var/lib/outbe/tee/",
+]

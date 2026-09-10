@@ -1,0 +1,33 @@
+[package]
+name = "outbe-keygen"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "outbe-keygen"
+path = "src/main.rs"
+
+[dependencies]
+outbe-consensus.workspace = true
+outbe-ocomp-protocol.workspace = true
+outbe-primitives.workspace = true
+commonware-cryptography.workspace = true
+commonware-codec.workspace = true
+commonware-math.workspace = true
+alloy-primitives.workspace = true
+blst.workspace = true
+clap.workspace = true
+hex.workspace = true
+rand_core.workspace = true
+eyre.workspace = true
+k256.workspace = true
+zeroize.workspace = true
+radicle-crypto = { git = "https://github.com/outbe/outbe-heartwood.git", rev = "b76a17801329291153585ed31db61ee3c658046e", features = ["ssh"] }
+
+[dev-dependencies]
+tempfile.workspace = true
+
+[lints]
+workspace = true

@@ -1,0 +1,70 @@
+{
+  "activation": "pending-container-delivery",
+  "apt_provenance": {
+    "deb_closure": {
+      "count": 100,
+      "format": "sha256sum-lines-sorted-by-filename-v1",
+      "sha256": "8d7207b12ad495b36976ad9d6e6e409a21389a4e7f9ee52f04bad3666f52ad42"
+    },
+    "source_files": [
+      {
+        "path": "/etc/apt/sources.list.d/gramine.list",
+        "sha256": "a691e8d0e86d99bd092427af188cad8f1b94960cd49157b1d7b5e5ecfac2aa34"
+      },
+      {
+        "path": "/etc/apt/sources.list.d/intel-sgx.list",
+        "sha256": "79d0b3b8b9c9cb1579b3828b49ba292e057164df22698f208fbec21aef37c4a3"
+      },
+      {
+        "path": "/etc/apt/sources.list.d/ubuntu.sources",
+        "sha256": "94e2925a468fb6f5c4e66ceb9b15dc02d0596b6eab594d8b3a6ac3572af1dc8f"
+      },
+      {
+        "path": "/usr/share/keyrings/gramine-keyring.gpg",
+        "sha256": "aef31307d8cce1e1b09f705c6e7ed8f7ec3b11ed92fa3b54f92f1574bbccdd5d"
+      },
+      {
+        "path": "/usr/share/keyrings/intel-sgx-deb.key",
+        "sha256": "92f96f84281031d889deb81060c44325f0481aee621ae47a15ae1df4431b4a23"
+      },
+      {
+        "path": "/usr/share/keyrings/ubuntu-archive-keyring.gpg",
+        "sha256": "80a36b0a6de2f69f49d2df75ef473ccde121e9e190b9ea01d20a4f63778d5c31"
+      }
+    ]
+  },
+  "gramine": {
+    "source_commit": "0d1a4b7607592dab4c8a720c962acee3de6b4ca8",
+    "version": "1.9"
+  },
+  "host_only_packages": {
+    "libsgx-dcap-default-qpl": "1.26.100.1-noble1"
+  },
+  "platform": "linux/amd64",
+  "rust": {
+    "components": [
+      "clippy",
+      "rust-src",
+      "rustfmt"
+    ],
+    "version": "1.96.0"
+  },
+  "schema_version": 1,
+  "system_packages": {
+    "build-essential": "12.10ubuntu1",
+    "clang": "1:18.0-59~exp2",
+    "cmake": "3.28.3-1build7",
+    "gcc-14-base": "14.2.0-4ubuntu2~24.04.1",
+    "git": "1:2.43.0-1ubuntu7.3",
+    "libc++-dev": "1:18.0-59~exp2",
+    "libc++abi-dev": "1:18.0-59~exp2",
+    "libgcc-s1": "14.2.0-4ubuntu2~24.04.1",
+    "libsgx-dcap-quote-verify": "1.26.100.1-noble1",
+    "libsgx-dcap-quote-verify-dev": "1.26.100.1-noble1",
+    "libsgx-headers": "2.29.100.1-noble1",
+    "libssl-dev": "3.0.13-0ubuntu3.12",
+    "libstdc++6": "14.2.0-4ubuntu2~24.04.1",
+    "pkg-config": "1.8.1-2build1"
+  },
+  "target": "x86_64-unknown-linux-gnu"
+}

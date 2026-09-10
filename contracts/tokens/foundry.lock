@@ -1,0 +1,23 @@
+{
+  "../intent/lib/the-compact": {
+    "rev": "ac25e50dbfd51358f206919e649ff79b042a5dab"
+  },
+  "../vault/lib/forge-std": {
+    "rev": "b3bc8b154382a75d0b0ef22d7fd4a0a5f0feee0e"
+  },
+  "../vault/lib/openzeppelin-contracts": {
+    "rev": "5a3b28fc5bd3976da5ea38d90d88ba26f1e0a335"
+  },
+  "../vault/lib/openzeppelin-contracts-upgradeable": {
+    "rev": "2e9f42375b7750c06d4dc32fddd6baa88177203d"
+  },
+  "../vault/lib/vault-v2": {
+    "rev": "606555a69a0bfb05c00703fdf1fe5a65b08e920b"
+  },
+  "lib/forge-std": {
+    "rev": "b3bc8b154382a75d0b0ef22d7fd4a0a5f0feee0e"
+  },
+  "lib/openzeppelin-contracts": {
+    "rev": "5a3b28fc5bd3976da5ea38d90d88ba26f1e0a335"
+  }
+}

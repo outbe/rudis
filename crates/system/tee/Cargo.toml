@@ -1,0 +1,69 @@
+[package]
+name = "outbe-tee"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "outbe-dcap-fixture"
+path = "src/bin/outbe-dcap-fixture.rs"
+required-features = ["dcap-fixture-tool"]
+
+[dependencies]
+alloy-primitives = { workspace = true, features = ["serde"] }
+outbe-primitives = { workspace = true, features = ["tee-attestation-v1"] }
+# `WorldwideDay` for the typed offer day on the wire; re-exported from
+# `protocol` so enclave-side consumers get it alongside the request types.
+outbe-common.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true, features = ["raw_value"] }
+metrics.workspace = true
+postcard.workspace = true
+snow.workspace = true
+thiserror.workspace = true
+rand.workspace = true
+ed25519-dalek.workspace = true
+ring.workspace = true
+x25519-dalek.workspace = true
+zeroize.workspace = true
+rustix.workspace = true
+libc.workspace = true
+k256 = { workspace = true, optional = true }
+
+der = { version = "0.7.10", optional = true }
+pem = { version = "3.0.6", optional = true }
+sha2.workspace = true
+time = { workspace = true, features = ["parsing"], optional = true }
+
+[features]
+# Consensus V1 path: links the exact-pinned Intel native QVL into the Gramine
+# enclave.
+native-dcap = [
+    "outbe-primitives/tee-attestation-v1",
+    "dep:der",
+    "dep:pem",
+    "dep:time",
+]
+# Test-only syscall-boundary markers around native QVL calls. The production
+# enclave crate does not forward this feature.
+native-dcap-test-trace = ["native-dcap"]
+# Host-only real-fixture preparation/assembly binary. This is not linked into
+# the consensus library or the production enclave binary.
+dcap-fixture-tool = ["native-dcap", "dep:k256"]
+
+[dev-dependencies]
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+k256.workspace = true
+tempfile.workspace = true
+tokio = { workspace = true }
+commonware-runtime.workspace = true
+hex.workspace = true
+
+[build-dependencies]
+cc = "1.2"
+serde_json.workspace = true
+sha2.workspace = true
+
+[lints]
+workspace = true

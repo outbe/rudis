@@ -1,0 +1,102 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib", "dependencies"]
+dynamic_test_linking = true  # Enable for faster compilation
+
+# -- Settings for CREATE2, see https://getfoundry.sh/guides/deterministic-deployments-using-create2/
+solc = "0.8.33"
+evm_version = "Prague"
+bytecode_hash = "none"
+cbor_metadata = false
+always_use_create_2_factory = true
+optimizer = true
+optimizer_runs = 200
+# --
+
+# Kernel v4 and kernel-7579-plugins ship their own nested `dependencies/` dirs. Disable Foundry's
+# remapping auto-detection so those nested deps don't spawn ambiguous/duplicate remappings; the
+# explicit `remappings` below make kernel, the plugins, and this project all resolve the shared
+# `account-abstraction/`, `solady/`, and `@openzeppelin/contracts/` imports to one source each.
+auto_detect_remappings = false
+
+remappings = [
+    "@openzeppelin/contracts/=dependencies/openzeppelin-contracts-5.6.1/contracts/",
+    # Canonical precompile interfaces (ICca, ...). Same form as contracts/intex/foundry.toml,
+    # so the Solidity here and the Rust `sol!("contracts/precompiles/src/ICca.sol")` binding
+    # read one source and cannot drift.
+    "@precompiles/=../precompiles/src/",
+    "@zerodev/kernel/=dependencies/kernel-4.0.0/src/",
+    "account-abstraction/=dependencies/eth-infinitism-account-abstraction-0.9.0/contracts/",
+    "solady/=dependencies/solady-0.1.26/src/",
+    "kernel-7579-plugins/=dependencies/kernel-7579-plugins-0.2.0/src/",
+    # kernel-7579-plugins uses bare `src/...` imports for its own copies of the ERC-7579
+    # interfaces/types/base classes; scope `src/` to the plugins dir so it does not collide
+    # with this project's own `src/` (account-abstraction/solady resolve via the globals above).
+    "dependencies/kernel-7579-plugins-0.2.0/:src/=dependencies/kernel-7579-plugins-0.2.0/src/",
+    "forge-std/=dependencies/forge-std-1.16.1/src/"
+]
+
+# Compiler settings
+via_ir = true
+
+# Silence warnings from third-party submodules under lib/ (e.g. lib/kernel).
+ignored_warnings_from = ["dependencies"]
+
+# Testing configuration
+gas_reports = ["*"]
+fs_permissions = [{ access = "read-write", path = "./" }]
+
+# Fuzz testing
+[fuzz]
+runs = 1000
+max_test_rejects = 65536
+
+# Invariant testing
+[invariant]
+runs = 256
+depth = 15
+fail_on_revert = false
+show_metrics = true
+
+# Linting
+[lint]
+exclude_lints = ["mixed-case-function", "mixed-case-variable", "pascal-case-struct", "unsafe-cheatcode"]
+# kernel-7579-plugins vendors its ERC-7579 sources and self-imports them via bare `src/...`. solc
+# resolves those through the context-scoped remapping above, but `forge lint` (solar) ignores
+# context-scoped/`src/` remappings and include_paths, so it cannot build the import graph for any
+# file that reaches the plugin (the kernel modules + factory)
+lint_on_build = false
+
+[rpc_endpoints]
+ethereum = "${ETHEREUM_RPC_URL}"
+bsc = "${BSC_RPC_URL}"
+sepolia = "${SEPOLIA_RPC_URL}"
+local = "http://127.0.0.1:8545"
+local-dev = "http://127.0.0.1:8545"
+outbe-privnet = "https://eth.p.outbe.net"
+outbe-dev = "https://eth.d.outbe.net"
+outbe-peira = "https://peira-rpc.outbe.net"
+bsc-testnet = "https://bsc-testnet.bnbchain.org"
+
+[etherscan]
+ethereum = { key = "${ETHERSCAN_API_KEY}" }
+bsc = { key = "${BSCSCAN_API_KEY}" }
+sepolia = { key = "${ETHERSCAN_API_KEY}" }
+bsc-testnet = { key = "${ETHERSCAN_API_KEY}", url = "https://api-testnet.bscscan.com/api" }
+# TODO define Outbe etherscan API
+outbe-privnet = { key = "${ETHERSCAN_API_KEY}", url = "TODO" }
+
+[soldeer]
+# Remappings are maintained by hand in foundry.toml; do not let soldeer overwrite them.
+remappings_generate = false
+# Fetch a git dependency's own submodules on restore (kernel needs solady/ExcessivelySafeCall).
+recursive_deps = true
+
+[dependencies]
+openzeppelin-contracts = { version = "5.6.1", git = "https://github.com/OpenZeppelin/openzeppelin-contracts", tag = "v5.6.1" }
+kernel = { version = "4.0.0", git = "https://github.com/zerodevapp/kernel", tag = "v4.0" }
+kernel-7579-plugins = { version = "0.2.0", git = "https://github.com/zerodevapp/kernel-7579-plugins", rev = "332deed6eeef3d6279cde50aa1d51eff53728bd4" }
+eth-infinitism-account-abstraction = { version = "0.9.0", git = "https://github.com/eth-infinitism/account-abstraction.git", rev = "86fcd84cf7263fe384d61d078ee747b16e69a496" }
+solady = { version = "0.1.26" }
+forge-std = { version = "1.16.1", git = "https://github.com/foundry-rs/forge-std", tag = "v1.16.1" }

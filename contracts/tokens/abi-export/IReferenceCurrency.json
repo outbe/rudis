@@ -1,0 +1,15 @@
+[
+  {
+    "type": "function",
+    "name": "isoCode",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint16",
+        "internalType": "uint16"
+      }
+    ],
+    "stateMutability": "view"
+  }
+]

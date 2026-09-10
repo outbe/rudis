@@ -1,0 +1,12 @@
+[
+  {
+    "evidence": [],
+    "name": "independent-byte-for-byte-elf-rebuild",
+    "status": "pending"
+  },
+  {
+    "evidence": [],
+    "name": "release-manifest-schema-and-canonicalization",
+    "status": "pending"
+  }
+]

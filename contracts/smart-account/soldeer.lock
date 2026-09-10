@@ -1,0 +1,36 @@
+[[dependencies]]
+name = "eth-infinitism-account-abstraction"
+version = "0.9.0"
+git = "https://github.com/eth-infinitism/account-abstraction.git"
+rev = "86fcd84cf7263fe384d61d078ee747b16e69a496"
+
+[[dependencies]]
+name = "forge-std"
+version = "1.16.1"
+git = "https://github.com/foundry-rs/forge-std"
+rev = "620536fa5277db4e3fd46772d5cbc1ea0696fb43"
+
+[[dependencies]]
+name = "kernel"
+version = "4.0.0"
+git = "https://github.com/zerodevapp/kernel"
+rev = "f2a84a332ec5a722e7e95a0d64601905c3c87fe9"
+
+[[dependencies]]
+name = "kernel-7579-plugins"
+version = "0.2.0"
+git = "https://github.com/zerodevapp/kernel-7579-plugins"
+rev = "332deed6eeef3d6279cde50aa1d51eff53728bd4"
+
+[[dependencies]]
+name = "openzeppelin-contracts"
+version = "5.6.1"
+git = "https://github.com/OpenZeppelin/openzeppelin-contracts"
+rev = "5fd1781b1454fd1ef8e722282f86f9293cacf256"
+
+[[dependencies]]
+name = "solady"
+version = "0.1.26"
+url = "https://soldeer-revisions.s3.amazonaws.com/solady/0_1_26_25-08-2025_15:30:06_solady.zip"
+checksum = "9872ac7cfd32c1eba32800508a1325c49f4a4aa8c6f670454db91971a583e26b"
+integrity = "5da4b5ca9cbad98812a4b75ad528ff34c72a0b84433204be6d1420c81de1d6ff"

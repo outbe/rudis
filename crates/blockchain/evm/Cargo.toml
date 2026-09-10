@@ -1,0 +1,147 @@
+[package]
+name = "outbe-evm"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+# Internal
+outbe-primitives.workspace = true
+outbe-compressed-entities.workspace = true
+outbe-offchain-data.workspace = true
+outbe-gratis.workspace = true
+outbe-gratisfactory.workspace = true
+outbe-promis.workspace = true
+outbe-promisfactory.workspace = true
+outbe-tribute.workspace = true
+outbe-nod.workspace = true
+outbe-nodfactory.workspace = true
+outbe-gem.workspace = true
+outbe-gemfactory.workspace = true
+outbe-intex.workspace = true
+outbe-intexfactory.workspace = true
+outbe-desis.workspace = true
+outbe-vaultrouter.workspace = true
+outbe-credis.workspace = true
+outbe-credisfactory.workspace = true
+outbe-tributefactory.workspace = true
+outbe-governance.workspace = true
+outbe-stablecoinpolicy.workspace = true
+outbe-stablecoin.workspace = true
+outbe-stablecoinfactory.workspace = true
+outbe-teeregistry = { workspace = true, features = ["tee-attestation-v1"] }
+outbe-l2registry.workspace = true
+outbe-radicleregistry.workspace = true
+outbe-tee.workspace = true
+outbe-vote.workspace = true
+outbe-update.workspace = true
+outbe-agentreward.workspace = true
+outbe-cca.workspace = true
+outbe-metadosis.workspace = true
+outbe-ocomp-protocol.workspace = true
+outbe-ocompregistry.workspace = true
+outbe-validatorset.workspace = true
+outbe-consensus.workspace = true
+outbe-slashindicator.workspace = true
+outbe-staking.workspace = true
+outbe-rewards.workspace = true
+outbe-fidelity.workspace = true
+outbe-promislimit.workspace = true
+outbe-oracle.workspace = true
+outbe-zerofee.workspace = true
+outbe-cycle.workspace = true
+outbe-accounting.workspace = true
+outbe-zk-backend.workspace = true
+outbe-zk-canonical.workspace = true
+outbe-protocol.workspace = true
+outbe-poseidon.workspace = true
+ark-bn254.workspace = true
+ark-ff.workspace = true
+outbe-paynote.workspace = true
+outbe-emit.workspace = true
+
+# Alloy
+alloy-consensus.workspace = true
+alloy-eips.workspace = true
+alloy-primitives.workspace = true
+alloy-evm.workspace = true
+
+# Signing
+hex.workspace = true
+
+# Revm
+revm.workspace = true
+
+# Reth
+reth-ethereum = { workspace = true, features = [
+    "evm",
+    "node",
+    "node-api",
+    "cli",
+] }
+reth-evm.workspace = true
+reth-provider.workspace = true
+reth-primitives-traits.workspace = true
+reth-rpc-eth-api.workspace = true
+
+alloy-sol-types.workspace = true
+blst.workspace = true
+eyre.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+# Emit integration-test fixtures: real witness construction and proving stay
+# test-only; no proving API enters production.
+outbe-chain-constants.workspace = true
+outbe-compressed-entities = { workspace = true, features = ["test-utils"] }
+outbe-node.workspace = true
+outbe-metadosis = { workspace = true, features = ["test-utils"] }
+outbe-nod = { workspace = true, features = ["test-utils"] }
+outbe-paynote = { workspace = true, features = ["test-utils"] }
+outbe-gratis = { workspace = true, features = ["test-enclave"] }
+outbe-tee-enclave.workspace = true
+alloy-sol-types.workspace = true
+alloy-rpc-types-engine.workspace = true
+outbe-offchain-storage.workspace = true
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+outbe-txpool.workspace = true
+outbe-validatorset = { workspace = true, features = ["test-utils"] }
+reth-basic-payload-builder.workspace = true
+reth-chainspec.workspace = true
+reth-ethereum-payload-builder.workspace = true
+reth-payload-primitives.workspace = true
+reth-transaction-pool.workspace = true
+reth-provider = { workspace = true, features = ["test-utils"] }
+reth-revm.workspace = true
+reth-trie = { workspace = true, features = ["test-utils"] }
+k256.workspace = true
+proptest.workspace = true
+serde_json.workspace = true
+tempfile.workspace = true
+futures.workspace = true
+# proposer/validator determinism test: build a real BLS late-finalize
+# credit + committee snapshot to exercise verify+record on both paths.
+commonware-cryptography.workspace = true
+commonware-consensus.workspace = true
+commonware-codec.workspace = true
+commonware-utils.workspace = true
+commonware-math.workspace = true
+rand_core.workspace = true
+
+[features]
+# Point the precompiles at a throwaway contract set an e2e run can deploy itself.
+e2e-test = [
+    "outbe-desis/e2e-test",
+    "outbe-intexfactory/e2e-test",
+    "outbe-cycle/e2e-test",
+    "outbe-gem/e2e-test",
+]
+
+[package.metadata.cargo-machete]
+ignored = ["hex"]
+
+[lints]
+workspace = true

@@ -1,0 +1,69 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib", "dependencies"]
+dynamic_test_linking = true
+
+solc = "0.8.30"
+evm_version = "Prague"
+bytecode_hash = "none"
+cbor_metadata = false
+always_use_create_2_factory = true
+optimizer = true
+optimizer_runs = 200
+via_ir = true
+
+remappings = [
+    "forge-std/=dependencies/forge-std-1.16.1/src/",
+    "@openzeppelin/contracts/=dependencies/openzeppelin-contracts-5.6.1/contracts/",
+    # Canonical precompile interfaces (IStablecoin, ...). Same form as contracts/intex/foundry.toml,
+    # so the Solidity here and the Rust `sol!("contracts/precompiles/src/IStablecoin.sol")` binding
+    # read one source and cannot drift.
+    "@precompiles/=../precompiles/src/",
+    # Protocol-wide Solidity shared across the contracts/* projects (Create3Factory, ...).
+    "@shared/=../shared/src/"
+]
+# @shared files import their own vendored deps by relative path, which land outside this project.
+allow_paths = ["../shared/src"]
+
+gas_reports = ["*"]
+fs_permissions = [{ access = "read-write", path = "./" }]
+
+[fuzz]
+runs = 1000
+max_test_rejects = 65536
+
+[invariant]
+runs = 256
+depth = 15
+fail_on_revert = false
+show_metrics = true
+
+[lint]
+exclude_lints = ["mixed-case-function", "mixed-case-variable", "pascal-case-struct", "unsafe-cheatcode"]
+
+[rpc_endpoints]
+ethereum = "${ETHEREUM_RPC_URL}"
+bsc = "${BSC_RPC_URL}"
+sepolia = "${SEPOLIA_RPC_URL}"
+local = "http://127.0.0.1:8545"
+outbe-privnet = "https://eth.p.outbe.net"
+outbe-dev2 = "https://eth.d2.outbe.net"
+outbe-dev = "https://eth.d.outbe.net"
+outbe-testnet = "${OUTBE_RPC_URL}"
+bsc-testnet = "https://bsc-testnet.bnbchain.org"
+
+[etherscan]
+ethereum = { key = "${ETHERSCAN_API_KEY}" }
+bsc = { key = "${BSCSCAN_API_KEY}" }
+sepolia = { key = "${ETHERSCAN_API_KEY}" }
+bsc-testnet = { key = "${ETHERSCAN_API_KEY}", url = "https://api-testnet.bscscan.com/api" }
+outbe-privnet = { key = "${ETHERSCAN_API_KEY}", url = "TODO" }
+
+[soldeer]
+# Remappings are maintained by hand in foundry.toml; do not let soldeer overwrite them.
+remappings_generate = false
+
+[dependencies]
+forge-std = { version = "1.16.1", git = "https://github.com/foundry-rs/forge-std", rev = "b3bc8b154382a75d0b0ef22d7fd4a0a5f0feee0e" }
+openzeppelin-contracts = { version = "5.6.1", git = "https://github.com/OpenZeppelin/openzeppelin-contracts", rev = "5a3b28fc5bd3976da5ea38d90d88ba26f1e0a335" }

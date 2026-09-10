@@ -1,0 +1,192 @@
+# network.yaml - describes an Outbe network; produces its genesis.
+#
+#   python3 scripts/create_genesis.py network.yaml
+#
+# The uncommented block below is the whole required input. Every commented
+# key shows its default value; uncomment to change it. Section defaults come
+# from scripts/seed-testnet.json, the single baseline profile.
+
+network: testnet
+chain_id: 70860602
+enclave_sgx: true
+
+# One host or IP per founding validator, in order. OCOMP V1 fixes the
+# founding committee at four members. Append `:port` to give one validator a
+# consensus port of its own (`- 10.0.0.3:31555`).
+validators:
+  - 10.0.0.1
+  - 10.0.0.2
+  - 10.0.0.3
+  - 10.0.0.4
+
+# Key material, one directory per validator in the order above:
+#   keys_dir/validator-0/signing-key.hex          BLS consensus key
+#   keys_dir/validator-0/evm-key.hex              EVM signer
+#   keys_dir/validator-0/radicle/keys/radicle.pub Radicle identity
+#   keys_dir/validator-0/ocomp-registration-v1.ocb1   minted here if absent
+# Produced by `outbe-keygen validator --output-dir <dir> --chain-id <id>`.
+# Public keys, addresses and node ids are read from these files - nothing is
+# duplicated into this yaml.
+keys_dir: ./keys
+
+tee:
+  mode: gramine-direct-dev            # | dcap-required
+  # dcap-required additionally needs the exact release measurements:
+  # mrenclave: "<32-byte hex>"
+  # mrsigner: "<32-byte hex>"
+  # isv_prod_id: 0
+  # minimum_isv_svn: 0
+  # minimum_tcb_evaluation_data_number: 0
+
+# --- Everything below is optional ----------------------------------------
+
+# Where the bundle will live on the validator machines. The generated run
+# scripts use these paths; they default to wherever you run this script.
+# remote_base_dir: /opt/outbe
+# remote_keys_dir: /opt/outbe/keys
+
+# Dev lane only: the container image the mock/gramine-direct enclave runs from.
+# enclave_image: outbe-tee-enclave:latest
+# Production (dcap-required) runs gramine-sgx on the host instead - point
+# these at the release enclave checkout on each machine.
+# enclave_dir: /opt/outbe-chain/enclave
+# enclave_runner: ./run-enclave.sh     # TEE enclave container image
+
+# Binaries on the validator machines; default to PATH lookups.
+# node_binary: outbe-chain
+# ocomp_binary: outbe-ocomp
+# radicle_binary: outbe-radicle
+# feeder_binary: outbe-feeder
+
+# Price source for the oracle feeder.
+# price_feed_rest: https://prc.testnet.outbe.net
+# For an exchange `price_provider`, optionally override its built-in stream URL:
+# price_feed_websocket: wss://stream.binance.com:9443/ws
+
+# Ports. Founders sit on separate machines, so they all share one layout;
+# pin a single validator's consensus port inline instead (`- 10.0.0.3:31555`).
+# consensus_p2p_port: 30400
+# reth_p2p_port: 30303
+# reth_discv5_port: 31303
+# rpc_port: 8545
+# authrpc_port: 8551
+# metrics_port: 9101
+# radicle_port: 8776
+# radicle_status_port: 8876
+# tee_enclave_port: 17000
+# feeder_health_port: 9002
+# mongodb_port: 27017
+
+# output: genesis.json                # also settable via --output
+# chain_binary: target/release/outbe-chain    # genesis build only, on this box
+# keygen_binary: target/release/outbe-keygen  # genesis build only, on this box
+# timestamp: 1756032000               # genesis timestamp; default: now
+# gas_limit: "0x1c9c380"
+# epoch_length_blocks: 300
+# dkg_prepare_window_blocks: 30
+# dkg_activation_grace_blocks: 30
+# prefund_coen_units: 10000000000000000000000 # 10000 COEN per validator
+# worldwide_day: 20260824             # default: derived from the timestamp
+# fresh_metadosis: true               # do not seed an already-OFFERING day
+# contracts_dir: scripts/contracts    # code files for the `contracts` section
+# canon_dir: scripts/canon            # metacanon.md / canon.md source
+
+# Protocol timings, copied verbatim into config.outbeProtocol.
+# ONLY a `test-protocol-overrides` build accepts this field; a production
+# binary rejects the genesis outright. Use it for localnet and E2E networks,
+# never for a production one, which runs the built-in schedule.
+#
+# SHORTENING THE METADOSIS WINDOWS WILL STOP A NETWORK THAT STARTS MID-DAY.
+# A worldwide day measures its windows from midnight UTC, not from the moment
+# the network boots (`forming_start = wwd.start_timestamp()`). With, say, a
+# 900s forming and a 600s offering, a day's offering closed at 00:25 UTC - so a
+# network started at 10:00 creates a day that is already nine hours past its
+# window, the reducer moves it straight to MissedOffering, and the
+# ProtocolCycle dies with `MissedOffering requires an immutable formed day
+# limit`. No blocks are produced at all.
+#
+# The live testnet sets schemaVersion 1 and metadosis.lookbackDelaySeconds 0,
+# and nothing else - the rest stays on the built-in schedule (50h forming /
+# 50h offering), which covers a start at any time of day. Copy that shape.
+#
+# Every knob, for reference - set the timings only if the network genuinely
+# needs short cycles AND you start it right after midnight UTC:
+# protocol_constants:
+#   schemaVersion: 1
+#   metadosis:
+#     formingPeriodSeconds: 180000
+#     lookbackDelaySeconds: 1807200
+#     offeringPeriodSeconds: 180000
+#     waitingPeriodSeconds: 43200
+#     bootstrapDurationSeconds: 300
+#     advanceIntervalSeconds: 10
+#   ocomp:
+#     computeVoteWindowBlocks: 120
+
+# --- Protocol parameters --------------------------------------------------
+# Sections deep-merge over the baseline: scalars replace, lists replace as a
+# whole, mappings merge key by key.
+
+# staking:
+#   min_stake: "100000000000000000000000"
+#   genesis_validator_stake: "100000000000000000000000"
+#   unbonding_period: 1814400
+#   slashed_withdrawal_delay: 3628800
+#   max_stake_percent: 33
+
+# rewards:
+#   proposer_reward_percent: 50
+#   staking_reward_percent: 30
+#   treasury_percent: 20
+
+# validator_set:
+#   max_validators: 128
+#   reregistration_cooldown_blocks: 151200
+
+# radicle_registry:
+#   max_repositories: -1
+
+# oracle:
+#   config:
+#     vote_period: 8
+#     reward_band: "20000000000000000"
+#     slash_window: 96
+#     penalties_enabled: false
+#     min_valid_per_window: "0"
+#     slash_fraction: "0"
+#     lookback_duration: 86400
+#   pairs:
+#     - base: rudis
+#       quote: "840"
+#       initial_rate: "1000000"
+#   scurve_seeds:
+#     - pair_base: rudis
+#       pair_quote: "840"
+#       peak_day: 20241220
+#       peak_price: "1000000"
+
+# Worldwide days are NOT seeded. The runtime creates the first one at block 1
+# and the live testnet genesis holds no metadosis storage; seeding one here
+# writes its limit amount without the formation record the runtime requires,
+# so the day kills the ProtocolCycle the moment it reaches MissedOffering.
+
+# intex_factory:
+#   profile: dev
+
+# vault_router:
+#   owner: "0xD01f5A8761F388797429C8c4957d9559Ffde8B96"
+
+# balance:                            # extra native-token balances
+#   "0x4FE927aB711793954B3a29969Ecd4A60D6D265d0": "1000000000000000000000"
+
+# gems:
+#   - owner: "0x64CCA861d30714593cB690e0a550C8a9b8b3b058"
+#     promis_load: "1000000000"
+#     issuance_currency: "840"
+
+# tributes: []
+
+# contracts:                          # pre-deployed external contracts;
+#   - address: "0x4e59b44847b379578588920cA78FbF26c0B4956C"   # the default set
+#     code: create2_deployer.code.hex                          # comes from the
+#     state: create2_deployer.state.json                       # baseline seed

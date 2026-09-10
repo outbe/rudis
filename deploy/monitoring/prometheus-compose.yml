@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'outbe-chain-compose'
+    static_configs:
+      - targets:
+          - 'validator-0:9001'
+          - 'validator-1:9001'
+          - 'validator-2:9001'
+          - 'validator-3:9001'
+        labels:
+          chain: 'outbe'
+          role: 'validator'
+    metrics_path: /metrics

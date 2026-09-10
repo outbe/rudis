@@ -1,0 +1,29 @@
+[package]
+name = "outbe-teeregistry"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-macros.workspace = true
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+outbe-tee.workspace = true
+outbe-validatorset.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+
+[features]
+default = []
+tee-attestation-v1 = []
+
+[dev-dependencies]
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+ed25519-dalek.workspace = true
+k256.workspace = true
+outbe-tee-enclave = { workspace = true, features = ["mock"] }
+outbe-validatorset = { workspace = true, features = ["test-utils"] }
+tempfile.workspace = true
+
+[lints]
+workspace = true

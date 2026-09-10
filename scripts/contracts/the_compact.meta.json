@@ -1,0 +1,10 @@
+{
+  "address": "0x00000000000000171ede64904551eedf3c6c9788",
+  "balance": "0xde444324c2a8000",
+  "block_hash": "0xd22f5e61b80c6429d19581fb94eab5ce2487a34758dd0068b96e36abf6755a97",
+  "block_number": 25215619,
+  "fetched_at": 1780233738,
+  "nonce": "0x4",
+  "rpc": "https://ethereum-rpc.publicnode.com",
+  "storage_method": "unavailable"
+}

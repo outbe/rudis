@@ -1,0 +1,55 @@
+[package]
+name = "outbe-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "outbe-cli"
+path = "src/main.rs"
+
+[dependencies]
+# Alloy (ABI encoding + primitives)
+alloy-consensus.workspace = true
+alloy-rlp.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+alloy-eips.workspace = true
+outbe-consensus.workspace = true
+outbe-primitives.workspace = true
+outbe-operator.workspace = true
+outbe-zerofee.workspace = true
+# TEE enclave client + wire protocol (the `tee join` offer-key registration).
+outbe-tee.workspace = true
+
+# CLI
+clap.workspace = true
+
+# HTTP / JSON-RPC
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+# Signing
+k256.workspace = true
+
+# Offer encryption (client side; the X25519 ECDHE + HKDF-SHA256 +
+# ChaCha20Poly1305 seal itself lives in outbe-tributefactory).
+ring.workspace = true
+
+# Async
+tokio.workspace = true
+
+# Utilities
+hex.workspace = true
+eyre.workspace = true
+zeroize.workspace = true
+
+[dev-dependencies]
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+outbe-rpc = { workspace = true, features = ["test-support"] }
+tempfile.workspace = true
+
+[lints]
+workspace = true

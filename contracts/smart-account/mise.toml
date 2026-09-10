@@ -1,0 +1,43 @@
+[tasks.install]
+description = "Install dependencies using soldeer"
+run = "forge soldeer install"
+
+[tasks.build]
+description = "Build Solidity contracts using forge"
+run = "forge build"
+
+[tasks.export-abi]
+description = "Export contracts ABI"
+depends = ["build"]
+run = '''
+echo 'Exporting ABI for smart contracts'
+mkdir -p ./abi-export
+rm -rf ./abi-export/*.json
+for contract in IERC20 IEntryPoint SmartAccountFactory ITokenBundle; do
+  cat ./out/${contract}.sol/${contract}.json | jq -r '.abi' > ./abi-export/${contract}.json
+done
+'''
+
+[tasks.test]
+description = "Test Solidity contracts using forge"
+run = "forge test"
+
+[tasks.fmt]
+description = "Format code"
+run = "forge fmt"
+
+[tasks.lint]
+description = "Lint Solidity code"
+run = "forge lint"
+
+[tasks.clean]
+description = "Clean up forge artifacts"
+run = "forge clean"
+
+[tasks.clean-all]
+description = "Clean all build artifacts, and caches"
+depends = ["clean"]
+run = '''
+forge soldeer clean
+rm -rf ./out ./build ./cache
+'''

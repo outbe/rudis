@@ -1,0 +1,34 @@
+[package]
+name = "outbe-promis"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-macros.workspace = true
+outbe-primitives.workspace = true
+outbe-tee.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+
+# In-process enclave engine for the `test-enclave` seam (see enclave_client.rs).
+# Optional: pulled in only when a downstream crate enables `test-enclave` to
+# drive the confidential Promis path without a real SGX sidecar.
+outbe-tee-enclave = { workspace = true, optional = true }
+
+[dev-dependencies]
+alloy-primitives = { workspace = true, features = ["rand"] }
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+# Promis' own unit tests run the confidential path against the in-process engine.
+outbe-tee-enclave.workspace = true
+
+[features]
+default = []
+test-utils = ["outbe-primitives/test-utils"]
+# Exposes the in-process enclave stand-in so other crates' tests can drive the
+# confidential Promis path.
+test-enclave = ["dep:outbe-tee-enclave"]
+
+[lints]
+workspace = true

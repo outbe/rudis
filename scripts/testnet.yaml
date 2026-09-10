@@ -1,0 +1,234 @@
+# testnet.yaml - one file describing a complete Outbe network.
+#
+#   python3 scripts/create_genesis.py testnet.yaml
+#
+# One run produces genesis.json, protocol-bundle-v1.ocb1, reth-bootnodes.txt,
+# per-machine launch scripts and DEPLOY.md.
+#
+# This file is also the baseline profile: a network.yaml of your own may list
+# only what it changes, and every protocol section it omits is taken from here.
+
+# --- Deployment ------------------------------------------------------------
+
+chain_id: 424242
+
+# One host or IP per founding validator, in order. OCOMP V1 fixes the founding
+# committee at four members. Append `:port` to give one validator a consensus
+# port of its own (`- 10.0.0.3:31555`).
+validators:
+  - 10.0.0.1
+  - 10.0.0.2
+  - 10.0.0.3
+  - 10.0.0.4
+
+# Key material, one directory per validator in the order above:
+#   keys_dir/validator-0/signing-key.hex          BLS consensus key
+#   keys_dir/validator-0/evm-key.hex              EVM signer
+#   keys_dir/validator-0/radicle/keys/radicle.pub Radicle identity
+#   keys_dir/validator-0/ocomp-registration-v1.ocb1   minted here if absent
+# Produced by `outbe-keygen validator --output-dir <dir> --chain-id <id>`.
+# Public keys, addresses and node ids are read from these files, never restated
+# in this yaml.
+keys_dir: ./keys
+
+# Devnet and Testnet explicitly select either `gramine-direct-dev` or
+# `dcap-required`. Mainnet accepts only `dcap-required`; there is no fallback.
+tee:
+  mode: gramine-direct-dev
+  # mrenclave: "<32-byte hex>"
+  # mrsigner: "<32-byte hex>"
+  # isv_prod_id: 0
+  # minimum_isv_svn: 0
+  # minimum_tcb_evaluation_data_number: 0
+
+# Where the bundle lands on the validator machines. Defaults to wherever this
+# script runs, which is what a single-host trial needs.
+# remote_base_dir: /opt/outbe
+# remote_keys_dir: /opt/outbe/keys
+
+# Dev lane only: the container image the mock/gramine-direct enclave runs from.
+# enclave_image: outbe-tee-enclave:latest
+# Production (dcap-required) runs gramine-sgx on the host instead - point
+# these at the release enclave checkout on each machine.
+# enclave_dir: /opt/outbe-chain/enclave
+# enclave_runner: ./run-enclave.sh
+
+# Binaries on the validator machines; default to PATH lookups.
+# node_binary: outbe-chain
+# ocomp_binary: outbe-ocomp
+# radicle_binary: outbe-radicle
+# feeder_binary: outbe-feeder
+
+# Binaries used here, to build the genesis. Default: release, then debug.
+# chain_binary: target/release/outbe-chain
+# keygen_binary: target/release/outbe-keygen
+
+# Price source for the oracle feeder.
+# price_feed_rest: https://prc.testnet.outbe.net
+# For an exchange `price_provider`, optionally override its built-in stream URL:
+# price_feed_websocket: wss://stream.binance.com:9443/ws
+
+# Ports. Founders sit on separate machines, so they share one layout.
+# consensus_p2p_port: 30400
+# reth_p2p_port: 30303
+# reth_discv5_port: 31303
+# rpc_port: 8545
+# authrpc_port: 8551
+# metrics_port: 9101
+# radicle_port: 8776
+# radicle_status_port: 8876
+# tee_enclave_port: 17000
+# feeder_health_port: 9002
+# mongodb_port: 27017
+
+# --- Chain parameters ------------------------------------------------------
+
+# Pin the timestamp to keep the genesis hash - and the OCOMP registrations
+# that sign it - reproducible. Left unset, each run stamps the current time.
+# timestamp: 1756032000
+
+# output: genesis.json
+# gas_limit: "0x1c9c380"
+# epoch_length_blocks: 300
+# dkg_prepare_window_blocks: 30
+# dkg_activation_grace_blocks: 30
+# prefund_coen_units: 10000000000000000000000 # 10000 COEN per validator
+# worldwide_day: 20260824             # default: derived from the timestamp
+# fresh_metadosis: true               # do not seed an already-OFFERING day
+# contracts_dir: scripts/contracts
+# canon_dir: scripts/canon
+
+# Protocol timings, copied verbatim into config.outbeProtocol.
+# ONLY a `test-protocol-overrides` build accepts this field; a production
+# binary rejects the genesis outright. Use it for localnet and E2E networks,
+# never for a production one, which runs the built-in schedule. Omit the
+# section to run on the built-in defaults (50h forming, 502h lookback delay,
+# 50h offering). A short-window network must state them here.
+# protocol_constants:
+#   schemaVersion: 1
+#   metadosis:
+#     formingPeriodSeconds: 180000
+#     lookbackDelaySeconds: 1807200
+#     offeringPeriodSeconds: 180000
+#     waitingPeriodSeconds: 43200
+#     bootstrapDurationSeconds: 300
+#     advanceIntervalSeconds: 10
+#   ocomp:
+#     computeVoteWindowBlocks: 120
+
+# --- Protocol parameters ---------------------------------------------------
+# A network.yaml of your own may override any of these. Scalars replace, lists
+# replace as a whole, mappings merge key by key.
+
+# Staking: stake floor, unbonding and slashing timers.
+staking:
+  min_stake: "100000000000000000000000"
+  genesis_validator_stake: "100000000000000000000000"
+  unbonding_period: 1814400
+  slashed_withdrawal_delay: 3628800
+  max_stake_percent: 33
+
+# Block reward split. The three percentages must sum to 100.
+rewards:
+  proposer_reward_percent: 50
+  staking_reward_percent: 30
+  treasury_percent: 20
+
+# Validator set limits.
+validator_set:
+  max_validators: 128
+  reregistration_cooldown_blocks: 151200
+
+# Radicle repository registry. -1 means unlimited.
+radicle_registry:
+  max_repositories: -1
+
+# Price oracle: vote window, seeded pairs and S-curve seeds.
+oracle:
+  config:
+    vote_period: 8
+    reward_band: "20000000000000000"
+    slash_window: 96
+    penalties_enabled: false
+    min_valid_per_window: "0"
+    slash_fraction: "0"
+    lookback_duration: 86400
+  pairs:
+    - base: rudis
+      quote: "840"
+      initial_rate: "1000000"
+  scurve_seeds:
+    - pair_base: rudis
+      pair_quote: "840"
+      peak_day: 20241220
+      peak_price: "1000000"
+
+# No genesis worldwide day. The runtime creates the first one itself at block 1
+# (`init_genesis_day` in crates/core/metadosis/src/runtime.rs), and the live
+# testnet genesis carries no metadosis storage at all.
+#
+# A seeded day is worse than useless here. The seeder writes only the day's
+# `metadosis_limit_amount`, never the formation record that
+# `apply_missed_offering` requires, so the moment such a day reaches
+# MissedOffering the whole ProtocolCycle dies with
+# `MissedOffering requires an immutable formed day limit` and the chain stops
+# producing blocks. The one that used to live here avoided that only by
+# declaring `offering_end: 4000000000` - a window open until 2096 - which hid
+# the gap instead of closing it.
+
+# Intex profile selector. `prod` seeds nothing.
+intex_factory:
+  profile: dev
+
+# VaultRouter owner: may register vaults and liquidity routes.
+vault_router:
+  owner: 0xD01f5A8761F388797429C8c4957d9559Ffde8B96
+
+# Native-token balances seeded on top of the validator prefund.
+balance:
+  "0x4FE927aB711793954B3a29969Ecd4A60D6D265d0": "1000000000000000000000"
+  "0x265846D63407cB61354B6AFd317A509DF4dcc327": "1000000000000000000000"
+
+# Settled gems so a demo account can mine Gem -> Promis -> Gratis.
+gems:
+  - owner: 0x64CCA861d30714593cB690e0a550C8a9b8b3b058
+    promis_load: "1000000000"
+    issuance_currency: 840
+    reference_currency: 840
+
+# Pre-seeded tributes; normally empty.
+tributes: []
+
+# Pre-deployed external contracts. Paths resolve against
+# `contracts_dir` (default scripts/contracts).
+contracts:
+  - address: 0x4e59b44847b379578588920cA78FbF26c0B4956C
+    code: create2_deployer.code.hex
+    state: create2_deployer.state.json
+    nonce: 0x1
+    balance: 0x0
+  - address: 0x000000000022D473030F116dDEE9F6B43aC78BA3
+    code: permit2.code.hex
+    state: permit2.state.json
+    nonce: 0x1
+    balance: 0x0
+  - address: 0x00000000000000171ede64904551eeDF3C6C9788
+    code: the_compact.code.hex
+    state: the_compact.state.json
+    nonce: 0x1
+    balance: 0x0
+  - address: 0x0000000071727De22E5E9d8BAf0edAc6f37da032
+    code: entrypoint_v07.code.hex
+    state: entrypoint_v07.state.json
+    nonce: 0x1
+    balance: 0x0
+  - address: 0xEFC2c1444eBCC4Db75e7613d20C6a62fF67A167C
+    code: sender_creator_v07.code.hex
+    state: sender_creator_v07.state.json
+    nonce: 0x1
+    balance: 0x0
+  - address: 0x000000000000000000000000000000000000C0DE
+    code: counter.code.hex
+    state: counter.state.json
+    nonce: 0x1
+    balance: 0x0

@@ -1,0 +1,23 @@
+[package]
+name = "outbe-intex"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-macros.workspace = true
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+outbe-ocomp-protocol.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+thiserror.workspace = true
+
+[features]
+test-utils = []
+
+[dev-dependencies]
+revm.workspace = true
+
+[lints]
+workspace = true

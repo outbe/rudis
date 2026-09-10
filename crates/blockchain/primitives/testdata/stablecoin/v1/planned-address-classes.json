@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "classes": [
+    {
+      "name": "stablecoin-v1",
+      "prefix": "0x53c0",
+      "prefixBits": 16,
+      "owner": "outbe_primitives::addresses::STABLECOIN_ADDRESS_PREFIX"
+    }
+  ]
+}

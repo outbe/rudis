@@ -1,0 +1,118 @@
+{
+  "balance": {
+    "0x4FE927aB711793954B3a29969Ecd4A60D6D265d0": "1000000000000000000000",
+    "0x265846D63407cB61354B6AFd317A509DF4dcc327": "1000000000000000000000"
+  },
+  "gems": [
+    {
+      "owner": "0x64CCA861d30714593cB690e0a550C8a9b8b3b058",
+      "promis_load": "1000000000",
+      "issuance_currency": 840,
+      "reference_currency": 840
+    }
+  ],
+  "tributes": [],
+  "metadosis": {
+    "worldwide_days": [
+      {
+        "wwd": 20241220,
+        "status": 2,
+        "day_type": 2,
+        "forming_start": 1734652800,
+        "forming_end": 1734674400,
+        "lookback_end": 1734674400,
+        "offering_end": 4000000000,
+        "scheduled_process_time": 4100000000,
+        "previous_vwap": "0",
+        "current_vwap": "1000000",
+        "day_limit": "500000000"
+      }
+    ]
+  },
+  "validator_set": {
+    "max_validators": 128,
+    "reregistration_cooldown_blocks": 151200
+  },
+  "staking": {
+    "min_stake": "1000000000000000000000",
+    "genesis_validator_stake": "1000000000000000000000",
+    "unbonding_period": 1814400,
+    "slashed_withdrawal_delay": 3628800,
+    "max_stake_percent": 33
+  },
+  "rewards": {
+    "proposer_reward_percent": 50,
+    "staking_reward_percent": 30,
+    "treasury_percent": 20
+  },
+  "oracle": {
+    "config": {
+      "vote_period": 8,
+      "reward_band": "20000000000000000",
+      "slash_window": 96,
+      "penalties_enabled": false,
+      "min_valid_per_window": "0",
+      "slash_fraction": "0",
+      "lookback_duration": 86400
+    },
+    "pairs": [
+      {
+        "base": "rudis",
+        "quote": "840",
+        "initial_rate": "1000000"
+      }
+    ],
+    "scurve_seeds": [
+      {
+        "pair_base": "rudis",
+        "pair_quote": "840",
+        "peak_day": 20241220,
+        "peak_price": "1000000"
+      }
+    ]
+  },
+  "contracts": [
+    {
+      "address": "0x4e59b44847b379578588920cA78FbF26c0B4956C",
+      "code": "create2_deployer.code.hex",
+      "state": "create2_deployer.state.json",
+      "nonce": "0x1",
+      "balance": "0x0"
+    },
+    {
+      "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+      "code": "permit2.code.hex",
+      "state": "permit2.state.json",
+      "nonce": "0x1",
+      "balance": "0x0"
+    },
+    {
+      "address": "0x00000000000000171ede64904551eeDF3C6C9788",
+      "code": "the_compact.code.hex",
+      "state": "the_compact.state.json",
+      "nonce": "0x1",
+      "balance": "0x0"
+    },
+    {
+      "address": "0x0000000071727De22E5E9d8BAf0edAc6f37da032",
+      "code": "entrypoint_v07.code.hex",
+      "state": "entrypoint_v07.state.json",
+      "nonce": "0x1",
+      "balance": "0x0"
+    },
+    {
+      "address": "0xEFC2c1444eBCC4Db75e7613d20C6a62fF67A167C",
+      "code": "sender_creator_v07.code.hex",
+      "state": "sender_creator_v07.state.json",
+      "nonce": "0x1",
+      "balance": "0x0"
+    },
+    {
+      "address": "0x000000000000000000000000000000000000C0DE",
+      "code": "counter.code.hex",
+      "state": "counter.state.json",
+      "nonce": "0x1",
+      "balance": "0x0"
+    }
+  ]
+}

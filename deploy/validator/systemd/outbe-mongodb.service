@@ -1,0 +1,25 @@
+[Unit]
+Description=Outbe projection MongoDB
+After=docker.service
+Requires=docker.service
+PartOf=outbe-validator.target
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=root
+EnvironmentFile=/opt/outbe-chain/validator.env
+ExecStartPre=-/opt/outbe-chain/deploy/validator/outbe-validator-service.py mongodb-stop
+ExecStart=/opt/outbe-chain/deploy/validator/outbe-validator-service.py mongodb
+ExecStartPost=/opt/outbe-chain/deploy/validator/outbe-validator-service.py mongodb-init
+ExecStop=/opt/outbe-chain/deploy/validator/outbe-validator-service.py mongodb-stop
+Restart=on-failure
+RestartSec=5
+RestartSteps=5
+RestartMaxDelaySec=60
+TimeoutStartSec=150
+TimeoutStopSec=45
+
+[Install]
+WantedBy=outbe-validator.target

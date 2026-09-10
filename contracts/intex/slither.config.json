@@ -1,0 +1,9 @@
+{
+  "filter_paths": "node_modules|/archive/|/vendor/|test/|/Mock[A-Za-z]+\\.sol",
+  "exclude_informational": true,
+  "exclude_low": true,
+  "fail_on": "none",
+  "compile_force_framework": "foundry",
+  "foundry_compile_all": false,
+  "foundry_out_directory": "out"
+}

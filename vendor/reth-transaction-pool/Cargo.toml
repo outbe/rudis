@@ -1,0 +1,110 @@
+[package]
+name = "reth-transaction-pool"
+version = "2.2.0"
+edition = "2024"
+rust-version = "1.93"
+license = "MIT OR Apache-2.0"
+homepage = "https://paradigmxyz.github.io/reth"
+repository = "https://github.com/paradigmxyz/reth"
+description = "Transaction pool implementation"
+publish = false
+
+[dependencies]
+reth-chain-state = { git = "https://github.com/paradigmxyz/reth.git", tag = "v2.2.0" }
+reth-ethereum-primitives = { git = "https://github.com/paradigmxyz/reth.git", tag = "v2.2.0", default-features = false }
+reth-chainspec = { git = "https://github.com/paradigmxyz/reth.git", tag = "v2.2.0", default-features = false }
+reth-eth-wire-types = { git = "https://github.com/paradigmxyz/reth.git", tag = "v2.2.0" }
+reth-evm = { git = "https://github.com/paradigmxyz/reth.git", tag = "v2.2.0", default-features = false }
+reth-evm-ethereum = { git = "https://github.com/paradigmxyz/reth.git", tag = "v2.2.0", default-features = false }
+reth-primitives-traits = { version = "0.3.1", default-features = false }
+reth-execution-types = { git = "https://github.com/paradigmxyz/reth.git", tag = "v2.2.0", default-features = false }
+reth-fs-util = { git = "https://github.com/paradigmxyz/reth.git", tag = "v2.2.0" }
+reth-storage-api = { git = "https://github.com/paradigmxyz/reth.git", tag = "v2.2.0", default-features = false }
+reth-tasks = { git = "https://github.com/paradigmxyz/reth.git", tag = "v2.2.0" }
+reth-metrics = { git = "https://github.com/paradigmxyz/reth.git", tag = "v2.2.0" }
+
+revm = { version = "38.0.0", default-features = false }
+revm-interpreter = { version = "35.0.0", default-features = false }
+revm-primitives = { version = "23.0.0", default-features = false }
+alloy-eips = { version = "2.0.4", default-features = false, features = ["kzg"] }
+alloy-primitives = { version = "1.5.6", default-features = false, features = ["map-foldhash"] }
+alloy-rlp = { version = "0.3.13", default-features = false, features = ["core-net"] }
+alloy-consensus = { version = "2.0.4", default-features = false, features = ["kzg"] }
+futures-util = { version = "0.3", default-features = false }
+parking_lot = "0.12"
+pin-project = "1.0.12"
+tokio = { version = "1.51.1", default-features = false, features = ["sync"] }
+tokio-stream = "0.1.11"
+metrics = "0.24.0"
+aquamarine = "0.6"
+thiserror = { version = "2.0.0", default-features = false }
+tracing = { version = "0.1.0", default-features = false, features = ["attributes"] }
+rustc-hash = { version = "2.0", default-features = false }
+schnellru = "0.2"
+serde = { version = "1.0", default-features = false, features = ["derive", "rc"] }
+serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
+bitflags = "2.4"
+auto_impl = "1"
+imbl = "7"
+smallvec = "1"
+rand = { version = "0.9", optional = true }
+paste = { version = "1.0", optional = true }
+proptest = { version = "1.7", optional = true }
+proptest-arbitrary-interop = { version = "0.1.0", optional = true }
+
+[features]
+serde = [
+    "reth-execution-types/serde",
+    "reth-eth-wire-types/serde",
+    "alloy-consensus/serde",
+    "alloy-eips/serde",
+    "alloy-primitives/serde",
+    "bitflags/serde",
+    "imbl/serde",
+    "parking_lot/serde",
+    "rand?/serde",
+    "smallvec/serde",
+    "revm-interpreter/serde",
+    "revm-primitives/serde",
+    "reth-primitives-traits/serde",
+    "reth-ethereum-primitives/serde",
+    "reth-chain-state/serde",
+    "reth-storage-api/serde",
+    "revm/serde",
+]
+test-utils = [
+    "rand",
+    "paste",
+    "serde",
+    "reth-chain-state/test-utils",
+    "reth-chainspec/test-utils",
+    "reth-primitives-traits/test-utils",
+    "reth-ethereum-primitives/test-utils",
+    "alloy-primitives/rand",
+    "reth-evm/test-utils",
+    "reth-evm-ethereum/test-utils",
+    "reth-tasks/test-utils",
+]
+arbitrary = [
+    "proptest",
+    "proptest-arbitrary-interop",
+    "imbl/arbitrary",
+    "reth-chainspec/arbitrary",
+    "reth-eth-wire-types/arbitrary",
+    "alloy-consensus/arbitrary",
+    "alloy-eips/arbitrary",
+    "alloy-primitives/arbitrary",
+    "bitflags/arbitrary",
+    "reth-primitives-traits/arbitrary",
+    "smallvec/arbitrary",
+    "revm-interpreter/arbitrary",
+    "reth-ethereum-primitives/arbitrary",
+    "revm-primitives/arbitrary",
+    "revm/arbitrary",
+]
+
+[lib]
+bench = false
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(reth_codecs)" ] }

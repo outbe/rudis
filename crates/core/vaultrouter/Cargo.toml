@@ -1,0 +1,18 @@
+[package]
+name = "outbe-vaultrouter"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-macros.workspace = true
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+outbe-cca.workspace = true
+outbe-oracle.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

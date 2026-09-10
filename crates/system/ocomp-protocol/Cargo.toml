@@ -1,0 +1,38 @@
+[package]
+name = "outbe-ocomp-protocol"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+alloy-primitives = { workspace = true, features = ["serde", "std"] }
+alloy-eips.workspace = true
+k256.workspace = true
+rustix.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+alloy-consensus.workspace = true
+alloy-eips.workspace = true
+alloy-rlp.workspace = true
+alloy-trie.workspace = true
+commonware-codec.workspace = true
+commonware-consensus.workspace = true
+commonware-cryptography.workspace = true
+commonware-utils.workspace = true
+outbe-consensus.workspace = true
+outbe-metadosis.workspace = true
+outbe-node.workspace = true
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+rand.workspace = true
+reth-chainspec.workspace = true
+reth-primitives-traits.workspace = true
+reth-storage-api.workspace = true
+reth-trie.workspace = true
+revm.workspace = true
+serde_json.workspace = true
+
+[lints]
+workspace = true

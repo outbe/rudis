@@ -1,0 +1,38 @@
+[profile.default]
+solc_version = '0.8.30'
+evm_version = 'Prague'
+bytecode_hash = 'none'
+cbor_metadata = false
+src = 'src'
+out = 'out'
+test = 'test/foundry'
+script = 'deploy'
+cache_path = 'cache/foundry'
+verbosity = 3
+optimizer = true
+optimizer_runs = 200
+via_ir = true
+# Build info + storage layout for the upgrades-core layout validator.
+build_info = true
+extra_output = ['storageLayout']
+libs = ['node_modules']
+# @shared files import their own vendored deps by relative path, which land outside this project.
+allow_paths = ['../shared/src']
+
+remappings = [
+    # Contract imports from tests
+    '@contracts/=src/',
+    '@test-mocks/=test/mocks/',
+    '@precompiles/=../precompiles/src/',
+    # Foundry test lib (forge-std bundles ds-test)
+    'forge-std/=node_modules/forge-std/src/',
+    'ds-test/=node_modules/forge-std/lib/ds-test/src/',
+    # OpenZeppelin
+    '@openzeppelin/=node_modules/@openzeppelin/',
+]
+
+[fuzz]
+runs = 256
+
+[profile.ci]
+fuzz = { runs = 1000 }

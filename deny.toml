@@ -1,0 +1,62 @@
+[advisories]
+db-path = "~/.cargo/advisory-db"
+db-urls = ["https://github.com/rustsec/advisory-db"]
+yanked = "deny"
+# All entries are transitive deps pulled in by upstream crates and cannot be
+# upgraded away without upstream changes. Unmaintained advisories are
+# informational. tracing-subscriber 0.2 is used only by ark-relations' R1CS
+# constraint tracing, not Outbe's terminal logger. hickory-proto's DNSSEC
+# features are not enabled, so the NSEC3 validation path is absent; the encoder
+# only receives fixed-shape resolver queries, not attacker-supplied record sets.
+# bitmaps reaches us only through reth-transaction-pool's imbl persistent maps.
+# Revisit when upstreams bump the tracing-subscriber / hickory-dns / bincode /
+# paste / imbl dependencies.
+ignore = [
+    "RUSTSEC-2023-0089", # atomic-polyfill unmaintained
+    "RUSTSEC-2024-0436", # paste unmaintained
+    "RUSTSEC-2025-0055", # ark-relations constraint tracing; not node terminal logging
+    "RUSTSEC-2025-0141", # bincode unmaintained
+    "RUSTSEC-2026-0118", # hickory-dns NSEC3 loop - not on our attack surface
+    "RUSTSEC-2026-0119", # hickory-dns name-compression CPU - not on our attack surface
+    "RUSTSEC-2026-0173", # proc-macro-error2 unmaintained
+    "RUSTSEC-2026-0247", # bitmaps unmaintained; reth-transaction-pool -> imbl -> bitmaps
+    # rsa Marvin timing sidechannel: no patched release exists upstream. Pulled
+    # via ssh-key -> radicle-crypto (Heartwood keystore); Outbe identities are
+    # Ed25519, the rsa code path is never exercised for key material.
+    "RUSTSEC-2023-0071",
+]
+
+[licenses]
+# Permissive / file-level-copyleft licenses present in the reth v2.2.0 dep tree.
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "Unicode-DFS-2016",
+    "Unicode-3.0",
+    "CC0-1.0",
+    "CDLA-Permissive-2.0",
+    "0BSD",
+    "Zlib",
+    "Unlicense",
+    "MPL-2.0",
+    "BlueOak-1.0.0",
+    "BSL-1.0",
+]
+confidence-threshold = 0.95
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+# Workspace-internal crates are declared as path deps without a version, which
+# cargo-deny otherwise flags as wildcards.
+allow-wildcard-paths = true
+deny = []
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "warn"
+allow-git = []

@@ -1,0 +1,30 @@
+[package]
+name = "outbe-lysis"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-compressed-entities.workspace = true
+outbe-primitives.workspace = true
+outbe-nod.workspace = true
+outbe-nodfactory.workspace = true
+outbe-tribute.workspace = true
+outbe-fidelity.workspace = true
+outbe-oracle.workspace = true
+outbe-intex.workspace = true
+outbe-ocomp-protocol.workspace = true
+alloy-primitives.workspace = true
+
+[dev-dependencies]
+outbe-offchain-storage.workspace = true
+# Drive the confidential Fidelity league path in tests via the in-process engine.
+outbe-fidelity = { workspace = true, features = ["test-enclave"] }
+alloy-sol-types.workspace = true
+hex.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[lints]
+workspace = true

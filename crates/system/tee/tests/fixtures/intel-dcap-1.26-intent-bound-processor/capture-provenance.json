@@ -1,0 +1,92 @@
+{
+  "capture": {
+    "completed_at": 1787853506,
+    "started_at": 1787853506
+  },
+  "collateral_abi": {
+    "allocation_size": 15303,
+    "major_version": 3,
+    "minor_version": 0,
+    "normalized_minor_version": 1,
+    "tee_type": 0
+  },
+  "components": {
+    "pck-certificate-chain.pem0": {
+      "sha256": "88016ea8aebc1245a98913f418b19f1b08ec8a9e4e2450256000104629d263d9",
+      "size": 3548
+    },
+    "pck-crl-issuer-chain.pem": {
+      "sha256": "f419747cc7ff058bd55b2228ae7eca6d9ccbf4260aaf5c612e6411b996d337ee",
+      "size": 1908
+    },
+    "pck.crl.der": {
+      "sha256": "f207eebcf9f4701d634bb01f5ef8d5f940d4ba441b2aa23e8fcd5f66101a275d",
+      "size": 1003
+    },
+    "qe-identity-issuer-chain.pem": {
+      "sha256": "c550544e4442d9be583a5eddd48df8ba0149ddeef40efd3737ebe0f885dc3711",
+      "size": 1892
+    },
+    "qe-identity.json": {
+      "sha256": "186c10aaf06eae04cd362afc9761198485d52dd7c76b0b4c9483de2889178b25",
+      "size": 1380
+    },
+    "root-ca.crl.der": {
+      "sha256": "c114be5d5ca7aab2d37817eca55aa8a2353853809904ff3695b31c26bcb7465b",
+      "size": 294
+    },
+    "tcb-info-issuer-chain.pem": {
+      "sha256": "c550544e4442d9be583a5eddd48df8ba0149ddeef40efd3737ebe0f885dc3711",
+      "size": 1892
+    },
+    "tcb-info.json": {
+      "sha256": "3d0a70af8c671b1f5738ec7ed494562f440e83439cb2d6699509ad4fe7ac2751",
+      "size": 5510
+    }
+  },
+  "crls": {
+    "pck": {
+      "issuer": "CN = Intel SGX PCK Processor CA, O = Intel Corporation, L = Santa Clara, ST = CA, C = US",
+      "next_update": "2026-09-25T23:46:46Z",
+      "sha256": "f207eebcf9f4701d634bb01f5ef8d5f940d4ba441b2aa23e8fcd5f66101a275d",
+      "size": 1003,
+      "this_update": "2026-08-26T23:46:46Z",
+      "type": "processor"
+    },
+    "root": {
+      "issuer": "CN = Intel SGX Root CA, O = Intel Corporation, L = Santa Clara, ST = CA, C = US",
+      "next_update": "2027-02-26T13:04:00Z",
+      "sha256": "c114be5d5ca7aab2d37817eca55aa8a2353853809904ff3695b31c26bcb7465b",
+      "size": 294,
+      "this_update": "2026-02-26T13:04:00Z",
+      "type": "root"
+    }
+  },
+  "openssl_version": "OpenSSL 3.0.13 30 Jan 2024 (Library: OpenSSL 3.0.13 30 Jan 2024)",
+  "qcnl": {
+    "package": "libsgx-dcap-default-qpl",
+    "package_version": "1.26.100.1-noble1",
+    "path": "/usr/lib/x86_64-linux-gnu/libsgx_default_qcnl_wrapper.so.1.13.110.0",
+    "sha256": "d744ab62cfd8c442b5c0773a8566a860c0b0e3d223e284b6690f13f30bb6b9df",
+    "size": 4505920
+  },
+  "qpl": {
+    "package": "libsgx-dcap-default-qpl",
+    "package_version": "1.26.100.1-noble1",
+    "path": "/usr/lib/x86_64-linux-gnu/libdcap_quoteprov.so.1.13.110.0",
+    "sha256": "62afb31f437a26b82bc8f5ad862e37fe086b00daeab71eebb25a9e92c776c2c1",
+    "size": 3964120
+  },
+  "quote": {
+    "path": "quote.bin",
+    "sha256": "2c6114cf7a3da7a915bf5d510f6be59308deee9e916b146b9be4088d2b7b10a2",
+    "size": 4600
+  },
+  "qvl": {
+    "package": "libsgx-dcap-quote-verify",
+    "package_version": "1.26.100.1-noble1",
+    "path": "/usr/lib/x86_64-linux-gnu/libsgx_dcap_quoteverify.so.1.13.103.0",
+    "sha256": "4745bc5b46cbdc17a78119ae2db08f54b86ff9077c5ab480f378741396365aef",
+    "size": 5322424
+  }
+}

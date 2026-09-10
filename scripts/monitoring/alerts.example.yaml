@@ -1,0 +1,667 @@
+# Prometheus / Alertmanager alert rules for outbe-chain validator hosts.
+#
+# This file is a TEMPLATE. Copy it to the operator's actual rule
+# directory (e.g. /etc/prometheus/rules/outbe-chain.yaml) and adjust
+# label selectors / hosts / contacts as needed.
+#
+# Source metrics:
+#   - outbe_block_cache_size
+#       process-local block_cache entry count
+#       (emitted from `crates/blockchain/consensus/src/metrics.rs`
+#        and updated on every bounded insert + finalization eviction).
+#   - process_resident_memory_bytes
+#       Reth's standard per-process RSS gauge.
+#   - commonware_p2p_tracked_peer_set_size
+#       current tracked Commonware consensus peer-set size (membership,
+#       NOT live TCP connections - it does not drop on disconnect).
+#   - outbe_current_view / outbe_finalized_view
+#       highest observed Simplex view vs last finalized view. The gap is the
+#       primary consensus-stall signal: views advancing but nothing finalizing.
+#   - outbe_views_nullified_total
+#       count of nullified (view-timed-out / skipped) views.
+#
+# Constants used here mirror the Rust source of truth:
+#   BLOCK_CACHE_MAX_ENTRIES = 1024
+#   (see `crates/blockchain/consensus/src/finalization/actor.rs`)
+#
+# An alert on the MDBX `read transaction has been open for too long`
+# warning is intentionally NOT included here - that warning is emitted
+# from `reth-db`'s `MetricsHandler` and does not currently have a
+# Prometheus counter; capture it via the operator's log pipeline
+# (Loki / journald-based alerting). Track Rust-side counter exposure
+# under a follow-up task.
+
+groups:
+  - name: outbe-chain.consensus
+    interval: 30s
+    rules:
+      # Soft warning: cache approaching the hard cap. Indicates either
+      # a sustained wedge (no finalization advancing) or fork spam.
+      - alert: OutbeBlockCacheNearCap
+        expr: outbe_block_cache_size > 0.9 * 1024
+        for: 5m
+        labels:
+          severity: warning
+          subsystem: consensus
+        annotations:
+          summary: "block_cache near max entries on {{ $labels.instance }}"
+          description: |
+            outbe_block_cache_size = {{ $value }} (>= 90% of 1024).
+            Either consensus is wedged (no finalization advancing) or
+            the network is producing many same-height forks. Investigate
+            via logs and `outbe_consensus_tip_block_height` /
+            `outbe_finalized_view`.
+
+      # Hard alarm: cache pinned at the cap for an extended period -
+      # eviction is keeping up but the underlying condition (wedge or
+      # fork spam) has not cleared.
+      - alert: OutbeBlockCacheAtCap
+        expr: outbe_block_cache_size >= 1024
+        for: 15m
+        labels:
+          severity: critical
+          subsystem: consensus
+        annotations:
+          summary: "block_cache pinned at MAX_ENTRIES on {{ $labels.instance }} for >15m"
+          description: |
+            outbe_block_cache_size has been at or above
+            BLOCK_CACHE_MAX_ENTRIES (1024) for 15 minutes. This is
+            survivable (eviction still runs) but indicates a sustained
+            problem - wedge or fork spam - that the operator must
+            investigate now.
+
+      # Network split early-warning: empty tracked peer set. The May
+      # 2026 OOM incident root cause was this condition going unnoticed
+      # for hours. NOTE: this metric is tracked-set membership, not live
+      # connectivity - pair with the stall alert below, which keys on the
+      # finalization gap and catches connectivity loss the membership count
+      # cannot.
+      - alert: OutbeConsensusPeerSetEmpty
+        expr: commonware_p2p_tracked_peer_set_size == 0
+        for: 5m
+        labels:
+          severity: critical
+          subsystem: consensus
+        annotations:
+          summary: "validator {{ $labels.instance }} has an empty tracked peer set for >5m"
+          description: |
+            commonware_p2p_tracked_peer_set_size == 0 for 5 minutes. The
+            validator has no tracked consensus peers and cannot finalize. Check
+            P2P reachability, known-peers.json, and bootnode pingability.
+
+      # Primary consensus-stall alarm (M-20): views are advancing but nothing
+      # is finalizing. Unlike the membership/cache proxies above, this keys on
+      # the live finalization gap, so it fires for a connectivity loss, a
+      # leader-timeout storm, or a wedge - even while the tracked peer set looks
+      # healthy.
+      - alert: OutbeConsensusStalled
+        expr: (outbe_current_view - outbe_finalized_view) > 20
+        for: 2m
+        labels:
+          severity: critical
+          subsystem: consensus
+        annotations:
+          summary: "consensus stalled on {{ $labels.instance }}: views advancing, no finalization"
+          description: |
+            outbe_current_view - outbe_finalized_view = {{ $value }} (> 20) for
+            2 minutes. Views are progressing but no view is finalizing - a
+            liveness fault (lost connectivity, a byzantine/offline leader run,
+            or a wedge). Cross-reference rate(outbe_views_nullified_total[5m])
+            and the `outbe::reporter` / `outbe::consensus` log targets.
+
+      # View-timeout storm: leaders are repeatedly failing to deliver proposals
+      # in time, nullifying views. A sustained rate degrades liveness even if
+      # the chain has not fully stalled yet.
+      - alert: OutbeViewNullificationStorm
+        expr: rate(outbe_views_nullified_total[5m]) > 0.2
+        for: 5m
+        labels:
+          severity: warning
+          subsystem: consensus
+        annotations:
+          summary: "high view-nullification rate on {{ $labels.instance }}"
+          description: |
+            rate(outbe_views_nullified_total[5m]) = {{ $value }} (> 0.2/s) for
+            5 minutes. Leaders are repeatedly timing out before delivering
+            proposals (network turbulence or an offline/byzantine leader run).
+            Finalization continues but with degraded liveness.
+
+  - name: outbe-chain.host
+    interval: 30s
+    rules:
+      # Memory pressure early-warning: gives the operator hours of
+      # headroom to investigate before OOM. Threshold sized for the
+      # current 7.8 GiB hosts; raise to ~12 GiB after RAM upgrade
+      - alert: OutbeChainHighRSS
+        expr: process_resident_memory_bytes{job=~".*outbe.*"} > 6 * 1024 * 1024 * 1024
+        for: 10m
+        labels:
+          severity: warning
+          subsystem: host
+        annotations:
+          summary: "outbe-chain RSS > 6 GiB on {{ $labels.instance }}"
+          description: |
+            outbe-chain process RSS = {{ $value | humanize1024 }} for
+            10 minutes. Historical OOM events on production hosts
+            killed the process at ~7.1 GiB anon-rss; this threshold
+            gives ~1 GiB headroom to investigate before OOM.
+
+  - name: outbe-chain.slashing
+    interval: 30s
+    rules:
+      # Early-warning before a felony fires. Threshold values match
+      # `slashindicator.config_proposer_felony_threshold` (default 150).
+      # Fire when miss count exceeds 80% of the threshold.
+      - alert: OutbeProposerMissNearFelony
+        expr: outbe_proposer_miss_count > 120
+        for: 2m
+        labels:
+          severity: warning
+          subsystem: slashing
+        annotations:
+          summary: "validator {{ $labels.addr }} approaching proposer felony"
+          description: |
+            outbe_proposer_miss_count = {{ $value }} for {{ $labels.addr }}.
+            Default felony threshold is 150 - at this rate the validator
+            will be force-exited soon. Investigate node health.
+
+      # Validator just transitioned to EXITING (status code 3). This
+      # means a slash or voluntary deactivation just happened.
+      - alert: OutbeValidatorExiting
+        expr: outbe_validator_status == 3
+        for: 1m
+        labels:
+          severity: critical
+          subsystem: slashing
+        annotations:
+          summary: "validator {{ $labels.addr }} is EXITING"
+          description: |
+            Validator {{ $labels.addr }} transitioned to EXITING status.
+            Cause is either a felony, evidence-based slash, or voluntary
+            deactivation. Check `outbe::slashing` / `outbe::validatorset`
+            log target for the triggering event.
+
+      # Validator transitioned to UNBONDING. Permanent exit from
+      # consensus participation.
+      - alert: OutbeValidatorUnbonding
+        expr: outbe_validator_status == 4
+        for: 1m
+        labels:
+          severity: critical
+          subsystem: slashing
+        annotations:
+          summary: "validator {{ $labels.addr }} is UNBONDING"
+          description: |
+            Validator {{ $labels.addr }} transitioned to UNBONDING.
+            Permanent exit from consensus until re-registration after
+            cooldown. See `outbe::validatorset` log target for transition.
+
+      # Slash event just happened (any reason). Treats the slash as a
+      # signal that needs human attention.
+      - alert: OutbeValidatorSlashed
+        expr: rate(outbe_validator_slashed_total[5m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          subsystem: slashing
+        annotations:
+          summary: "validator {{ $labels.addr }} slashed (reason={{ $labels.reason }})"
+          description: |
+            outbe_validator_slashed_total incremented for
+            {{ $labels.addr }} (reason={{ $labels.reason }}). Full
+            forensic context lives under the `outbe::slashing` log
+            target.
+
+      # Felony count climbed for a validator. Cumulative metric, so any
+      # increase is worth investigating.
+      - alert: OutbeFelonyCountIncreased
+        expr: increase(outbe_felony_count[5m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+          subsystem: slashing
+        annotations:
+          summary: "felony count rose for {{ $labels.addr }}"
+          description: |
+            outbe_felony_count for {{ $labels.addr }} = {{ $value }}.
+            Cumulative metric - any rise indicates a new felony just
+            fired. Cross-reference `outbe_validator_slashed_total`
+            with the corresponding `reason` label.
+
+  - name: outbe-chain.validatorset
+    interval: 30s
+    rules:
+      # Active validator count dropped. f+1 or worse may halt finalization.
+      - alert: OutbeActiveValidatorCountDropped
+        expr: outbe_validator_active_count < 4
+        for: 5m
+        labels:
+          severity: critical
+          subsystem: validatorset
+        annotations:
+          summary: "active validator count = {{ $value }}"
+          description: |
+            outbe_validator_active_count fell below the 4-validator
+            minimum quorum needed for healthy finalization. Investigate
+            recent EXITING / UNBONDING transitions.
+
+      # Pending validator-set change has not been resolved by next
+      # reshare. May indicate stuck DKG or operator inattention.
+      - alert: OutbeValidatorSetChangePending
+        expr: outbe_validator_pending_set_change == 1
+        for: 30m
+        labels:
+          severity: warning
+          subsystem: validatorset
+        annotations:
+          summary: "validator-set change pending for >30 min"
+          description: |
+            outbe_validator_pending_set_change has been 1 for over 30
+            minutes. A reshare should have completed by now; check DKG
+            progress and validator availability.
+
+  # --- TEE enclave observability (2026-08-22 incident follow-up) ---
+  #
+  # Source metrics (node-side, emitted by the tee-canary worker and the
+  # enclave-client session in `crates/system/tee` / `crates/blockchain/node`):
+  #   outbe_tee_canary_latency_ms              - canary decrypt round-trip
+  #   outbe_tee_canary_failures_total          - failed canary ticks
+  #   outbe_tee_canary_consecutive_failures    - current failure streak
+  #   outbe_tee_canary_last_ok_timestamp_seconds - unix time of last success
+  #   outbe_tee_heap_bytes{kind=current|peak}  - enclave self-observed heap
+  #                                              (allocator-level proxy for EPC
+  #                                              pressure; excludes stacks and
+  #                                              fragmentation)
+  #   outbe_tee_enclave_uptime_seconds         - enclave self-reported uptime
+  #                                              (drop to ~0 = silent restart)
+  #   outbe_tee_request_duration_ms{request}   - per-request client latency
+  #   outbe_tee_reconnect_total{result}        - session reconnects
+  #   outbe_tee_session_generation             - bumps on every reconnect
+  #
+  # Host-level RSS of the gramine loader (outside-the-enclave view), when
+  # needed manually:
+  #   PID=$(docker inspect -f '{{.State.Pid}}' <enclave-container>)
+  #   grep VmRSS /proc/$PID/status
+  # `sgx.enclave_size = "256M"` is pinned in the manifest templates; the heap
+  # thresholds below are fractions of that budget.
+  - name: outbe-chain.tee
+    interval: 30s
+    rules:
+      - alert: OutbeTeeCanaryFailing
+        expr: outbe_tee_canary_consecutive_failures >= 3
+        for: 2m
+        labels:
+          severity: critical
+          subsystem: tee
+        annotations:
+          summary: "TEE canary decrypt failing on {{ $labels.instance }}"
+          description: |
+            The enclave canary has failed 3+ consecutive probes. offerTribute
+            execution on this validator is degraded or broken; with a small
+            committee this slows every block (see the 2026-08-22 incident).
+
+      - alert: OutbeTeeCanaryStale
+        expr: time() - outbe_tee_canary_last_ok_timestamp_seconds > 300
+        labels:
+          severity: critical
+          subsystem: tee
+        annotations:
+          summary: "no successful TEE canary for >5 min on {{ $labels.instance }}"
+
+      - alert: OutbeTeeCanaryLatencyHigh
+        # NOTE: verify how the exporter renders histograms before deploying -
+        # metrics-exporter-prometheus may emit summary quantiles
+        # (outbe_tee_canary_latency_ms{quantile="0.99"}) instead of _bucket
+        # series; use whichever the running node actually exposes.
+        expr: histogram_quantile(0.99, sum by (le) (rate(outbe_tee_canary_latency_ms_bucket[10m]))) > 250
+        for: 10m
+        labels:
+          severity: warning
+          subsystem: tee
+        annotations:
+          summary: "TEE canary p99 latency >250ms on {{ $labels.instance }}"
+          description: |
+            The consensus-path decrypt is slowing down. At ~seconds per call a
+            single validator can stall every view (36 s/block incident mode).
+
+      - alert: OutbeTeeEnclaveHeapHigh
+        # 0.75 * 256MiB enclave budget.
+        expr: outbe_tee_heap_bytes{kind="current"} > 201326592
+        for: 10m
+        labels:
+          severity: warning
+          subsystem: tee
+        annotations:
+          summary: "enclave heap above 75% of the 256M enclave budget"
+
+      - alert: OutbeTeeEnclaveHeapGrowth
+        # >32MiB/h sustained growth = leak suspicion.
+        expr: delta(outbe_tee_heap_bytes{kind="current"}[1h]) > 33554432
+        labels:
+          severity: warning
+          subsystem: tee
+        annotations:
+          summary: "enclave heap grew >32MiB in the last hour (leak suspicion)"
+
+      - alert: OutbeTeeSessionReconnecting
+        expr: increase(outbe_tee_reconnect_total{result="ok"}[15m]) > 3
+        labels:
+          severity: warning
+          subsystem: tee
+        annotations:
+          summary: "enclave session reconnected >3 times in 15m (unstable sidecar)"
+
+  # --- Transaction pool eviction (2026-08-22 incident follow-up) ---
+  #
+  # Source metrics (emitted by the node-side pool maintenance loop in
+  # `crates/blockchain/txpool/src/maintain.rs`):
+  #   outbe_txpool_stale_evicted_total     - transactions evicted after
+  #                                          surviving two consecutive pending
+  #                                          snapshots (plus their descendants)
+  #   outbe_txpool_pending_snapshot_size   - pending-set size at the last snapshot
+  #
+  # Steady state is zero evictions: a healthy transaction is mined long before
+  # the staleness interval elapses. Sustained evictions mean transactions are
+  # entering the pool that the network cannot include - a stuck-transaction
+  # pattern, a builder that keeps skipping them, or a validator too slow to
+  # finalize the proposals carrying them.
+  - name: outbe-chain.txpool
+    interval: 30s
+    rules:
+      - alert: OutbeTxpoolSustainedStaleEviction
+        expr: increase(outbe_txpool_stale_evicted_total[15m]) > 0
+        for: 15m
+        labels:
+          severity: warning
+          subsystem: txpool
+        annotations:
+          summary: "pool is shedding stale transactions on {{ $labels.instance }}"
+          description: |
+            Transactions have been evicted after staying pending across two
+            snapshots for 15 minutes straight. Check whether one transaction
+            keeps re-entering the pool (gossip / reorg re-injection) and whether
+            block time has degraded.
+
+      - alert: OutbeTxpoolPendingBacklog
+        # Well below the 10k pending sub-pool cap; a sustained backlog on a
+        # low-traffic chain means transactions are not being drained.
+        expr: outbe_txpool_pending_snapshot_size > 1000
+        for: 15m
+        labels:
+          severity: warning
+          subsystem: txpool
+        annotations:
+          summary: "pending pool backlog above 1000 for 15 minutes"
+
+  # --- Standalone OCOMP processes ---
+  #
+  # Scrape the existing Salvo `/metrics` endpoint of every process. With the
+  # default Supervisor port 30401, Workers use 30403..30406 and the
+  # SnapshotExporter uses 30413 (after both six-port bundle-lane windows).
+  # All endpoints intentionally bind loopback;
+  # Prometheus therefore runs on the validator host (or reaches them through
+  # an explicitly configured local proxy).
+  - name: outbe-chain.ocomp
+    interval: 15s
+    rules:
+      - alert: OutbeOcompProcessDown
+        expr: up{job=~"outbe-ocomp-(worker|snapshot-exporter)"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP process {{ $labels.instance }} is not scrapeable"
+          description: |
+            Prometheus cannot reach a configured OCOMP process. The scrape
+            jobs must be named `outbe-ocomp-worker` and
+            `outbe-ocomp-snapshot-exporter`, or this selector must be adjusted
+            to the operator's equivalent static labels.
+
+      - alert: OutbeOcompSnapshotExporterUnhealthy
+        expr: outbe_ocomp_snapshot_exporter_healthy == 0 or absent(outbe_ocomp_snapshot_exporter_healthy)
+        for: 2m
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP SnapshotExporter is unavailable or making no progress"
+          description: |
+            The exporter is starting, failed its reconcile cycle, or has not
+            completed a reconcile cycle for 30 seconds. Check `/status` and
+            process logs before an open OCOMP response window reaches its
+            deadline. The unified reader and durable-control alerts below show
+            whether the failure is before or after exporter handoff.
+
+      - alert: OutbeOcompFinalizedReaderStalled
+        expr: outbe_ocomp_finalized_reader_lag_blocks > 0 and changes(outbe_ocomp_finalized_reader_checkpoint_number[2m]) == 0
+        for: 1m
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP unified finalized reader is stalled"
+          description: |
+            The node has finalized blocks waiting, but the single shared
+            projection/discovery checkpoint has not advanced for two minutes.
+
+      - alert: OutbeOcompClosureStalled
+        expr: outbe_ocomp_closure_lag_blocks > 0 and changes(outbe_ocomp_closure_checkpoint_number[2m]) == 0
+        for: 1m
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP canonical closure is stalled"
+          description: |
+            Finalized OCOMP input has not reached durable terminal closure for
+            two minutes. SnapshotExporter ACK is not required for canonical
+            expiry, so this indicates a node-side retention or spool failure.
+
+      - alert: OutbeOcompRetentionJournalUnavailable
+        expr: outbe_ocomp_retention_journal_unavailable == 1
+        for: 30s
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP retention journal storage is unavailable"
+          description: |
+            This node is fail-closed: a validator withholds proposals and
+            positive votes, while OCOMP finalized processing and retained-data
+            GC wait for automatic journal recovery. Check free bytes and
+            inodes, read-only mounts, permissions, and kernel/filesystem I/O
+            errors. Do not delete `pin.v1`, `pin.v1.tmp`, or retained inputs.
+            After repairing storage, confirm a successful recovery attempt,
+            this gauge returning to zero, and closure checkpoint progress.
+
+      - alert: OutbeOcompRetentionJournalQuarantined
+        expr: outbe_ocomp_retention_journal_quarantined == 1
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP retention journal has an integrity ambiguity"
+          description: |
+            Automatic journal mutation and retained-data deletion are stopped
+            because one durable authority cannot be selected safely. Remove
+            the affected validator from duty when operationally possible,
+            stop that node, and preserve byte-for-byte copies of `pin.v1` and
+            `pin.v1.tmp` plus filesystem diagnostics. Repair from a known-good
+            authority and restart; never delete a valid non-successor temp to
+            silence this alert.
+
+      - alert: OutbeOcompRetentionJournalRecoveryStopped
+        expr: (outbe_ocomp_retention_journal_unavailable == 1) unless on(instance) (sum by(instance) (increase(outbe_ocomp_retention_journal_recovery_attempts_total[3m])) > 0)
+        for: 2m
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP retention journal recovery loop is not running"
+          description: |
+            Journal storage remains unavailable but no recovery result was
+            recorded for three minutes. Inspect the node logs and supervisor,
+            repair storage first, then restart one affected node at a time.
+
+      - alert: OutbeOcompRetainedGcErrors
+        expr: increase(outbe_ocomp_retained_gc_errors_total[5m]) > 0
+        labels:
+          severity: warning
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP retained-input garbage collection is retrying"
+          description: |
+            At least one durable retained-input lease could not be collected.
+            Finalized processing continues; inspect MongoDB health and storage
+            capacity before the backlog grows.
+
+      - alert: OutbeOcompRetainedGcStalled
+        expr: outbe_ocomp_retained_gc_pending_jobs > 0 and increase(outbe_ocomp_retained_gc_pages_total[10m]) == 0 and increase(outbe_ocomp_retained_gc_completed_total[10m]) == 0
+        for: 10m
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP retained-input garbage collection is stalled"
+          description: |
+            Durable GC work exists but no lease page or completion has advanced
+            for ten minutes. This is storage pressure, not a consensus halt;
+            the GC worker retries leases independently.
+
+      - alert: OutbeOcompRetainedGcPartialStall
+        expr: outbe_ocomp_retained_gc_deferred_jobs > 0 or outbe_ocomp_retained_gc_global_retry_next_delay_seconds > 0
+        for: 10m
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP retained-input garbage collection is partially stalled"
+          description: |
+            At least one durable GC item has remained deferred, or a global
+            retained-storage failure has remained active, for ten minutes.
+            Healthy jobs may still be advancing, so the aggregate stalled
+            alert can remain green. Inspect retry failure_class metrics,
+            MongoDB health, disk capacity, and the node logs.
+
+      - alert: OutbeOcompFinalizedLoopErrors
+        expr: increase(outbe_ocomp_finalized_loop_errors_total[5m]) > 0
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP unified finalized loop failed"
+
+      - alert: OutbeOcompFinalizedLoopFatal
+        expr: outbe_ocomp_finalized_loop_fatal == 1
+        for: 15s
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP unified finalized loop is latched fatal"
+          description: |
+            The node-side OCOMP reader has stopped and will not resume without
+            operator recovery. This state is sticky, so the alert remains red
+            after the one-shot error counter ages out of its query window.
+
+      - alert: OutbeOcompDiscoveryOfferPending
+        expr: outbe_ocomp_discovery_pending_offers > 0
+        for: 2m
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP durable discovery offer has no exporter ACK"
+
+      - alert: OutbeOcompDiscoveryErrors
+        expr: increase(outbe_ocomp_snapshot_exporter_discovery_errors_total[5m]) > 0
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP finalized-job discovery is failing"
+          description: |
+            SnapshotExporter discovery errors occurred during the last five
+            minutes. This catches persistent RPC/query failures such as the
+            historical max-block-range failure without relying on journald.
+
+      - alert: OutbeOcompSnapshotExportErrors
+        expr: increase(outbe_ocomp_snapshot_exporter_export_errors_total[5m]) > 0
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP snapshot input export is failing"
+
+      - alert: OutbeOcompSnapshotPending
+        expr: outbe_ocomp_snapshot_exporter_pending_jobs > 0
+        for: 5m
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP finalized job has remained unexported for five minutes"
+
+      - alert: OutbeOcompWorkerUnhealthy
+        expr: outbe_ocomp_worker_healthy == 0
+        for: 2m
+        labels:
+          severity: warning
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP Worker {{ $labels.instance }} is disconnected or its loop is stale"
+
+      - alert: OutbeOcompWorkerUnitFailuresSustained
+        expr: sum by(job, instance) (increase(outbe_ocomp_worker_units_completed_total{outcome="failed"}[5m])) > 0
+        for: 10m
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP Worker {{ $labels.instance }} is repeatedly failing work units"
+          description: |
+            At least one work unit has failed in every rolling five-minute
+            window for ten minutes. Local retries remain bound to the same
+            canonical JobId and deadline; they cannot establish an on-chain
+            Failed state or extend the response window. Inspect Worker and
+            SnapshotExporter logs, retained input, disk capacity, and MongoDB
+            before the canonical job expires.
+
+      - alert: OutbeOcompVoteSubmissionFailures
+        expr: increase(outbe_ocomp_vote_submission_failures_total[5m]) > 0
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "OCOMP result-vote submission is failing"
+
+      - alert: OutbeOcompRecoveryWindowOpen
+        expr: (outbe_ocomp_recovery_deadline - on(job, instance) group_left outbe_ocomp_recovery_block_number) > 0
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "Validator {{ $labels.addr }} missed OCOMP and lost 10% bonded stake"
+          description: |
+            A fixed 43,200-block recovery window is open with {{ $value }} blocks
+            remaining. Restore OCOMP and replenish bonded stake before the
+            per-validator deadline.
+
+      - alert: OutbeOcompRecoveryDeadlineApproaching
+        expr: outbe_ocomp_recovery_deadline > 0 and (outbe_ocomp_recovery_deadline - on(job, instance) group_left outbe_ocomp_recovery_block_number) < 3600
+        for: 1m
+        labels:
+          severity: critical
+          subsystem: ocomp
+        annotations:
+          summary: "Validator {{ $labels.addr }} is within 3,600 blocks of OCOMP jail"
+
+      - alert: OutbeOcompRecoveryWindowsOpen
+        expr: outbe_ocomp_recovery_open_windows > 0
+        for: 5m
+        labels:
+          severity: warning
+          subsystem: ocomp
+        annotations:
+          summary: "One or more OCOMP recovery windows remain open"

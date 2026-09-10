@@ -1,0 +1,44 @@
+# Deploy tasks load NETWORK and other vars from an env file.
+# Override ENV_FILE to use a different environment, e.g.:
+#   ENV_FILE=.bsc-testnet.env mise run deploy-create3-factory
+
+[tasks.install]
+description = "Install dependencies using soldeer"
+run = "forge soldeer install"
+
+[tasks.build]
+description = "Build Solidity contracts using forge"
+run = "forge build"
+
+[tasks.fmt]
+description = "Format Solidity code"
+run = "forge fmt"
+
+[tasks.deploy-create3-factory]
+description = "Deploy the CREATE3 factory shared by every contracts/* project (idempotent)"
+run = '''
+set -a; f="${ENV_FILE:-.env}"; [ -f "$f" ] && . "$f"; set +a
+forge script script/DeployCreate3Factory.s.sol:DeployCreate3Factory --rpc-url "$NETWORK" --broadcast --verify --slow --legacy -vvv
+'''
+
+[tasks.deploy-whitelist]
+description = "Deploy the shared Whitelist registry (CREATE2, owner = deployer)"
+run = '''
+set -a; f="${ENV_FILE:-.env}"; [ -f "$f" ] && . "$f"; set +a
+forge script script/DeployWhitelist.s.sol:DeployWhitelist --rpc-url "$NETWORK" --broadcast --verify --slow --legacy -vvv
+'''
+
+
+[tasks.deploy-whitelist-hook-infinity]
+description = "Deploy the PancakeSwap Infinity swap gate on top of WHITELIST_ADDRESS"
+run = '''
+set -a; f="${ENV_FILE:-.env}"; [ -f "$f" ] && . "$f"; set +a
+forge script script/DeployWhitelistHooks.s.sol:DeployWhitelistHooks --sig "deployInfinity()" --rpc-url "$NETWORK" --broadcast --verify --slow --legacy -vvv
+'''
+
+[tasks.deploy-whitelist-hook-v4]
+description = "Deploy the Uniswap v4 swap gate on top of WHITELIST_ADDRESS"
+run = '''
+set -a; f="${ENV_FILE:-.env}"; [ -f "$f" ] && . "$f"; set +a
+forge script script/DeployWhitelistHooks.s.sol:DeployWhitelistHooks --sig "deployV4()" --rpc-url "$NETWORK" --broadcast --verify --slow --legacy -vvv
+'''

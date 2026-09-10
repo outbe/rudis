@@ -1,0 +1,69 @@
+# Node modules
+/node_modules
+
+# Yarn (keep committed patches; ignore the rest)
+.yarn/*
+!.yarn/patches
+
+# Compilation output
+/dist
+/out
+
+# pnpm deploy output
+/bundle
+
+# Hardhat Build Artifacts
+/artifacts
+
+# Hardhat compilation (v2) support directory
+/cache
+
+# Typechain output
+/types
+
+# Hardhat coverage reports
+/coverage
+
+# Forge coverage (LCOV)
+lcov.info
+
+# Secrets / config
+.env
+.npmrc
+.npmrc-pkg
+params.json
+
+# Local-only config (external/deployment addresses - never committed)
+config/external-addresses.json
+
+# ignition
+/ignition/deployments/
+
+# Local data (test fixtures, bidder wallets with private keys - never committed)
+/data/
+
+# Generated sample files
+sample-nft.svg
+sample-nft-metadata.json
+
+# Serena (local code-assistant tooling: per-user cache, logs, memories, config)
+/.serena/
+
+# Static analysis reports
+report.md
+slither-report.sarif
+
+# Generated context doc (kept local, never committed)
+CONTEXT.md
+
+# Local scratch (design notes, throwaway reference files - never committed)
+/.scratch/
+
+# Local planning work (per-task plans, sequencing notes - never committed)
+/.work/
+.claude/
+
+reports/
+
+# Forge broadcast logs (deploy output)
+/broadcast

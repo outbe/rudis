@@ -1,0 +1,28 @@
+[package]
+name = "outbe-zerofee"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-primitives.workspace = true
+outbe-intexfactory.workspace = true
+outbe-oracle.workspace = true
+outbe-validatorset.workspace = true
+outbe-macros.workspace = true
+
+alloy-primitives.workspace = true
+alloy-eips = { workspace = true, features = ["k256"] }
+alloy-sol-types.workspace = true
+
+thiserror.workspace = true
+
+[dev-dependencies]
+outbe-ocomp-protocol.workspace = true
+proptest.workspace = true
+revm.workspace = true
+outbe-validatorset = { workspace = true, features = ["test-utils"] }
+
+[lints]
+workspace = true

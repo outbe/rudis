@@ -1,0 +1,17 @@
+[package]
+name = "outbe-fidelity-math"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+# Pure fixed-point RCFI decay math (the Retention Component curve). A leaf crate
+# so both the on-chain fidelity crate and the SGX enclave share ONE arithmetic
+# implementation without a dependency cycle (the enclave depends on this, and the
+# fidelity crate depends on the enclave via its `test-enclave` seam).
+[dependencies]
+alloy-primitives.workspace = true
+outbe-primitives.workspace = true
+
+[lints]
+workspace = true

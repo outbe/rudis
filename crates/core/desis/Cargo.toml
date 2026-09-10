@@ -1,0 +1,29 @@
+[package]
+name = "outbe-desis"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-macros.workspace = true
+outbe-ocomp-protocol.workspace = true
+outbe-primitives.workspace = true
+outbe-intexfactory.workspace = true
+outbe-promislimit.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+outbe-intex.workspace = true
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+
+[lints]
+workspace = true
+
+[features]
+# Retarget the intex contract addresses at the throwaway CREATE3 set an
+# e2e chain deploys with the well-known anvil key. Never enabled in a release build.
+e2e-test = ["outbe-primitives/e2e-test"]

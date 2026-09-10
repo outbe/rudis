@@ -1,0 +1,90 @@
+[tasks.install]
+description = "Install dependencies using soldeer"
+run = "forge soldeer install"
+
+[tasks.build]
+description = "Build Solidity contracts using forge"
+run = "forge build"
+
+[tasks.test]
+description = "Test Solidity contracts using forge"
+run = "forge test"
+
+[tasks.fmt]
+description = "Format Solidity code"
+run = "forge fmt"
+
+[tasks.lint]
+description = "Lint Solidity code"
+run = "forge lint"
+
+[tasks.clean]
+description = "Clean up forge artifacts"
+run = "forge clean"
+
+[tasks.clean-all]
+description = "Clean all build artifacts, and caches"
+depends = ["clean"]
+run = '''
+forge soldeer clean
+rm -rf ./out ./build ./cache
+'''
+
+# Deploy tasks load NETWORK and other vars from an env file (default .env; override with ENV_FILE=...).
+
+[tasks.deploy-adapters]
+description = "Deploy gateway adapters (LZ and/or Hyperlane, per env) via CREATE3"
+run = '''
+set -a; f="${ENV_FILE:-.env}"; [ -f "$f" ] && . "$f"; set +a
+forge script script/1_DeployAdapters.s.sol:DeployAdapters --rpc-url "$NETWORK" --broadcast --verify --slow --legacy -vvv
+'''
+
+[tasks.deploy-bridge]
+description = "Deploy ERC7786Bridge with the active gateway (CREATE3)"
+run = '''
+set -a; f="${ENV_FILE:-.env}"; [ -f "$f" ] && . "$f"; set +a
+forge script script/2_DeployBridge.s.sol:DeployBridge --rpc-url "$NETWORK" --broadcast --verify --slow --legacy -vvv
+'''
+
+[tasks.configure-bridge]
+description = "Wire remote bridges + adapter peers (per REMOTE_CHAIN_IDS / REMOTE_EIDS)"
+run = '''
+set -a; f="${ENV_FILE:-.env}"; [ -f "$f" ] && . "$f"; set +a
+forge script script/3_ConfigureBridge.s.sol:ConfigureBridge --rpc-url "$NETWORK" --broadcast --slow --legacy -vvv --skip-simulation
+'''
+
+[tasks.deploy-all]
+description = "Deploy the whole hub (adapters + bridge) on one chain"
+run = '''
+set -a; f="${ENV_FILE:-.env}"; [ -f "$f" ] && . "$f"; set +a
+forge script script/DeployAll.s.sol:DeployAll --rpc-url "$NETWORK" --broadcast --slow --legacy -vvv --skip-simulation
+'''
+
+[tasks.switch-gateway]
+description = "Switch the bridge active gateway / protocol (ACTIVE_GATEWAY=lz|hyperlane)"
+run = '''
+set -a; f="${ENV_FILE:-.env}"; [ -f "$f" ] && . "$f"; set +a
+forge script script/SwitchGateway.s.sol:SwitchGateway --rpc-url "$NETWORK" --broadcast --slow --legacy -vvv --skip-simulation
+'''
+
+# LayerZero-only maintenance: skip a stuck inbound nonce on the adapter so it stops blocking later messages.
+# ADAPTER and its endpoint are read from the bridge (getGateway -> adapter -> endpoint); only SRC_EID is required.
+# Sender defaults to the same-address peer adapter; NONCE defaults to inboundNonce+1.
+# DESTRUCTIVE: skip drops the targeted nonce - if the pathway is not actually stuck it skips the next real message.
+# Run by the adapter's LZ delegate (= BRIDGE_OWNER).
+[tasks.clear-lz-nonce]
+description = "Skip a stuck inbound LZ nonce (BRIDGE_ADDRESS + SRC_EID; opt SRC_SENDER, NONCE). DESTRUCTIVE."
+run = '''
+set -euo pipefail
+set -a; f="${ENV_FILE:-.env}"; [ -f "$f" ] && . "$f"; set +a
+: "${NETWORK:?set NETWORK}"; : "${DEPLOYER_PK:?set DEPLOYER_PK}"; : "${BRIDGE_ADDRESS:?set BRIDGE_ADDRESS}"; : "${SRC_EID:?set SRC_EID}"
+ADAPTER=$(cast call "$BRIDGE_ADDRESS" "getGateway()(address)" --rpc-url "$NETWORK")
+ENDPOINT=$(cast call "$ADAPTER" "endpoint()(address)" --rpc-url "$NETWORK")
+SENDER="${SRC_SENDER:-0x000000000000000000000000${ADAPTER#0x}}"
+if [ -z "${NONCE:-}" ]; then
+  inbound=$(cast call "$ENDPOINT" "inboundNonce(address,uint32,bytes32)(uint64)" "$ADAPTER" "$SRC_EID" "$SENDER" --rpc-url "$NETWORK")
+  NONCE=$((inbound + 1))
+fi
+echo "skip -> adapter=$ADAPTER endpoint=$ENDPOINT srcEid=$SRC_EID sender=$SENDER nonce=$NONCE"
+cast send "$ENDPOINT" "skip(address,uint32,bytes32,uint64)" "$ADAPTER" "$SRC_EID" "$SENDER" "$NONCE" --private-key "$DEPLOYER_PK" --rpc-url "$NETWORK" --legacy
+'''

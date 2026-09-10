@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package outbe.compressed_entities.v1;
+
+message StoredBody {
+  uint32 schema_version = 1;
+  bytes payload = 2;
+}
+
+message TributeBody {
+  bytes tribute_id = 1;
+  bytes owner = 2;
+  uint32 worldwide_day = 3;
+  bytes issuance_amount_minor = 4;
+  uint32 issuance_currency = 5;
+  bytes nominal_amount_minor = 6;
+  uint32 reference_currency = 7;
+  bytes tribute_price_minor = 8;
+  bool exclude_from_intex_issuance = 9;
+}
+
+message NodItemBody {
+  bytes nod_id = 1;
+  bytes owner = 2;
+  bytes gratis_load_minor = 3;
+  uint32 worldwide_day = 4;
+  uint32 league_id = 5;
+  bytes floor_price_minor = 6;
+  bytes bucket_key = 7;
+  bytes cost_amount_minor = 8;
+  uint32 issuance_currency = 9;
+  uint32 reference_currency = 10;
+  uint64 issued_at = 11;
+}
+
+message NodBucketBody {
+  bytes bucket_key = 1;
+  uint32 worldwide_day = 2;
+  bytes floor_price_minor = 3;
+  bool is_qualified = 4;
+  uint64 total_nods = 5;
+  bytes entry_price_minor = 6;
+  uint32 reference_currency = 7;
+}

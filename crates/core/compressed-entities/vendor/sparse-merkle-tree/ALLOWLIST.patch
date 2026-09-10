@@ -1,0 +1,98 @@
+--- pristine/Cargo.toml
++++ production/Cargo.toml
+@@ -2 +2 @@
+-name = "outbe-sparse-merkle-tree-v061-pristine"
++name = "outbe-sparse-merkle-tree-v061"
+@@ -11,4 +11,2 @@
+-[features]
+-default = ["std"]
+-std = []
+-trie = []
++[lints.rust]
++unexpected_cfgs = { level = "allow", check-cfg = ['cfg(feature, values("trie"))'] }
+--- pristine/src/error.rs
++++ production/src/error.rs
+@@ -17,0 +18 @@
++    TreeInvariant(&'static str),
+@@ -62,0 +64,3 @@
++            }
++            Error::TreeInvariant(message) => {
++                write!(f, "Tree invariant failed: {}", message)?;
+--- pristine/src/lib.rs
++++ production/src/lib.rs
+@@ -1 +1 @@
+-//! Test-only pristine CKB sparse-merkle-tree v0.6.1 source snapshot.
++//! Minimal vendored production subset of CKB sparse-merkle-tree v0.6.1.
+@@ -2,0 +3 @@
++#![forbid(unsafe_code)]
+--- pristine/src/merkle_proof.rs
++++ production/src/merkle_proof.rs
+@@ -108 +108 @@
+-                            _ => unreachable!(),
++                            _ => return Err(Error::CorruptedProof),
+@@ -143 +143,3 @@
+-            debug_assert!(stack_top < MAX_STACK_SIZE);
++            if stack_top >= MAX_STACK_SIZE {
++                return Err(Error::CorruptedStack);
++            }
+@@ -252 +254 @@
+-                    let (height_u16, key, value) = stack.pop().unwrap();
++                    let (height_u16, key, value) = stack.pop().ok_or(Error::CorruptedStack)?;
+@@ -297 +299 @@
+-                    let (height_u16, key, value) = stack.pop().unwrap();
++                    let (height_u16, key, value) = stack.pop().ok_or(Error::CorruptedStack)?;
+@@ -320,2 +322,2 @@
+-                    let (height_b, key_b, value_b) = stack.pop().unwrap();
+-                    let (height_a, key_a, value_a) = stack.pop().unwrap();
++                    let (height_b, key_b, value_b) = stack.pop().ok_or(Error::CorruptedStack)?;
++                    let (height_a, key_a, value_a) = stack.pop().ok_or(Error::CorruptedStack)?;
+@@ -360 +362 @@
+-                    let (base_height, key, mut value) = stack.pop().unwrap();
++                    let (base_height, key, mut value) = stack.pop().ok_or(Error::CorruptedStack)?;
+@@ -388 +390,3 @@
+-            debug_assert!(stack.len() <= MAX_STACK_SIZE);
++            if stack.len() > MAX_STACK_SIZE {
++                return Err(Error::CorruptedStack);
++            }
+@@ -479 +483,2 @@
+-                                        let last_n = *sub_proof.last().unwrap();
++                                        let last_n =
++                                            *sub_proof.last().ok_or(Error::CorruptedProof)?;
+@@ -483 +488,2 @@
+-                                        *sub_proof.last_mut().unwrap() = last_n.wrapping_add(1);
++                                        *sub_proof.last_mut().ok_or(Error::CorruptedProof)? =
++                                            last_n.wrapping_add(1);
+@@ -514 +520 @@
+-                            let last_n = *sub_proof.last().unwrap();
++                            let last_n = *sub_proof.last().ok_or(Error::CorruptedProof)?;
+@@ -518 +524,2 @@
+-                            *sub_proof.last_mut().unwrap() = last_n.wrapping_add(n);
++                            *sub_proof.last_mut().ok_or(Error::CorruptedProof)? =
++                                last_n.wrapping_add(n);
+--- pristine/src/tree.rs
++++ production/src/tree.rs
+@@ -205 +205,3 @@
+-                let (neighbor_key, _, neighbor_height) = nodes.front().expect("nodes is not empty");
++                let (neighbor_key, _, neighbor_height) = nodes
++                    .front()
++                    .ok_or(Error::TreeInvariant("non-empty node queue has no front"))?;
+@@ -210 +212,3 @@
+-                        let (_, neighbor_value, _) = nodes.pop_front().expect("nodes is not empty");
++                        let (_, neighbor_value, _) = nodes
++                            .pop_front()
++                            .ok_or(Error::TreeInvariant("neighbor disappeared from node queue"))?;
+@@ -335 +339,3 @@
+-                            unreachable!();
++                            return Err(Error::TreeInvariant(
++                                "proof bitmap points at an empty sibling",
++                            ));
+@@ -342 +348,3 @@
+-            debug_assert!(stack_top < MAX_STACK_SIZE);
++            if stack_top >= MAX_STACK_SIZE {
++                return Err(Error::CorruptedStack);
++            }
+@@ -347 +355,3 @@
+-        assert_eq!(stack_top, 1);
++        if stack_top != 1 {
++            return Err(Error::CorruptedStack);
++        }

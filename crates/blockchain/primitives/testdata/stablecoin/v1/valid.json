@@ -1,0 +1,1 @@
+{"version":1,"kind":"StablecoinCreate","issuer":"0x1111111111111111111111111111111111111111","name":"Example Dollar","ticker":"EXUSD","iso4217":840,"decimals":6,"supplyCap":"1000000000000","policyId":"1"}

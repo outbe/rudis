@@ -1,0 +1,209 @@
+# 4-validator local testnet.
+#
+# Prerequisites:
+#   1. Build host bootstrap binary: cargo build --bin outbe-chain
+#   2. Bootstrap keys/genesis: OUTBE_CONSENSUS_HOST_PATTERN='validator-{i}' ./scripts/bootstrap-testnet.sh 4 ./testnet
+#   3. Build the image: docker build -t outbe-chain .
+#   4. Start: docker compose up
+# Before bootstrapping a different genesis, run `docker compose down -v` so the fixed per-validator
+# projection databases cannot be reused across chain identities.
+#
+# Each node reads its generated validator-N/offchain-storage.toml (RocksDB default).
+# To use the optional Mongo service, select mongodb in all TOMLs and start with
+# `docker compose --profile mongodb up`; use mongodb://mongodb:27017/?replicaSet=rs0.
+# Each validator gets unique P2P, RPC, and metrics ports.
+
+x-validator-defaults: &validator-defaults
+  image: outbe-chain
+  restart: unless-stopped
+  networks:
+    - outbe-net
+
+services:
+  mongodb:
+    profiles: ["mongodb"]
+    image: mongo:7
+    container_name: outbe-mongodb
+    restart: unless-stopped
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    networks:
+      - outbe-net
+    volumes:
+      - outbe-mongodb:/data/db
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          mongosh --quiet --eval 'try { rs.status().ok } catch (error) { rs.initiate({_id:"rs0",members:[{_id:0,host:"mongodb:27017"}]}).ok }' | grep 1
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  validator-0:
+    <<: *validator-defaults
+    container_name: outbe-validator-0
+    volumes:
+      - ./testnet/validator-0:/data
+      - ./testnet/genesis.json:/genesis.json:ro
+      - ./testnet/polynomial.hex:/dkg-polynomial.hex:ro
+      - ./testnet/dkg-output.hex:/dkg-output.hex:ro
+    ports:
+      - "30400:30400"
+      - "8545:8545"
+      - "9001:9001"
+    command:
+      - node
+      - --datadir=/data
+      - --projection.storage-config=/data/offchain-storage.toml
+      - --chain=/genesis.json
+      - --http
+      - --http.addr=0.0.0.0
+      - --http.port=8545
+      - --http.api=eth,net,web3,rudis
+      - --port=30303
+      - --metrics=0.0.0.0:9001
+      - --validator
+      - --consensus.signing-key=/data/signing-key.hex
+      - --validator.evm-key=/data/evm-key.hex
+      - --consensus.signing-share=/data/signing-share.hex
+      - --consensus.public-polynomial=/dkg-polynomial.hex
+      - --consensus.dkg-output=/dkg-output.hex
+      - --consensus.listen-addr=0.0.0.0:30400
+      - --consensus.use-local-defaults
+
+  validator-1:
+    <<: *validator-defaults
+    container_name: outbe-validator-1
+    volumes:
+      - ./testnet/validator-1:/data
+      - ./testnet/genesis.json:/genesis.json:ro
+      - ./testnet/polynomial.hex:/dkg-polynomial.hex:ro
+      - ./testnet/dkg-output.hex:/dkg-output.hex:ro
+    ports:
+      - "30401:30401"
+      - "8546:8545"
+      - "9002:9001"
+    command:
+      - node
+      - --datadir=/data
+      - --projection.storage-config=/data/offchain-storage.toml
+      - --chain=/genesis.json
+      - --http
+      - --http.addr=0.0.0.0
+      - --http.port=8545
+      - --http.api=eth,net,web3,rudis
+      - --port=30303
+      - --metrics=0.0.0.0:9001
+      - --validator
+      - --consensus.signing-key=/data/signing-key.hex
+      - --validator.evm-key=/data/evm-key.hex
+      - --consensus.signing-share=/data/signing-share.hex
+      - --consensus.public-polynomial=/dkg-polynomial.hex
+      - --consensus.dkg-output=/dkg-output.hex
+      - --consensus.listen-addr=0.0.0.0:30401
+      - --consensus.use-local-defaults
+
+  validator-2:
+    <<: *validator-defaults
+    container_name: outbe-validator-2
+    volumes:
+      - ./testnet/validator-2:/data
+      - ./testnet/genesis.json:/genesis.json:ro
+      - ./testnet/polynomial.hex:/dkg-polynomial.hex:ro
+      - ./testnet/dkg-output.hex:/dkg-output.hex:ro
+    ports:
+      - "30402:30402"
+      - "8547:8545"
+      - "9003:9001"
+    command:
+      - node
+      - --datadir=/data
+      - --projection.storage-config=/data/offchain-storage.toml
+      - --chain=/genesis.json
+      - --http
+      - --http.addr=0.0.0.0
+      - --http.port=8545
+      - --http.api=eth,net,web3,rudis
+      - --port=30303
+      - --metrics=0.0.0.0:9001
+      - --validator
+      - --consensus.signing-key=/data/signing-key.hex
+      - --validator.evm-key=/data/evm-key.hex
+      - --consensus.signing-share=/data/signing-share.hex
+      - --consensus.public-polynomial=/dkg-polynomial.hex
+      - --consensus.dkg-output=/dkg-output.hex
+      - --consensus.listen-addr=0.0.0.0:30402
+      - --consensus.use-local-defaults
+
+  validator-3:
+    <<: *validator-defaults
+    container_name: outbe-validator-3
+    volumes:
+      - ./testnet/validator-3:/data
+      - ./testnet/genesis.json:/genesis.json:ro
+      - ./testnet/polynomial.hex:/dkg-polynomial.hex:ro
+      - ./testnet/dkg-output.hex:/dkg-output.hex:ro
+    ports:
+      - "30403:30403"
+      - "8548:8545"
+      - "9004:9001"
+    command:
+      - node
+      - --datadir=/data
+      - --projection.storage-config=/data/offchain-storage.toml
+      - --chain=/genesis.json
+      - --http
+      - --http.addr=0.0.0.0
+      - --http.port=8545
+      - --http.api=eth,net,web3,rudis
+      - --port=30303
+      - --metrics=0.0.0.0:9001
+      - --validator
+      - --consensus.signing-key=/data/signing-key.hex
+      - --validator.evm-key=/data/evm-key.hex
+      - --consensus.signing-share=/data/signing-share.hex
+      - --consensus.public-polynomial=/dkg-polynomial.hex
+      - --consensus.dkg-output=/dkg-output.hex
+      - --consensus.listen-addr=0.0.0.0:30403
+      - --consensus.use-local-defaults
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: outbe-prometheus
+    restart: unless-stopped
+    networks:
+      - outbe-net
+    depends_on:
+      - validator-0
+      - validator-1
+      - validator-2
+      - validator-3
+    volumes:
+      - ./deploy/monitoring/prometheus-compose.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    container_name: outbe-grafana
+    restart: unless-stopped
+    networks:
+      - outbe-net
+    depends_on:
+      - prometheus
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./deploy/monitoring/grafana/provisioning-datasources.yml:/etc/grafana/provisioning/datasources/outbe.yml:ro
+      - ./deploy/monitoring/grafana/provisioning-dashboards.yml:/etc/grafana/provisioning/dashboards/outbe.yml:ro
+      - ./deploy/monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "3000:3000"
+
+networks:
+  outbe-net:
+    driver: bridge
+
+volumes:
+  outbe-mongodb:

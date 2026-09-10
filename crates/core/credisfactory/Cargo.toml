@@ -1,0 +1,33 @@
+[package]
+name = "outbe-credisfactory"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-macros.workspace = true
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+outbe-cca.workspace = true
+outbe-credis.workspace = true
+outbe-gratis.workspace = true
+outbe-fidelity.workspace = true
+outbe-promislimit.workspace = true
+outbe-vaultrouter.workspace = true
+outbe-oracle.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+outbe-gratisfactory.workspace = true
+# Drive the confidential Gratis + Fidelity paths in the e2e tests via the
+# in-process enclave engines; `test-enclave` is unioned into each dep for tests.
+outbe-gratis = { workspace = true, features = ["test-enclave"] }
+outbe-fidelity = { workspace = true, features = ["test-enclave"] }
+outbe-tee.workspace = true
+outbe-tee-enclave.workspace = true
+
+[lints]
+workspace = true

@@ -1,0 +1,1087 @@
+{
+  "schema_version": 1,
+  "classification": "measurement_only",
+  "armable": false,
+  "vectors": [
+    {
+      "vector_id": "shape-0001-positive",
+      "object_kind": "ProtocolBundleV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "ProtocolBundleV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310001000100000000",
+      "expected_digest_or_id": "416b0bc859add2845eb0dbd73a9a0e37b3526ca3a34d4d4553ff9f464d53c815",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0001-unknown-kind",
+      "object_kind": "ProtocolBundleV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "ProtocolBundleV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0002-positive",
+      "object_kind": "CorrectnessProfileV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "CorrectnessProfileV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310002000100000000",
+      "expected_digest_or_id": "515861235a8c8a21dbb735bd3ead55e008a1c4c3206826346877aa021d3df1e0",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0002-unknown-kind",
+      "object_kind": "CorrectnessProfileV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "CorrectnessProfileV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0003-positive",
+      "object_kind": "CapacityProfileV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "CapacityProfileV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310003000100000000",
+      "expected_digest_or_id": "862637ce088f18faae34ebb6d5055953e1f2c1b0485ca59afef06008510c2cbf",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0003-unknown-kind",
+      "object_kind": "CapacityProfileV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "CapacityProfileV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0004-positive",
+      "object_kind": "PreAdmissionEnvelopeV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "PreAdmissionEnvelopeV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310004000100000000",
+      "expected_digest_or_id": "7b6666213764ba9249c759bca41c3ee6d35f933c607d068e17a4eec8c06ac7a7",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0004-unknown-kind",
+      "object_kind": "PreAdmissionEnvelopeV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "PreAdmissionEnvelopeV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0005-positive",
+      "object_kind": "ActivationPreconditionsV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "ActivationPreconditionsV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310005000100000000",
+      "expected_digest_or_id": "73e75377a268c42efb09bf960cf198620b5ed4a2914567dd2a74431c4fe1cce9",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0005-unknown-kind",
+      "object_kind": "ActivationPreconditionsV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "ActivationPreconditionsV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0006-positive",
+      "object_kind": "JobIntentV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "JobIntentV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310006000100000000",
+      "expected_digest_or_id": "a5d233d4df961d54b6901b781d6b2f94b9caa8f150bcafea7760451043b3d57a",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0006-unknown-kind",
+      "object_kind": "JobIntentV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "JobIntentV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0007-positive",
+      "object_kind": "FinalizedIntentProofV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "FinalizedIntentProofV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310007000100000000",
+      "expected_digest_or_id": "b055187f0db14e4eda82625ebbe0e12754c7018b1e32633478c3e7bdc046db2c",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0007-unknown-kind",
+      "object_kind": "FinalizedIntentProofV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "FinalizedIntentProofV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0008-positive",
+      "object_kind": "InputManifestV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "InputManifestV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310008000100000000",
+      "expected_digest_or_id": "499cbae5a793c064036e41736c4d9f35617130b916cfca8dd6e6d9fcca565a1b",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0008-unknown-kind",
+      "object_kind": "InputManifestV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "InputManifestV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0009-positive",
+      "object_kind": "AuthenticatedInputChunkV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "AuthenticatedInputChunkV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310009000100000000",
+      "expected_digest_or_id": "8f3f68fc72bf402672cc92612c6ebdb9f9586665370e5d30dcf8400c97e1a931",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0009-unknown-kind",
+      "object_kind": "AuthenticatedInputChunkV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "AuthenticatedInputChunkV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-000a-positive",
+      "object_kind": "UnitSpecV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "UnitSpecV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f434231000a000100000000",
+      "expected_digest_or_id": "78e395c804939703231d690938a64ec6844ff3c395a9bd080fa94e1b82f87283",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-000a-unknown-kind",
+      "object_kind": "UnitSpecV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "UnitSpecV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-000b-positive",
+      "object_kind": "UnitArtifactV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "UnitArtifactV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f434231000b000100000000",
+      "expected_digest_or_id": "1b168c2d49f11c5cf77a9e1bcfb48b955f5006fc78f49564b9d29b0ac524bf0d",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-000b-unknown-kind",
+      "object_kind": "UnitArtifactV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "UnitArtifactV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-000c-positive",
+      "object_kind": "ResultChunkV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "ResultChunkV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f434231000c000100000000",
+      "expected_digest_or_id": "34c6d9b8df544d63b5d7edc9292499eb70d679a55fe11e954cf617198c4984ff",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-000c-unknown-kind",
+      "object_kind": "ResultChunkV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "ResultChunkV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-000d-positive",
+      "object_kind": "LysisResultV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "LysisResultV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f434231000d000100000000",
+      "expected_digest_or_id": "fdcded94ac4c614472d139f007359642e3c163a2f960970ac11f800ae72a7899",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-000d-unknown-kind",
+      "object_kind": "LysisResultV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "LysisResultV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-000e-positive",
+      "object_kind": "ActivationPayloadV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "ActivationPayloadV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f434231000e000100000000",
+      "expected_digest_or_id": "c6ac8d2a9cf69d77095ca114fbc4625739c17f62606701061609128d6ef669f6",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-000e-unknown-kind",
+      "object_kind": "ActivationPayloadV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "ActivationPayloadV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0010-positive",
+      "object_kind": "OcompKeyRegistrationV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "OcompKeyRegistrationV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310010000100000000",
+      "expected_digest_or_id": "fc1080f205292f733e3408bdd14eed0f9fb5f0722a25055252a09bf86de89562",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0010-unknown-kind",
+      "object_kind": "OcompKeyRegistrationV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "OcompKeyRegistrationV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0013-positive",
+      "object_kind": "ActiveGenerationV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "ActiveGenerationV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310013000100000000",
+      "expected_digest_or_id": "cc2fe811aa12f4eee967e61ee5b10b8c6062f793b188068ec6ff1db6a99343e1",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0013-unknown-kind",
+      "object_kind": "ActiveGenerationV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "ActiveGenerationV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0014-positive",
+      "object_kind": "AggregateActivationReceiptV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "AggregateActivationReceiptV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310014000100000000",
+      "expected_digest_or_id": "17b484b8213fb4dff75a814cad18fafb34ae538454f48e36b3a60cdf89cffe2e",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0014-unknown-kind",
+      "object_kind": "AggregateActivationReceiptV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "AggregateActivationReceiptV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0015-positive",
+      "object_kind": "NodBatchReceiptV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "NodBatchReceiptV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310015000100000000",
+      "expected_digest_or_id": "50a6d51abbd1d81f1836bfcbd02df91f23884a5f727e6000afb4a64c52751d4c",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0015-unknown-kind",
+      "object_kind": "NodBatchReceiptV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "NodBatchReceiptV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0016-positive",
+      "object_kind": "ContributorReceiptV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "ContributorReceiptV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310016000100000000",
+      "expected_digest_or_id": "3a7500ea6e6c5aeea554d3c55d7b96229ac34f23498c2e8530177dd100e541fa",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0016-unknown-kind",
+      "object_kind": "ContributorReceiptV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "ContributorReceiptV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0017-positive",
+      "object_kind": "TributeReceiptV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "TributeReceiptV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310017000100000000",
+      "expected_digest_or_id": "cbd6f94bfb6d0553eb6b8131951e9ae7cbf08fb6e4986400de514b036ccc12f7",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0017-unknown-kind",
+      "object_kind": "TributeReceiptV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "TributeReceiptV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0018-positive",
+      "object_kind": "RequestBudgetSplitReceiptV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "RequestBudgetSplitReceiptV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310018000100000000",
+      "expected_digest_or_id": "180a6c9c5d3981ecf5e0a044c28dcd7724d6106979b53fd517989e7d6696b6f9",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0018-unknown-kind",
+      "object_kind": "RequestBudgetSplitReceiptV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "RequestBudgetSplitReceiptV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0019-positive",
+      "object_kind": "CarryOverReceiptV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "CarryOverReceiptV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310019000100000000",
+      "expected_digest_or_id": "836188bc9d243b9ea4e9fd1f04b19e551b0d772b0dc604fb702519c8345a4cea",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0019-unknown-kind",
+      "object_kind": "CarryOverReceiptV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "CarryOverReceiptV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-001b-positive",
+      "object_kind": "SignOnceRecordV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "SignOnceRecordV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f434231001b000100000000",
+      "expected_digest_or_id": "670ead9a19feaa4e39e6cc93d33384ad27cc5724d635424a0f514e49e0baea2a",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-001b-unknown-kind",
+      "object_kind": "SignOnceRecordV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "SignOnceRecordV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-001c-positive",
+      "object_kind": "ActivationCallCoreV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "ActivationCallCoreV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f434231001c000100000000",
+      "expected_digest_or_id": "a12379a6d36eb67cd873ddec8981df0d841007899d837f34005d6ac8d50cdeaf",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-001c-unknown-kind",
+      "object_kind": "ActivationCallCoreV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "ActivationCallCoreV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-001d-positive",
+      "object_kind": "LysisArithmeticSummaryV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "LysisArithmeticSummaryV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f434231001d000100000000",
+      "expected_digest_or_id": "cb3d51f574bc4b4f2e6f283fb9163a600fa17f0f516f6e3f1517673a1f35c879",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-001d-unknown-kind",
+      "object_kind": "LysisArithmeticSummaryV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "LysisArithmeticSummaryV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-001e-positive",
+      "object_kind": "OcompJobRecordV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "OcompJobRecordV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f434231001e000100000000",
+      "expected_digest_or_id": "92b9b84719753a22a458294a91bc0003c04cb83813d919952ae30d49da901648",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-001e-unknown-kind",
+      "object_kind": "OcompJobRecordV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "OcompJobRecordV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-001f-positive",
+      "object_kind": "ShuffleRunArtifactV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "ShuffleRunArtifactV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f434231001f000100000000",
+      "expected_digest_or_id": "d592e42d72b6a5bb624a1cd5fe7cb1a112170f7b4cd382c004c5dd1e742c0b9c",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-001f-unknown-kind",
+      "object_kind": "ShuffleRunArtifactV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "ShuffleRunArtifactV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0020-positive",
+      "object_kind": "ResultVoteV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "ResultVoteV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310020000100000000",
+      "expected_digest_or_id": "3dd7aea0f69c8409d416bfae74564c7abe5a29f1935c3658c1cabdc2516524e0",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0020-unknown-kind",
+      "object_kind": "ResultVoteV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "ResultVoteV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0021-positive",
+      "object_kind": "EquivocationEvidenceV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "EquivocationEvidenceV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310021000100000000",
+      "expected_digest_or_id": "8a200da79e2566f132a764b9cc4e01b93e391314d4964084d8985a1bebf4c1b3",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0021-unknown-kind",
+      "object_kind": "EquivocationEvidenceV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "EquivocationEvidenceV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0022-positive",
+      "object_kind": "ResultVoteSlotV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "ResultVoteSlotV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310022000100000000",
+      "expected_digest_or_id": "2a2262f06c4a6363450433cfa51156a687ead14374929d899f0c8d27827e7218",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0022-unknown-kind",
+      "object_kind": "ResultVoteSlotV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "ResultVoteSlotV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0023-positive",
+      "object_kind": "OcompQuorumV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "OcompQuorumV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310023000100000000",
+      "expected_digest_or_id": "12f30e5ffa1e2349129bca743a4c8c7f44287ea06bb1fa2b31aa28b7ab84d6a5",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0023-unknown-kind",
+      "object_kind": "OcompQuorumV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "OcompQuorumV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0024-positive",
+      "object_kind": "OcompAccountabilitySummaryV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "OcompAccountabilitySummaryV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310024000100000000",
+      "expected_digest_or_id": "07000ffcabc3a09e11a1913ea42a585210507c7540f4a6382e50a83446e4e88b",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0024-unknown-kind",
+      "object_kind": "OcompAccountabilitySummaryV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "OcompAccountabilitySummaryV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0025-positive",
+      "object_kind": "OcompVoteAccountabilityV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "OcompVoteAccountabilityV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310025000100000000",
+      "expected_digest_or_id": "7a4149d28de880278338f19e2c4eeecf448238500e2637b6a16f2e9409dddd5d",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0025-unknown-kind",
+      "object_kind": "OcompVoteAccountabilityV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "OcompVoteAccountabilityV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0026-positive",
+      "object_kind": "LysisTerminalV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "LysisTerminalV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310026000100000000",
+      "expected_digest_or_id": "ed1bc06d49bd416c6684d1568ddfa84da17b624706e36f7c8849335f699de464",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0026-unknown-kind",
+      "object_kind": "LysisTerminalV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "LysisTerminalV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0027-positive",
+      "object_kind": "NodMaterializationBatchV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "NodMaterializationBatchV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310027000100000000",
+      "expected_digest_or_id": "1f02ddc79fce84642f8feef5afe7afb272eb29ec1992f18f03396f6a0296d311",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0027-unknown-kind",
+      "object_kind": "NodMaterializationBatchV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "NodMaterializationBatchV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0028-positive",
+      "object_kind": "NodMaterializationHeadV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "registry_kind": "NodMaterializationHeadV1",
+        "layer": "OCB1 envelope"
+      },
+      "canonical_hex": "4f4342310028000100000000",
+      "expected_digest_or_id": "96d43d45480a3b9a128936bbea5aa716d87b9968f3a9293209a72fa965868369",
+      "expected_decode_outcome": "envelope_pass",
+      "expected_error_code": null,
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    },
+    {
+      "vector_id": "shape-0028-unknown-kind",
+      "object_kind": "NodMaterializationHeadV1",
+      "schema_version": 1,
+      "semantic_json": {
+        "mutation": "object_kind=0xffff",
+        "original_kind": "NodMaterializationHeadV1"
+      },
+      "canonical_hex": "4f434231ffff000100000000",
+      "expected_digest_or_id": "1ef902eb34b81c9e9fc2c11b35160a637092dee72c794dd162b5af98d1855760",
+      "expected_decode_outcome": "reject",
+      "expected_error_code": "UNKNOWN_OBJECT_KIND",
+      "generator_artifact_hash": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed",
+      "independent_verifier_result": "PASS"
+    }
+  ]
+}

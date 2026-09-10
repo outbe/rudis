@@ -1,0 +1,781 @@
+{
+  "$id": "https://outbe.io/schemas/release-manifest-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "release": {
+            "properties": {
+              "lifecycle": {
+                "const": "verified"
+              }
+            },
+            "required": ["lifecycle"]
+          }
+        },
+        "required": ["release"]
+      },
+      "then": {
+        "required": ["network"],
+        "properties": {
+          "build": {
+            "properties": {
+              "provenance": {
+                "properties": {
+                  "mode": {
+                    "const": "github-actions"
+                  }
+                },
+                "required": ["mode"]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "artifacts": {
+            "contains": {
+              "properties": {
+                "tee": {
+                  "properties": {
+                    "stage": { "const": "signed" }
+                  },
+                  "required": ["stage"]
+                }
+              },
+              "required": ["tee"]
+            }
+          }
+        },
+        "required": ["artifacts"]
+      },
+      "then": {
+        "required": ["network"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "network": {
+            "properties": { "chain_id": { "const": 676 } },
+            "required": ["chain_id"]
+          }
+        },
+        "required": ["network"]
+      },
+      "then": {
+        "properties": {
+          "artifacts": {
+            "items": {
+              "properties": {
+                "tee": {
+                  "properties": {
+                    "authorization_scope": { "const": "mainnet" }
+                  }
+                }
+              }
+            }
+          },
+          "build": {
+            "properties": {
+              "provenance": {
+                "properties": {
+                  "certificate_identity": {
+                    "const": "https://github.com/outbe/outbe-chain/.github/workflows/mainnet-release.yml@refs/heads/main"
+                  },
+                  "workflow": { "const": ".github/workflows/mainnet-release.yml" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "network": {
+            "properties": { "chain_id": { "const": 70860602 } },
+            "required": ["chain_id"]
+          }
+        },
+        "required": ["network"]
+      },
+      "then": {
+        "properties": {
+          "artifacts": {
+            "items": {
+              "properties": {
+                "tee": {
+                  "properties": {
+                    "authorization_scope": { "const": "testnet" }
+                  }
+                }
+              }
+            }
+          },
+          "build": {
+            "properties": {
+              "provenance": {
+                "properties": {
+                  "certificate_identity": {
+                    "const": "https://github.com/outbe/outbe-chain/.github/workflows/testnet-release.yml@refs/heads/main"
+                  },
+                  "workflow": { "const": ".github/workflows/testnet-release.yml" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://outbe.io/schemas/release-manifest-v1.json"
+    },
+    "artifacts": {
+      "items": {
+        "$ref": "#/$defs/artifact"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "build": {
+      "$ref": "#/$defs/build"
+    },
+    "canonicalization": {
+      "$ref": "#/$defs/canonicalization"
+    },
+    "inputs": {
+      "items": {
+        "$ref": "#/$defs/material"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "network": {
+      "$ref": "#/$defs/network"
+    },
+    "release": {
+      "$ref": "#/$defs/release"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "verification_gates": {
+      "items": {
+        "$ref": "#/$defs/gate"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "$schema",
+    "schema_version",
+    "canonicalization",
+    "release",
+    "build",
+    "inputs",
+    "artifacts",
+    "verification_gates"
+  ],
+  "title": "Outbe ReleaseManifest v1",
+  "type": "object",
+  "$defs": {
+    "network": {
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "properties": {
+            "chain_id": { "const": 676 },
+            "chain_name": { "const": "outbe-mainnet-1" },
+            "genesis_file": {
+              "properties": {
+                "path": { "const": "mainnet-genesis.json" }
+              },
+              "required": ["path"]
+            }
+          },
+          "required": ["chain_id", "chain_name", "genesis_file"]
+        },
+        {
+          "properties": {
+            "chain_id": { "const": 70860602 },
+            "chain_name": { "const": "rudis-rehearsal" },
+            "genesis_file": {
+              "properties": {
+                "path": { "const": "testnet-genesis.json" }
+              },
+              "required": ["path"]
+            }
+          },
+          "required": ["chain_id", "chain_name", "genesis_file"]
+        }
+      ],
+      "properties": {
+        "chain_id": {
+          "enum": [676, 70860602]
+        },
+        "chain_name": {
+          "enum": ["outbe-mainnet-1", "rudis-rehearsal"]
+        },
+        "genesis_hash": {
+          "pattern": "^0x[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "genesis_file": {
+          "additionalProperties": false,
+          "properties": {
+            "digest": { "$ref": "#/$defs/digest" },
+            "path": {
+              "enum": ["mainnet-genesis.json", "testnet-genesis.json"]
+            },
+            "size": { "minimum": 1, "type": "integer" }
+          },
+          "required": ["path", "digest", "size"],
+          "type": "object"
+        }
+      },
+      "required": ["chain_id", "chain_name", "genesis_hash", "genesis_file"],
+      "type": "object"
+    },
+    "artifact": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "role": {
+                "const": "tee-enclave"
+              }
+            },
+            "required": ["role"]
+          },
+          "then": {
+            "required": ["tee"]
+          }
+        }
+      ],
+      "properties": {
+        "classification": {
+          "enum": ["production", "test-only"]
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "features": {
+          "items": {
+            "$ref": "#/$defs/ascii"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "install_profiles": {
+          "items": {
+            "$ref": "#/$defs/ascii"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "kind": {
+          "enum": [
+            "elf",
+            "archive",
+            "native-package",
+            "sbom",
+            "oci-manifest",
+            "compose-descriptor",
+            "sgx-rendered-manifest",
+            "sgx-sigstruct",
+            "gramine-runtime-tree"
+          ]
+        },
+        "media_type": {
+          "$ref": "#/$defs/ascii"
+        },
+        "name": {
+          "$ref": "#/$defs/ascii"
+        },
+        "network_compatibility": {
+          "enum": ["network-manifest-required"]
+        },
+        "package": {
+          "$ref": "#/$defs/ascii"
+        },
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "platform": {
+          "$ref": "#/$defs/platform"
+        },
+        "role": {
+          "enum": [
+            "node",
+            "operator-cli",
+            "key-generation",
+            "price-feed",
+            "tee-enclave",
+            "operator-sidecar",
+            "installer"
+          ]
+        },
+        "size": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "tee": {
+          "$ref": "#/$defs/tee"
+        }
+      },
+      "required": [
+        "name",
+        "package",
+        "kind",
+        "role",
+        "classification",
+        "path",
+        "digest",
+        "size",
+        "media_type",
+        "platform",
+        "features",
+        "install_profiles",
+        "network_compatibility"
+      ],
+      "type": "object"
+    },
+    "ascii": {
+      "minLength": 1,
+      "pattern": "^[\\u0020-\\u007e]+$",
+      "type": "string"
+    },
+    "build": {
+      "additionalProperties": false,
+      "properties": {
+        "builder": {
+          "$ref": "#/$defs/builder"
+        },
+        "cargo": {
+          "$ref": "#/$defs/cargo"
+        },
+        "environment": {
+          "$ref": "#/$defs/environment"
+        },
+        "profile": {
+          "const": "release"
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        },
+        "rust_toolchain": {
+          "const": "1.96.0"
+        },
+        "source_date_epoch": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "target": {
+          "const": "x86_64-unknown-linux-gnu"
+        }
+      },
+      "required": [
+        "target",
+        "profile",
+        "rust_toolchain",
+        "source_date_epoch",
+        "builder",
+        "environment",
+        "cargo",
+        "provenance"
+      ],
+      "type": "object"
+    },
+    "builder": {
+      "additionalProperties": false,
+      "properties": {
+        "base_images": {
+          "items": {
+            "pattern": "^[^@\\s]+@sha256:[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "id": {
+          "$ref": "#/$defs/ascii"
+        },
+        "recipe": {
+          "const": "Dockerfile.project-toolchain"
+        },
+        "system_packages": {
+          "items": {
+            "$ref": "#/$defs/ascii"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "resolved_system_packages": {
+          "$ref": "#/$defs/material"
+        }
+      },
+      "required": ["id", "base_images", "recipe", "system_packages"],
+      "type": "object"
+    },
+    "canonicalization": {
+      "additionalProperties": false,
+      "properties": {
+        "encoding": {
+          "const": "UTF-8"
+        },
+        "name": {
+          "const": "outbe-canonical-json-v1"
+        },
+        "non_ascii": {
+          "const": "lowercase-hex-unicode-escape"
+        },
+        "object_keys": {
+          "const": "unicode-code-point-order"
+        },
+        "trailing_newline": {
+          "const": true
+        },
+        "whitespace": {
+          "const": "none"
+        }
+      },
+      "required": [
+        "name",
+        "encoding",
+        "object_keys",
+        "whitespace",
+        "non_ascii",
+        "trailing_newline"
+      ],
+      "type": "object"
+    },
+    "cargo": {
+      "additionalProperties": false,
+      "properties": {
+        "auditable": {
+          "const": false
+        },
+        "locked": {
+          "const": true
+        },
+        "packages": {
+          "items": {
+            "$ref": "#/$defs/ascii"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": ["auditable", "locked", "packages"],
+      "type": "object"
+    },
+    "digest": {
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {
+          "const": "sha256"
+        },
+        "value": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": ["algorithm", "value"],
+      "type": "object"
+    },
+    "environment": {
+      "additionalProperties": false,
+      "properties": {
+        "cflags": {
+          "$ref": "#/$defs/ascii"
+        },
+        "cxxflags": {
+          "$ref": "#/$defs/ascii"
+        },
+        "locale": {
+          "const": "C"
+        },
+        "rustflags": {
+          "items": {
+            "$ref": "#/$defs/ascii"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "timezone": {
+          "const": "UTC"
+        },
+        "zero_ar_date": {
+          "const": "1"
+        }
+      },
+      "required": ["locale", "timezone", "rustflags", "cflags", "cxxflags", "zero_ar_date"],
+      "type": "object"
+    },
+    "evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "media_type": {
+          "$ref": "#/$defs/ascii"
+        },
+        "uri": {
+          "$ref": "#/$defs/ascii"
+        }
+      },
+      "required": ["uri", "media_type", "digest"],
+      "type": "object"
+    },
+    "gate": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/evidence"
+          },
+          "type": "array"
+        },
+        "name": {
+          "$ref": "#/$defs/ascii"
+        },
+        "status": {
+          "enum": ["pending", "passed", "failed", "not-applicable"]
+        }
+      },
+      "required": ["name", "status", "evidence"],
+      "type": "object"
+    },
+    "material": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "media_type": {
+          "$ref": "#/$defs/ascii"
+        },
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "size": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": ["path", "digest", "size", "media_type"],
+      "type": "object"
+    },
+    "platform": {
+      "additionalProperties": false,
+      "properties": {
+        "architecture": {
+          "const": "x86_64"
+        },
+        "os": {
+          "const": "linux"
+        },
+        "target": {
+          "const": "x86_64-unknown-linux-gnu"
+        }
+      },
+      "required": ["os", "architecture", "target"],
+      "type": "object"
+    },
+    "provenance": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "github-actions"
+              }
+            },
+            "required": ["mode"]
+          },
+          "then": {
+            "oneOf": [
+              {
+                "properties": {
+                  "certificate_identity": {
+                    "const": "https://github.com/outbe/outbe-chain/.github/workflows/mainnet-release.yml@refs/heads/main"
+                  },
+                  "workflow": {
+                    "const": ".github/workflows/mainnet-release.yml"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "certificate_identity": {
+                    "const": "https://github.com/outbe/outbe-chain/.github/workflows/testnet-release.yml@refs/heads/main"
+                  },
+                  "workflow": {
+                    "const": ".github/workflows/testnet-release.yml"
+                  }
+                }
+              }
+            ],
+            "required": [
+              "certificate_identity",
+              "certificate_oidc_issuer",
+              "certificate_workflow_sha",
+              "workflow"
+            ]
+          }
+        }
+      ],
+      "properties": {
+        "entrypoint": {
+          "const": "scripts/release/reproducible-build.sh"
+        },
+        "certificate_identity": {
+          "enum": [
+            "https://github.com/outbe/outbe-chain/.github/workflows/mainnet-release.yml@refs/heads/main",
+            "https://github.com/outbe/outbe-chain/.github/workflows/testnet-release.yml@refs/heads/main"
+          ]
+        },
+        "certificate_oidc_issuer": {
+          "const": "https://token.actions.githubusercontent.com"
+        },
+        "certificate_workflow_sha": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "mode": {
+          "enum": ["local-container", "github-actions"]
+        },
+        "workflow": {
+          "enum": [
+            ".github/workflows/mainnet-release.yml",
+            ".github/workflows/testnet-release.yml"
+          ]
+        }
+      },
+      "required": ["mode", "entrypoint"],
+      "type": "object"
+    },
+    "relativePath": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ascii"
+        },
+        {
+          "not": {
+            "pattern": "(^/|(^|/)\\.\\.(/|$))"
+          }
+        }
+      ]
+    },
+    "release": {
+      "additionalProperties": false,
+      "properties": {
+        "lifecycle": {
+          "enum": ["build-candidate", "verified", "revoked"]
+        },
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "tag": {
+          "$ref": "#/$defs/ascii"
+        }
+      },
+      "required": ["tag", "lifecycle", "source"],
+      "type": "object"
+    },
+    "source": {
+      "additionalProperties": false,
+      "properties": {
+        "clean_tree_policy": {
+          "const": "required"
+        },
+        "commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "tree_state": {
+          "const": "clean"
+        }
+      },
+      "required": ["commit", "clean_tree_policy", "tree_state"],
+      "type": "object"
+    },
+    "tee": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "stage": {
+                "const": "signed"
+              }
+            },
+            "required": ["stage"]
+          },
+          "then": {
+            "required": [
+              "authorization_scope",
+              "mrenclave",
+              "mrsigner",
+              "isv_prod_id",
+              "isv_svn",
+              "sealed_state_schema"
+            ]
+          }
+        }
+      ],
+      "properties": {
+        "authorization_scope": {
+          "enum": ["mainnet", "testnet"]
+        },
+        "isv_prod_id": {
+          "maximum": 65535,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "isv_svn": {
+          "maximum": 65535,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "mock": {
+          "const": false
+        },
+        "mrenclave": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "mrsigner": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "sealed_state_schema": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "stage": {
+          "enum": ["unsigned-bare-elf", "rendered", "signed"]
+        }
+      },
+      "required": ["stage", "mock"],
+      "type": "object"
+    }
+  }
+}

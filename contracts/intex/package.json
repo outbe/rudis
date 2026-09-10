@@ -1,0 +1,61 @@
+{
+  "name": "@outbe/intex-contracts",
+  "version": "0.1.0",
+  "packageManager": "yarn@4.9.3",
+  "type": "module",
+  "description": "Outbe Intex smart contracts and ABIs",
+  "exports": {
+    "./abi/*": "./abi-export/*.json",
+    "./addresses/*": "./dist/addresses/*.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Outbe/outbe-intex.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    "dist",
+    "abi-export"
+  ],
+  "scripts": {
+    "test:forge": "forge test -vvv",
+    "test": "yarn test:forge",
+    "compile": "forge build",
+    "lint": "solhint 'src/**/*.sol'",
+    "lint:fix": "solhint 'src/**/*.sol' --fix --noPrompt",
+    "slither": "mise exec -- uvx --from slither-analyzer==0.11.5 slither .",
+    "slither:sarif": "mise exec -- uvx --from slither-analyzer==0.11.5 slither . --sarif slither-report.sarif",
+    "slither:ci": "mise exec -- uvx --from slither-analyzer==0.11.5 slither . --sarif slither-report.sarif --fail-high",
+    "aderyn": "mise exec -- aderyn . --skip-cloc --skip-update-check",
+    "analyze": "yarn slither && yarn aderyn",
+    "format:check": "forge fmt --check",
+    "format:fix": "forge fmt",
+    "validate:upgrades": "forge clean && forge build && openzeppelin-upgrades-core validate out/build-info --exclude 'test/**' --unsafeAllow 'constructor,state-variable-immutable,missing-initializer-call,external-library-linking'",
+    "coverage:foundry": "forge coverage --ir-minimum --report lcov --report-file lcov.info",
+    "fix": "yarn lint:fix && yarn format:fix",
+    "cd:extract-abi": "tsx scripts/cd/extract-abi.ts",
+    "prepublishOnly": "yarn compile && yarn cd:extract-abi"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-keystore": "^3.0.0",
+    "@openzeppelin/contracts": "5.6.1",
+    "@openzeppelin/contracts-upgradeable": "5.6.1",
+    "@openzeppelin/upgrades-core": "1.46.0",
+    "@types/node": "^22.17.2",
+    "dotenv": "^17.2.2",
+    "ethers": "^6.14.0",
+    "forge-std": "https://github.com/foundry-rs/forge-std.git#v1.9.4",
+    "fp-ts": "^2.16.9",
+    "hardhat": "^3.0.0",
+    "solhint": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3",
+    "typescript": "~5.8.0",
+    "viem": "^2.34.0"
+  },
+  "resolutions": {
+    "ethers": "^6.14.0"
+  }
+}

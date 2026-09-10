@@ -1,0 +1,7 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 724e8536d34ecf75da0d8887040b38911a82a30912d6c557bc53149f9e308639 # shrinks to QuorumHistory { timestamp_jitter: 0, rotation: 0, before_second: [], before_quorum: [] }

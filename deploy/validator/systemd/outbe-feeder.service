@@ -1,0 +1,31 @@
+[Unit]
+Description=Outbe validator price feeder
+After=outbe-validator.service
+Requires=outbe-validator.service
+PartOf=outbe-validator.target
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=outbe
+Group=outbe
+EnvironmentFile=/opt/outbe-chain/validator.env
+RuntimeDirectory=outbe-feeder
+RuntimeDirectoryMode=0700
+ExecStart=/opt/outbe-chain/deploy/validator/outbe-validator-service.py feeder
+Restart=on-failure
+RestartSec=5
+RestartSteps=5
+RestartMaxDelaySec=60
+TimeoutStopSec=60
+KillSignal=SIGTERM
+UMask=0077
+LimitNOFILE=65535
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+
+[Install]
+WantedBy=outbe-validator.target

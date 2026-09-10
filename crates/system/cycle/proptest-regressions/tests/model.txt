@@ -1,0 +1,7 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 2192eddc8ebd3c748f84d43910c54da299495880658c07cd92493c2ec2536c4f # shrinks to (OuterHistory { genesis_jitter: 0, probes: [Duplicate] }, 1)

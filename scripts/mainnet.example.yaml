@@ -1,0 +1,32 @@
+# Mainnet deployment input. Fill every operator-owned path, host and release
+# measurement before use; this file intentionally contains no keys or final
+# genesis hash.
+
+network: mainnet
+chain_id: 676
+
+validators:
+  - validator-0.mainnet.example
+  - validator-1.mainnet.example
+  - validator-2.mainnet.example
+  - validator-3.mainnet.example
+
+# Must already contain validator-N consensus/EVM/Radicle keys and the
+# genesis-bound ocomp-registration-v1.ocb1 for every founder. Mainnet tooling
+# never generates missing production identity material.
+keys_dir: /secure/operator-owned/outbe-mainnet-keys
+
+tee:
+  mode: dcap-required
+  mrenclave: "<exact-release-mrenclave>"
+  mrsigner: "<exact-release-mrsigner>"
+  isv_prod_id: 0
+  minimum_isv_svn: 0
+  minimum_tcb_evaluation_data_number: 0
+
+enclave_image: ghcr.io/outbe/outbe-tee-enclave-mainnet@sha256:<exact-64-hex-digest>
+price_feed_rest: https://prices.outbe.net
+
+# All omitted protocol and tokenomics sections come from the canonical
+# production baseline used by create_genesis.py. Do not add test-only
+# protocol_constants overrides to a Mainnet input.

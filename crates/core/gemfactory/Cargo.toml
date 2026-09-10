@@ -1,0 +1,39 @@
+[package]
+name = "outbe-gemfactory"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-macros.workspace = true
+outbe-primitives.workspace = true
+outbe-common.workspace = true
+outbe-gem.workspace = true
+outbe-intex.workspace = true
+outbe-vaultrouter.workspace = true
+outbe-promisfactory.workspace = true
+outbe-promislimit.workspace = true
+tracing.workspace = true
+outbe-oracle.workspace = true
+outbe-paynote.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+thiserror.workspace = true
+base64 = "0.22"
+
+[dev-dependencies]
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+outbe-paynote = { workspace = true, features = ["test-utils"] }
+alloy-primitives = { workspace = true, features = ["rand"] }
+# Drive the confidential Promis mint path in tests via the in-process enclave.
+outbe-promis = { workspace = true, features = ["test-enclave"] }
+outbe-tee.workspace = true
+outbe-tee-enclave.workspace = true
+
+[features]
+default = []
+test-utils = ["outbe-primitives/test-utils"]
+
+[lints]
+workspace = true

@@ -1,0 +1,92 @@
+[package]
+name = "commonware-runtime"
+version = "2026.5.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+publish = false
+description = "Execute asynchronous tasks with a configurable scheduler."
+readme = "README.md"
+homepage = "https://commonware.xyz"
+repository = "https://github.com/commonwarexyz/monorepo/tree/main/runtime"
+rust-version = "1.91.1"
+
+[dependencies]
+arbitrary = { version = "1.4.1", optional = true }
+bytes = { version = "1.7.1", default-features = false }
+cfg-if = "1.0.0"
+commonware-codec = { git = "https://github.com/commonwarexyz/monorepo", tag = "v2026.5.0", default-features = false }
+commonware-conformance = { git = "https://github.com/commonwarexyz/monorepo", tag = "v2026.5.0", optional = true }
+commonware-cryptography = { git = "https://github.com/commonwarexyz/monorepo", tag = "v2026.5.0", default-features = false, features = ["std"] }
+commonware-formatting = { git = "https://github.com/commonwarexyz/monorepo", tag = "v2026.5.0", default-features = false, features = ["std"] }
+commonware-macros = { git = "https://github.com/commonwarexyz/monorepo", tag = "v2026.5.0", default-features = false, features = ["std"] }
+commonware-parallel = { git = "https://github.com/commonwarexyz/monorepo", tag = "v2026.5.0", default-features = false, features = ["std"] }
+commonware-runtime-macros = { git = "https://github.com/commonwarexyz/monorepo", tag = "v2026.5.0" }
+commonware-utils = { git = "https://github.com/commonwarexyz/monorepo", tag = "v2026.5.0", default-features = false, features = ["std"] }
+crossbeam-utils = "0.8.21"
+futures = "0.3.31"
+governor = "0.10.2"
+io-uring = { version = "0.7.4", optional = true }
+libc = "0.2.172"
+loom = { version = "0.7.2", optional = true }
+opentelemetry = "0.31.0"
+pin-project = { version = "1.1.10", optional = true }
+prometheus-client = "0.24.0"
+rand = { version = "0.8.5", default-features = false }
+rand_core = "0.6.4"
+rayon = { version = "1.10.0", default-features = false }
+sha2 = { version = "0.10.8", default-features = false }
+sysinfo = "0.37.2"
+thiserror = { version = "2.0.12", default-features = false }
+tracing = "0.1.41"
+tracing-opentelemetry = "0.32.0"
+tracing-subscriber = { version = "0.3.19", features = ["fmt", "json", "env-filter"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies.getrandom]
+version = "0.2.15"
+features = ["js"]
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+axum = "0.8.1"
+console-subscriber = { version = "0.5.0", features = ["parking_lot"], optional = true }
+criterion = { version = "0.7.0", features = ["async"] }
+crossbeam-queue = { version = "0.3.12", optional = true }
+opentelemetry-otlp = { version = "0.31.0", features = ["http-proto"] }
+opentelemetry_sdk = { version = "0.31.0", features = ["rt-tokio"] }
+tokio = { version = "1.50.0", features = ["full"] }
+
+[dev-dependencies]
+clap = { version = "4.5.18", features = ["derive"] }
+rand = { version = "0.8.5", features = ["small_rng"] }
+serde_json = "1.0.122"
+
+[features]
+default = []
+arbitrary = [
+    "commonware-codec/arbitrary",
+    "commonware-cryptography/arbitrary",
+    "commonware-utils/arbitrary",
+    "dep:arbitrary",
+    "dep:commonware-conformance",
+]
+bench = ["dep:crossbeam-queue"]
+external = ["pin-project"]
+loom = ["dep:loom"]
+test-utils = []
+iouring = ["iouring-network", "iouring-storage"]
+iouring-network = ["io-uring"]
+iouring-storage = ["io-uring"]
+tokio-console = ["dep:console-subscriber", "tokio/tracing"]
+
+[lib]
+bench = false
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = [
+    "cfg(full_bench)",
+    "cfg(generate_conformance_tests)",
+    "cfg(commonware_stability_BETA)",
+    "cfg(commonware_stability_GAMMA)",
+    "cfg(commonware_stability_DELTA)",
+    "cfg(commonware_stability_EPSILON)",
+    "cfg(commonware_stability_RESERVED)",
+] }

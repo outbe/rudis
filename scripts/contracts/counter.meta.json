@@ -1,0 +1,15 @@
+{
+  "address": "0x000000000000000000000000000000000000C0DE",
+  "balance": "0x0",
+  "compiler": "solc 0.8.30",
+  "evm_version": "Prague",
+  "nonce": "0x1",
+  "source": "outbe-chain/e2e/evm/src/Counter.sol",
+  "purpose": "sub-call smoke test - accepts inc(int256), reverts NegativeNotAllowed(x) on x < 0; counter() returns current int256 value",
+  "selectors": {
+    "inc(int256)": "0x623845d8",
+    "view_value()": "0x8fd16c6f",
+    "counter()": "0x61bc221a",
+    "NegativeNotAllowed(int256)": "0x5d32a81e"
+  }
+}

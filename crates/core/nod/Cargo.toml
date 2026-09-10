@@ -1,0 +1,33 @@
+[package]
+name = "outbe-nod"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-macros.workspace = true
+outbe-compressed-entities.workspace = true
+outbe-primitives.workspace = true
+outbe-oracle = { path = "../../system/oracle" }
+outbe-promislimit.workspace = true
+alloy-primitives = { workspace = true, features = ["serde"] }
+alloy-sol-types.workspace = true
+outbe-offchain-storage.workspace = true
+outbe-ocomp-protocol.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+base64 = "0.22"
+
+[dev-dependencies]
+serde_json.workspace = true
+alloy-primitives = { workspace = true, features = ["rand"] }
+mongodb.workspace = true
+
+[features]
+default = []
+test-utils = ["outbe-primitives/test-utils"]
+
+[lints]
+workspace = true

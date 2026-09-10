@@ -1,0 +1,76 @@
+[
+  {
+    "type": "function",
+    "name": "offerTribute",
+    "inputs": [
+      {
+        "name": "cipherText",
+        "type": "bytes",
+        "internalType": "bytes"
+      },
+      {
+        "name": "nonce",
+        "type": "bytes",
+        "internalType": "bytes"
+      },
+      {
+        "name": "ephemeralPubkey",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "worldwideDay",
+        "type": "uint32",
+        "internalType": "uint32"
+      },
+      {
+        "name": "tributeCurrency",
+        "type": "uint16",
+        "internalType": "uint16"
+      },
+      {
+        "name": "referenceCurrency",
+        "type": "uint16",
+        "internalType": "uint16"
+      },
+      {
+        "name": "excludeFromIntexIssuance",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "zkProof",
+        "type": "bytes",
+        "internalType": "bytes"
+      },
+      {
+        "name": "zkVerificationKey",
+        "type": "bytes",
+        "internalType": "bytes"
+      },
+      {
+        "name": "zkPublicKey",
+        "type": "bytes",
+        "internalType": "bytes"
+      },
+      {
+        "name": "zkMerkleRoot",
+        "type": "bytes",
+        "internalType": "bytes"
+      },
+      {
+        "name": "signature",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "tributeId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  }
+]

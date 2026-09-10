@@ -1,0 +1,35 @@
+{
+  "name": "layerzero7683-examples",
+  "version": "1.0.0",
+  "description": "TypeScript examples for LayerZero7683 contract",
+  "scripts": {
+    "typechain": "typechain --target ethers-v6 --out-dir typechain '../abi-export/*.json'",
+    "build": "npm run typechain && tsc",
+    "open-order": "tsx scripts/open_order.ts",
+    "fill-by-id": "tsx scripts/fill_by_id.ts",
+    "settle-by-id": "tsx scripts/settle_by_id.ts",
+    "refund-all-latest": "tsx scripts/refund_all_latest.ts",
+    "refund-by-id": "tsx scripts/refund_by_id.ts",
+    "claim-by-id": "tsx scripts/claim_by_id.ts",
+    "list-orders": "tsx scripts/list_orders.ts",
+    "submit-quote": "tsx scripts/submit_quote.ts",
+    "list-quotes": "tsx scripts/list_quotes.ts",
+    "check-balance": "tsx scripts/check_balance.ts",
+    "solver:balance": "tsx scripts/solver-escrow/balance.ts",
+    "solver:deposit": "tsx scripts/solver-escrow/deposit.ts",
+    "solver:withdraw": "tsx scripts/solver-escrow/withdraw.ts",
+    "oracle:rates": "tsx scripts/oracle_rates.ts"
+  },
+  "dependencies": {
+    "cli-table3": "^0.6.3",
+    "dotenv": "^16.3.1",
+    "ethers": "^6.10.0"
+  },
+  "devDependencies": {
+    "@typechain/ethers-v6": "^0.5.1",
+    "@types/node": "^20.10.0",
+    "tsx": "^4.7.0",
+    "typechain": "^8.3.2",
+    "typescript": "^5.3.3"
+  }
+}

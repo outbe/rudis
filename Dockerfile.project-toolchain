@@ -1,0 +1,203 @@
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+#
+# Canonical local build environment for the single Outbe Linux/SGX version pin.
+# Registry publication of this toolchain remains a separate delivery concern.
+
+FROM rust:1.96.0-bookworm@sha256:64d9b7f60e3abb08d477cad983d0a3743acc53a19369ba4482510184c9c807e5 AS rust
+
+FROM gramineproject/gramine:1.9-noble@sha256:bdf2d0ef9bd09fa10684e14fbe822236df35708d58a852209c5f235842ecb6d7 AS toolchain
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+COPY --from=rust /usr/local/cargo /usr/local/cargo
+COPY --from=rust /usr/local/rustup /usr/local/rustup
+
+ENV CARGO_HOME=/usr/local/cargo \
+    PATH=/usr/local/cargo/bin:${PATH} \
+    RUSTUP_HOME=/usr/local/rustup
+
+COPY release/project-toolchain-v1.json /opt/outbe/toolchain/project-toolchain-v1.json
+COPY scripts/release/verify_project_toolchain.py /opt/outbe/toolchain/verify_project_toolchain.py
+
+# Freeze the Ubuntu archive at one snapshot instant so the resolved package
+# closure is reproducible; the base image points at the live archive, where the
+# transitive packages that no version pin covers drift on every republish.
+COPY release/apt/ubuntu.sources /etc/apt/sources.list.d/ubuntu.sources
+
+RUN apt-get update && \
+    apt-get install --download-only --reinstall -y --no-install-recommends \
+      build-essential=12.10ubuntu1 \
+      clang=1:18.0-59~exp2 \
+      cmake=3.28.3-1build7 \
+      gcc-14-base=14.2.0-4ubuntu2~24.04.1 \
+      git=1:2.43.0-1ubuntu7.3 \
+      libc++-dev=1:18.0-59~exp2 \
+      libc++abi-dev=1:18.0-59~exp2 \
+      libgcc-s1=14.2.0-4ubuntu2~24.04.1 \
+      libsgx-dcap-quote-verify=1.26.100.1-noble1 \
+      libsgx-dcap-quote-verify-dev=1.26.100.1-noble1 \
+      libsgx-headers=2.29.100.1-noble1 \
+      libssl-dev=3.0.13-0ubuntu3.12 \
+      libstdc++6=14.2.0-4ubuntu2~24.04.1 \
+      pkg-config=1.8.1-2build1 && \
+    python3 /opt/outbe/toolchain/verify_project_toolchain.py \
+      --verify-apt-inputs \
+      --pin /opt/outbe/toolchain/project-toolchain-v1.json \
+      --apt-root / \
+      --deb-dir /var/cache/apt/archives && \
+    apt-get install -y --no-install-recommends --no-download \
+      /var/cache/apt/archives/*.deb && \
+    dpkg --audit && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN rustup component add rustfmt clippy rust-src \
+      --toolchain 1.96.0-x86_64-unknown-linux-gnu
+
+COPY release/dcap-native-qvl-v1.json /opt/outbe/toolchain/dcap-native-qvl-v1.json
+COPY scripts/release/verify_dcap_native_qvl.py /opt/outbe/toolchain/verify_dcap_native_qvl.py
+
+RUN test "$(rustc --version | cut -d' ' -f1-2)" = "rustc 1.96.0" && \
+    test "$(dpkg-query -W -f='${Version}' gramine)" = "1.9" && \
+    python3 /opt/outbe/toolchain/verify_dcap_native_qvl.py \
+      --manifest /opt/outbe/toolchain/dcap-native-qvl-v1.json \
+      --root /
+
+WORKDIR /workspace
+ENTRYPOINT []
+
+# The CI environment. It is the `toolchain` stage plus the developer tooling the
+# GitHub Actions jobs invoke, so a job body is `checkout` + the command itself:
+# no `sudo apt-get`, no per-run toolchain download, and no shared host state.
+#
+# Building FROM toolchain is the point: the Rust, Gramine and Intel DCAP pins CI
+# compiles against cannot drift from the ones the release build uses, because
+# they are the same layers. Nothing here may modify that inherited surface -
+# this stage only adds.
+#
+# Never use this stage for a release build. `scripts/release/reproducible-build.sh`
+# targets `artifacts`, which descends from `toolchain` directly.
+FROM toolchain AS ci
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# mise resolves $HOME at runtime, and a GitHub Actions container job runs with
+# HOME=/github/home rather than the /root this image is built as. Tools installed
+# into a home-relative directory would be invisible to every job. Pin the whole
+# mise surface to absolute paths so the baked tools are the ones jobs execute.
+ENV MISE_DATA_DIR=/opt/mise/data \
+    MISE_CONFIG_DIR=/opt/mise/config \
+    MISE_STATE_DIR=/opt/mise/state \
+    MISE_CACHE_DIR=/opt/mise/cache \
+    MISE_YES=1
+# mise refuses to read an untrusted config. /opt/outbe holds the configs this
+# build installs from; /__w/<repo>/<repo> is the workspace path of a container
+# job and /workspace the local `docker run -v` convention - neither of the latter
+# two exists at build time, so declare all three up front.
+ENV MISE_TRUSTED_CONFIG_PATHS=/opt/outbe:/__w:/workspace
+# rustup owns the toolchain (asserted above as exactly 1.96.0). mise must not
+# install a second Rust that would shadow it through the shim directory.
+ENV MISE_DISABLE_TOOLS=rust
+# Cargo's own bin directory precedes the mise shims: a `cargo:`-backend tool is
+# reachable either way, but rustc/cargo/rustfmt/clippy always resolve to the
+# pinned rustup toolchain.
+ENV PATH=/usr/local/cargo/bin:/opt/mise/data/shims:${PATH}
+
+# jq is read by the ABI export check; python-is-python3 provides the `python`
+# command required by composite actions; mold and the archive tools are build
+# and unpack helpers. These do not enter a release artifact, so they are not
+# part of the verified pin closure - but they still come from the frozen APT
+# snapshot installed above, not from a mutable mirror.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      ca-certificates \
+      curl \
+      jq \
+      mold \
+      python-is-python3 \
+      unzip \
+      xz-utils && \
+    rm -rf /var/lib/apt/lists/*
+
+# Exact release binary with a checksum, rather than piping the install script to
+# a shell: the published image is consumed by digest, so what is frozen here is
+# what every job runs.
+ARG MISE_VERSION=v2026.9.0
+ARG MISE_SHA256=c9b089f2be1db4d4262eacaf367e480e7a328848adcc37d9d1612996902485d0
+RUN curl -fsSL --proto '=https' --tlsv1.2 \
+      "https://github.com/jdx/mise/releases/download/${MISE_VERSION}/mise-${MISE_VERSION}-linux-x64" \
+      -o /usr/local/bin/mise && \
+    echo "${MISE_SHA256}  /usr/local/bin/mise" | sha256sum --check - && \
+    chmod 0755 /usr/local/bin/mise && \
+    test "$(mise --version | cut -d' ' -f1)" = "${MISE_VERSION#v}"
+
+# mise.toml stays the single source of truth for the tool set. cargo-binstall is
+# installed first so the remaining `cargo:` tools are fetched as prebuilt
+# binaries instead of being compiled from source.
+COPY mise.toml /opt/outbe/ci/mise.toml
+# contracts/intex pins its own tools (uv for the slither run, aderyn) in a
+# separate config; copied alone it has no parent to merge with, so this installs
+# exactly those two.
+COPY contracts/intex/mise.toml /opt/outbe/ci-intex/mise.toml
+#
+# Installing is not enough: a mise shim resolves its version from the config
+# covering the current directory, so outside these two directories every shim
+# fails with "No version is set". Promoting the installed set to the global
+# config makes the image self-contained - a job gets working tools wherever it
+# runs, and a repository mise.toml still takes precedence where it applies.
+RUN cd /opt/outbe/ci && \
+    mise install cargo:cargo-binstall && \
+    mise install && \
+    cd /opt/outbe/ci-intex && \
+    mise install && \
+    mise ls --installed | awk '{print $1"@"$2}' | xargs mise use -g && \
+    mise reshim && \
+    cd / && \
+    mise use -g "cargo:sccache@latest" "cargo:cargo-llvm-cov@latest" && \
+    mise reshim && \
+    rm -rf "${MISE_CACHE_DIR}"
+
+# Fail the build here rather than leaving a job to discover a broken tool.
+#
+# Run from / on purpose. `command -v` only proves a shim file exists, and a shim
+# with no resolvable version passes that check while failing on execution - so
+# actually invoke each tool, from a directory no mise config covers.
+RUN set -eu; \
+    cd /; \
+    for tool in forge cast anvil cargo-nextest cargo-deny cargo-audit \
+                cog duckdb uv uvx aderyn sccache jq mold python; do \
+      "${tool}" --version >/dev/null 2>&1 \
+        || { echo "ci stage tool does not run: ${tool}" >&2; exit 1; }; \
+    done; \
+    cargo auditable --version >/dev/null; \
+    cargo llvm-cov --version >/dev/null; \
+    test "$(rustc --version | cut -d' ' -f1-2)" = "rustc 1.96.0"; \
+    test -f /usr/include/sgx_dcap_quoteverify.h
+
+FROM toolchain AS builder
+
+COPY . .
+
+ARG SOURCE_COMMIT
+ARG SOURCE_DATE_EPOCH
+ARG SOURCE_DESCRIBE
+ARG RELEASE_TAG
+ARG REPRODUCIBLE_RUSTFLAGS
+ARG REPRODUCIBLE_CFLAGS
+ARG REPRODUCIBLE_CXXFLAGS
+
+ENV CFLAGS=${REPRODUCIBLE_CFLAGS} \
+    CXXFLAGS=${REPRODUCIBLE_CXXFLAGS} \
+    LANG=C \
+    LC_ALL=C \
+    RUSTFLAGS=${REPRODUCIBLE_RUSTFLAGS} \
+    SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH} \
+    TZ=UTC \
+    VERGEN_GIT_DESCRIBE=${SOURCE_DESCRIBE} \
+    VERGEN_GIT_DIRTY=false \
+    VERGEN_GIT_SHA=${SOURCE_COMMIT} \
+    ZERO_AR_DATE=1
+
+RUN scripts/release/build-elfs-in-container.sh
+
+FROM scratch AS artifacts
+COPY --from=builder /out/ /

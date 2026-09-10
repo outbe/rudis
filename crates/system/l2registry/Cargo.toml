@@ -1,0 +1,27 @@
+[package]
+name = "outbe-l2registry"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-macros.workspace = true
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+outbe-vote.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+bytes.workspace = true
+commonware-codec.workspace = true
+commonware-cryptography.workspace = true
+hex.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+commonware-math.workspace = true
+rand_core.workspace = true
+
+[lints]
+workspace = true

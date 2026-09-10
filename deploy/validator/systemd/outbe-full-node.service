@@ -1,0 +1,58 @@
+[Unit]
+Description=Outbe certified FullNode
+After=network-online.target outbe-mongodb.service outbe-enclave.service
+Wants=network-online.target
+Wants=outbe-ocomp-exporter.service outbe-ocomp-worker@0.service
+Requires=outbe-mongodb.service outbe-enclave.service
+Conflicts=outbe-validator.service
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=outbe
+Group=outbe
+EnvironmentFile=/opt/outbe-chain/validator.env
+Environment=OUTBE_OCOMP_BASE_PATH=/opt/outbe-chain
+Environment=OCOMP_VALIDATOR_INDEX=0
+Environment=OUTBE_OCOMP_RPC_URL=http://127.0.0.1:8545
+Environment=RUST_MIN_STACK=16777216
+ExecStart=/opt/outbe-chain/outbe-chain node \
+  --tee-session-mode production-node-host \
+  --chain /opt/outbe-chain/genesis.json \
+  --datadir /opt/outbe-chain/validator-0/data \
+  --engine.persistence-threshold 0 \
+  --engine.memory-block-buffer-target 0 \
+  --consensus.storage-dir /opt/outbe-chain/validator-0/consensus \
+  --tee-enclave-socket 127.0.0.1:17000 \
+  --projection.storage-config /opt/outbe-chain/offchain-storage.toml \
+  --http \
+  --http.addr 127.0.0.1 \
+  --http.port 8545 \
+  --http.api eth,net,web3,outbe \
+  --authrpc.port 8551 \
+  --port 30303 \
+  --discovery.port 30303 \
+  --nat extip:${OUTBE_EXTERNAL_IP} \
+  --discovery.v5.addr 0.0.0.0 \
+  --discovery.v5.port 31303 \
+  --p2p-secret-key /opt/outbe-chain/keys/reth-p2p-secret.hex \
+  --bootnodes ${OUTBE_BOOTNODES} \
+  --metrics 127.0.0.1:9101 \
+  --ipcpath /opt/outbe-chain/validator-0/data/reth.ipc \
+  --log.file.directory /opt/outbe-chain/validator-0/logs \
+  --upstream ${OUTBE_CERTIFIED_RPC}
+Restart=on-failure
+RestartSec=5
+RestartSteps=5
+RestartMaxDelaySec=60
+TimeoutStartSec=150
+TimeoutStopSec=90
+KillSignal=SIGTERM
+UMask=0077
+LimitNOFILE=1048576
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/opt/outbe-chain/keys /opt/outbe-chain/validator-0

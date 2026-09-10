@@ -1,0 +1,12 @@
+# Test-only Gramine adapter used by the Rust localnet harness. It accepts a host
+# enclave binary, renders/signs it at container start and may use gramine-direct.
+# A signing key must be mounted explicitly; no private key is baked into this
+# image. Test artifacts from this image are never release artifacts.
+FROM gramineproject/gramine:1.9-noble@sha256:bdf2d0ef9bd09fa10684e14fbe822236df35708d58a852209c5f235842ecb6d7
+
+COPY outbe-tee-enclave.manifest.template /app/
+COPY entrypoint.test.sh /app/
+RUN chmod 0755 /app/entrypoint.test.sh
+
+WORKDIR /app
+ENTRYPOINT ["/app/entrypoint.test.sh"]

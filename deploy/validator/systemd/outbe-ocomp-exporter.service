@@ -1,0 +1,34 @@
+[Unit]
+Description=Outbe OCOMP SnapshotExporter
+After=outbe-full-node.service outbe-validator.service
+PartOf=outbe-full-node.service outbe-validator.service
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=outbe
+Group=outbe
+EnvironmentFile=/opt/outbe-chain/validator.env
+Environment=OUTBE_OCOMP_BASE_PATH=/opt/outbe-chain
+Environment=OCOMP_VALIDATOR_INDEX=0
+Environment=OUTBE_OCOMP_RPC_URL=http://127.0.0.1:8545
+Environment=OUTBE_OCOMP_STORAGE_CONFIG=/opt/outbe-chain/offchain-storage.toml
+ExecStart=/opt/outbe-chain/outbe-ocomp snapshot-exporter \
+  --supervisor-address 127.0.0.1:30401
+Restart=on-failure
+RestartSec=5
+RestartSteps=5
+RestartMaxDelaySec=60
+TimeoutStopSec=90
+KillSignal=SIGTERM
+UMask=0077
+LimitNOFILE=65535
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/opt/outbe-chain/validator-0
+
+[Install]
+WantedBy=outbe-full-node.service outbe-validator.service

@@ -1,0 +1,34 @@
+## Immutable Ubuntu APT sources for the release toolchain image.
+##
+## The base image ships live archive.ubuntu.com and security.ubuntu.com URIs.
+## Only the fourteen packages named in release/project-toolchain-v1.json are
+## version-pinned there, so the ~86 transitive packages in the same closure
+## float with whatever Canonical last published. Every republish then changes
+## apt_provenance.deb_closure and the build fails with a digest mismatch.
+##
+## snapshot.ubuntu.com serves the archive exactly as it stood at one instant,
+## so the resolved closure is a function of the timestamp below and nothing
+## else. Advancing the toolchain means editing this timestamp and regenerating
+## the closure digest:
+##
+##   scripts/release/regenerate_apt_closure.py --write
+##
+## This file's own digest is pinned in apt_provenance.source_files, so the
+## timestamp cannot be changed without also updating the pin.
+##
+## Scope: this covers the Ubuntu archive only. The Intel SGX and Gramine
+## repositories publish no snapshot service; their three packages stay pinned
+## by exact version, and a withdrawn version fails the build loudly at
+## download time rather than silently changing the closure.
+
+Types: deb
+URIs: https://snapshot.ubuntu.com/ubuntu/20260812T000000Z
+Suites: noble noble-updates noble-backports
+Components: main universe restricted multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+Types: deb
+URIs: https://snapshot.ubuntu.com/ubuntu/20260812T000000Z
+Suites: noble-security
+Components: main universe restricted multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg

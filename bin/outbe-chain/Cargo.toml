@@ -1,0 +1,89 @@
+[package]
+name = "outbe-chain"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+build = "build.rs"
+
+[features]
+default = []
+test-marshal-drop = ["outbe-consensus/test-marshal-drop"]
+e2e-test = ["outbe-evm/e2e-test"]
+test-protocol-overrides = [
+    "outbe-chain-constants/test-protocol-overrides",
+    "outbe-ocomp/test-protocol-overrides",
+]
+
+[[bin]]
+name = "outbe-chain"
+path = "src/main.rs"
+
+[dependencies]
+outbe-chain-constants.workspace = true
+outbe-evm.workspace = true
+outbe-compressed-entities.workspace = true
+outbe-rpc.workspace = true
+outbe-node.workspace = true
+outbe-offchain-storage.workspace = true
+outbe-ocomp.workspace = true
+outbe-ocomp-protocol.workspace = true
+outbe-ocompregistry.workspace = true
+outbe-consensus.workspace = true
+outbe-engine.workspace = true
+outbe-metadosis.workspace = true
+outbe-update.workspace = true
+outbe-nod.workspace = true
+outbe-primitives.workspace = true
+outbe-radicle.workspace = true
+outbe-operator.workspace = true
+outbe-tee.workspace = true
+outbe-txpool.workspace = true
+outbe-validatorset.workspace = true
+outbe-zk-backend.workspace = true
+
+reth-ethereum = { workspace = true, features = ["node", "cli", "exex"] }
+reth-chainspec.workspace = true
+reth-cli.workspace = true
+reth-cli-runner.workspace = true
+reth-node-builder.workspace = true
+reth-node-core.workspace = true
+reth-provider.workspace = true
+reth-rpc-server-types.workspace = true
+
+commonware-runtime.workspace = true
+commonware-macros.workspace = true
+
+alloy-primitives.workspace = true
+alloy-consensus.workspace = true
+alloy-sol-types.workspace = true
+clap.workspace = true
+eyre.workspace = true
+hex.workspace = true
+k256.workspace = true
+alloy-eips.workspace = true
+serde_json.workspace = true
+serde.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+tracing.workspace = true
+futures.workspace = true
+metrics.workspace = true
+reth-primitives-traits.workspace = true
+
+[dev-dependencies]
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+reth-provider = { workspace = true, features = ["test-utils"] }
+commonware-consensus.workspace = true
+commonware-storage.workspace = true
+commonware-utils.workspace = true
+outbe-metadosis = { workspace = true, features = ["test-utils"] }
+reqwest.workspace = true
+tempfile.workspace = true
+
+[build-dependencies]
+vergen = { version = "9.1.0", features = ["build", "cargo", "emit_and_set"] }
+vergen-git2 = "9.1.0"
+
+[lints]
+workspace = true

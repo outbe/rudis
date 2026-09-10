@@ -1,0 +1,100 @@
+type	id	variant	wire
+object	0x0001	ProtocolBundleV1	ProtocolBundleV1
+object	0x0002	CorrectnessProfileV1	CorrectnessProfileV1
+object	0x0003	CapacityProfileV1	CapacityProfileV1
+object	0x0004	PreAdmissionEnvelopeV1	PreAdmissionEnvelopeV1
+object	0x0005	ActivationPreconditionsV1	ActivationPreconditionsV1
+object	0x0006	JobIntentV1	JobIntentV1
+object	0x0007	FinalizedIntentProofV1	FinalizedIntentProofV1
+object	0x0008	InputManifestV1	InputManifestV1
+object	0x0009	AuthenticatedInputChunkV1	AuthenticatedInputChunkV1
+object	0x000a	UnitSpecV1	UnitSpecV1
+object	0x000b	UnitArtifactV1	UnitArtifactV1
+object	0x000c	ResultChunkV1	ResultChunkV1
+object	0x000d	LysisResultV1	LysisResultV1
+object	0x000e	ActivationPayloadV1	ActivationPayloadV1
+object	0x0010	OcompKeyRegistrationV1	OcompKeyRegistrationV1
+object	0x0013	ActiveGenerationV1	ActiveGenerationV1
+object	0x0014	AggregateActivationReceiptV1	AggregateActivationReceiptV1
+object	0x0015	NodBatchReceiptV1	NodBatchReceiptV1
+object	0x0016	ContributorReceiptV1	ContributorReceiptV1
+object	0x0017	TributeReceiptV1	TributeReceiptV1
+object	0x0018	RequestBudgetSplitReceiptV1	RequestBudgetSplitReceiptV1
+object	0x0019	CarryOverReceiptV1	CarryOverReceiptV1
+object	0x001b	SignOnceRecordV1	SignOnceRecordV1
+object	0x001c	ActivationCallCoreV1	ActivationCallCoreV1
+object	0x001d	LysisArithmeticSummaryV1	LysisArithmeticSummaryV1
+object	0x001e	OcompJobRecordV1	OcompJobRecordV1
+object	0x001f	ShuffleRunArtifactV1	ShuffleRunArtifactV1
+object	0x0020	ResultVoteV1	ResultVoteV1
+object	0x0021	EquivocationEvidenceV1	EquivocationEvidenceV1
+object	0x0022	ResultVoteSlotV1	ResultVoteSlotV1
+object	0x0023	OcompQuorumV1	OcompQuorumV1
+object	0x0024	OcompAccountabilitySummaryV1	OcompAccountabilitySummaryV1
+object	0x0025	OcompVoteAccountabilityV1	OcompVoteAccountabilityV1
+object	0x0026	LysisTerminalV1	LysisTerminalV1
+object	0x0027	NodMaterializationBatchV1	NodMaterializationBatchV1
+object	0x0028	NodMaterializationHeadV1	NodMaterializationHeadV1
+domain		ProtocolBundle	OUTBE_OCOMP_PROTOCOL_BUNDLE_V1
+domain		PreAdmission	OUTBE_OCOMP_PRE_ADMISSION_V1
+domain		ActivationPreconditions	OUTBE_OCOMP_ACTIVATION_PRECONDITIONS_V1
+domain		Intent	OUTBE_OCOMP_INTENT_V1
+domain		IntentSlot	OUTBE_OCOMP_INTENT_SLOT_V1
+domain		Job	OUTBE_OCOMP_JOB_V1
+domain		InputLease	OUTBE_OCOMP_INPUT_LEASE_V1
+domain		InputChunk	OUTBE_OCOMP_INPUT_CHUNK_V1
+domain		InputManifest	OUTBE_OCOMP_INPUT_MANIFEST_V1
+domain		CodecDescriptor	OUTBE_OCOMP_CODEC_DESCRIPTOR_V1
+domain		OpeningCodecRegistry	OUTBE_OCOMP_OPENING_CODEC_REGISTRY_V1
+domain		Plan	OUTBE_OCOMP_PLAN_V1
+domain		Unit	OUTBE_OCOMP_UNIT_V1
+domain		UnitInterval	OUTBE_OCOMP_UNIT_INTERVAL_V1
+domain		UnitInputs	OUTBE_OCOMP_UNIT_INPUTS_V1
+domain		UnitEmpty	OUTBE_OCOMP_UNIT_EMPTY_V1
+domain		UnitOutput	OUTBE_OCOMP_UNIT_OUTPUT_V1
+domain		UnitCoverage	OUTBE_OCOMP_UNIT_COVERAGE_V1
+domain		UnitArtifact	OUTBE_OCOMP_UNIT_ARTIFACT_V1
+domain		ShuffleSourceCoverage	OUTBE_OCOMP_SHUFFLE_SOURCE_COVERAGE_V1
+domain		ShuffleRunNode	OUTBE_OCOMP_SHUFFLE_RUN_NODE_V1
+domain		ResultChunk	OUTBE_OCOMP_RESULT_CHUNK_V1
+domain		Result	OUTBE_OCOMP_RESULT_V1
+domain		ResultVoteSubject	OUTBE_OCOMP_RESULT_VOTE_SUBJECT_V1
+domain		QuorumEvidence	OUTBE_OCOMP_QUORUM_EVIDENCE_V1
+domain		VoteAccountability	OUTBE_OCOMP_VOTE_ACCOUNTABILITY_V1
+domain		LysisTerminal	OUTBE_OCOMP_LYSIS_TERMINAL_V1
+domain		ValidatorIdentity	OUTBE_OCOMP_VALIDATOR_IDENTITY_V1
+domain		KeyPop	OUTBE_OCOMP_KEY_POP_V1
+domain		SignOnceSlot	OUTBE_OCOMP_SIGN_ONCE_SLOT_V1
+domain		ActivationCall	OUTBE_OCOMP_ACTIVATION_CALL_V1
+domain		LysisArithmetic	OUTBE_OCOMP_LYSIS_ARITHMETIC_V1
+domain		ResultEvidence	OUTBE_OCOMP_RESULT_EVIDENCE_V1
+domain		TerminalReceipt	OUTBE_OCOMP_TERMINAL_RECEIPT_V1
+domain		NodReceipt	OUTBE_OCOMP_NOD_RECEIPT_V1
+domain		ContributorReceipt	OUTBE_OCOMP_CONTRIBUTOR_RECEIPT_V1
+domain		TributeReceipt	OUTBE_OCOMP_TRIBUTE_RECEIPT_V1
+domain		DesisRequestBrief	OUTBE_OCOMP_DESIS_REQUEST_BRIEF_V1
+domain		BudgetSplitReceipt	OUTBE_OCOMP_BUDGET_SPLIT_RECEIPT_V1
+domain		CarryOverReceipt	OUTBE_OCOMP_CARRY_OVER_RECEIPT_V1
+domain		ActiveGeneration	OUTBE_OCOMP_ACTIVE_GENERATION_V1
+domain		JobRecord	OUTBE_OCOMP_JOB_RECORD_V1
+domain		StateEvents	OUTBE_OCOMP_STATE_EVENTS_V1
+domain		ApplyEventSummary	OUTBE_OCOMP_APPLY_EVENT_SUMMARY_V1
+domain		Effects	OUTBE_OCOMP_EFFECTS_V1
+domain		ListEmpty	OUTBE_OCOMP_LIST_EMPTY_V1
+domain		ListLeaf	OUTBE_OCOMP_LIST_LEAF_V1
+domain		ListPad	OUTBE_OCOMP_LIST_PAD_V1
+domain		ListNode	OUTBE_OCOMP_LIST_NODE_V1
+domain		ListRoot	OUTBE_OCOMP_LIST_ROOT_V1
+list	1	NodActions	Nod actions
+list	2	BucketRecords	bucket records
+list	3	ContributorActions	contributor actions
+list	4	CompleteOutputManifest	complete output manifest
+list	5	SemanticEventRecords	semantic event records
+list	6	InputChunkReferences	input chunk references
+list	7	UnitSpecificationsArtifacts	unit specifications/artifacts
+list	8	RawTributeCoverage	raw Tribute coverage (raw_ordinal, tribute_id)
+list	9	FidelityOpenings	Fidelity authenticated openings
+list	10	OracleOpenings	Oracle authenticated openings
+list	11	ResultChunkHashes	result-chunk hashes
+list	12	LysisLeagueFractions	Lysis league fractions
+list	13	LysisGratisLeafPrefixes	Lysis Gratis leaf prefixes

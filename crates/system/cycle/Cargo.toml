@@ -1,0 +1,41 @@
+[package]
+name = "outbe-cycle"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[features]
+e2e-test = []
+
+[dependencies]
+outbe-chain-constants.workspace = true
+outbe-macros.workspace = true
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+outbe-compressed-entities.workspace = true
+outbe-accounting.workspace = true
+outbe-emissionlimit.workspace = true
+outbe-rewards.workspace = true
+outbe-agentreward.workspace = true
+outbe-metadosis.workspace = true
+outbe-tribute.workspace = true
+outbe-intexfactory.workspace = true
+outbe-desis.workspace = true
+outbe-gem.workspace = true
+outbe-gemfactory.workspace = true
+outbe-credisfactory.workspace = true
+outbe-nod.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+proptest.workspace = true
+outbe-offchain-storage.workspace = true
+outbe-metadosis = { workspace = true, features = ["test-utils"] }
+outbe-oracle.workspace = true
+outbe-promislimit.workspace = true
+outbe-validatorset.workspace = true
+
+[lints]
+workspace = true

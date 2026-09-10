@@ -1,0 +1,115 @@
+rule_files:
+  - alerts.example.yaml
+
+evaluation_interval: 1m
+
+tests:
+  - name: recovery window survives a process restart before the first counter scrape
+    interval: 1m
+    input_series:
+      - series: 'outbe_ocomp_recovery_deadline{job="outbe",instance="node-1",addr="0x1111111111111111111111111111111111111111"}'
+        values: '0 43300 43300 0'
+      - series: 'outbe_ocomp_recovery_block_number{job="outbe",instance="node-1"}'
+        values: '100 101 102 103'
+    alert_rule_test:
+      - eval_time: 0m
+        alertname: OutbeOcompRecoveryWindowOpen
+        exp_alerts: []
+      - eval_time: 1m
+        alertname: OutbeOcompRecoveryWindowOpen
+        exp_alerts:
+          - exp_labels:
+              addr: '0x1111111111111111111111111111111111111111'
+              instance: node-1
+              job: outbe
+              severity: critical
+              subsystem: ocomp
+            exp_annotations:
+              summary: 'Validator 0x1111111111111111111111111111111111111111 missed OCOMP and lost 10% bonded stake'
+              description: |
+                A fixed 43,200-block recovery window is open with 43199 blocks
+                remaining. Restore OCOMP and replenish bonded stake before the
+                per-validator deadline.
+      - eval_time: 3m
+        alertname: OutbeOcompRecoveryWindowOpen
+        exp_alerts: []
+
+  - name: retained GC partial stall remains visible while healthy jobs progress
+    interval: 1m
+    input_series:
+      - series: 'outbe_ocomp_retained_gc_deferred_jobs{job="outbe",instance="node-1"}'
+        values: '1x12'
+      - series: 'outbe_ocomp_retained_gc_pages_total{job="outbe",instance="node-1"}'
+        values: '0+1x12'
+      - series: 'outbe_ocomp_retained_gc_completed_total{job="outbe",instance="node-1"}'
+        values: '0+1x12'
+    alert_rule_test:
+      - eval_time: 9m
+        alertname: OutbeOcompRetainedGcPartialStall
+        exp_alerts: []
+      - eval_time: 10m
+        alertname: OutbeOcompRetainedGcPartialStall
+        exp_alerts:
+          - exp_labels:
+              instance: node-1
+              job: outbe
+              severity: critical
+              subsystem: ocomp
+            exp_annotations:
+              summary: 'OCOMP retained-input garbage collection is partially stalled'
+              description: |
+                At least one durable GC item has remained deferred, or a global
+                retained-storage failure has remained active, for ten minutes.
+                Healthy jobs may still be advancing, so the aggregate stalled
+                alert can remain green. Inspect retry failure_class metrics,
+                MongoDB health, disk capacity, and the node logs.
+
+  - name: retained GC global outage is critical after ten minutes
+    interval: 1m
+    input_series:
+      - series: 'outbe_ocomp_retained_gc_global_retry_next_delay_seconds{job="outbe",instance="node-2"}'
+        values: '5x12'
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: OutbeOcompRetainedGcPartialStall
+        exp_alerts:
+          - exp_labels:
+              instance: node-2
+              job: outbe
+              severity: critical
+              subsystem: ocomp
+            exp_annotations:
+              summary: 'OCOMP retained-input garbage collection is partially stalled'
+              description: |
+                At least one durable GC item has remained deferred, or a global
+                retained-storage failure has remained active, for ten minutes.
+                Healthy jobs may still be advancing, so the aggregate stalled
+                alert can remain green. Inspect retry failure_class metrics,
+                MongoDB health, disk capacity, and the node logs.
+
+  - name: sustained worker unit failures become critical within the response window
+    interval: 1m
+    input_series:
+      - series: 'outbe_ocomp_worker_units_completed_total{job="outbe-ocomp-worker",instance="node-1",outcome="failed"}'
+        values: '0+1x16'
+    alert_rule_test:
+      - eval_time: 9m
+        alertname: OutbeOcompWorkerUnitFailuresSustained
+        exp_alerts: []
+      - eval_time: 10m
+        alertname: OutbeOcompWorkerUnitFailuresSustained
+        exp_alerts:
+          - exp_labels:
+              instance: node-1
+              job: outbe-ocomp-worker
+              severity: critical
+              subsystem: ocomp
+            exp_annotations:
+              summary: 'OCOMP Worker node-1 is repeatedly failing work units'
+              description: |
+                At least one work unit has failed in every rolling five-minute
+                window for ten minutes. Local retries remain bound to the same
+                canonical JobId and deadline; they cannot establish an on-chain
+                Failed state or extend the response window. Inspect Worker and
+                SnapshotExporter logs, retained input, disk capacity, and MongoDB
+                before the canonical job expires.

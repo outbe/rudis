@@ -1,0 +1,18 @@
+[package]
+name = "outbe-ocompregistry"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+outbe-chain-constants.workspace = true
+outbe-consensus.workspace = true
+outbe-macros.workspace = true
+outbe-ocomp-protocol.workspace = true
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+
+[lints]
+workspace = true

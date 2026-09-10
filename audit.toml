@@ -1,0 +1,18 @@
+# cargo-audit configuration (used by the CVE-scan workflow via
+# rustsec/audit-check). Mirrors the advisory ignores in deny.toml.
+#
+# All entries are transitive deps pulled in by reth v2.2.0 / commonware and
+# cannot be upgraded away without upstream changes. The two hickory-dns
+# vulnerabilities are not on our attack surface: outbe-chain does not perform
+# recursive DNS resolution of untrusted zones (consensus p2p uses
+# static/operator-provided peer addresses). Revisit on the next reth bump.
+[advisories]
+ignore = [
+    "RUSTSEC-2023-0089", # atomic-polyfill unmaintained
+    "RUSTSEC-2024-0436", # paste unmaintained
+    "RUSTSEC-2025-0055", # transitive, unmaintained/informational
+    "RUSTSEC-2025-0141", # bincode unmaintained
+    "RUSTSEC-2026-0118", # hickory-dns NSEC3 loop - not on our attack surface
+    "RUSTSEC-2026-0119", # hickory-dns name-compression CPU - not on our attack surface
+    "RUSTSEC-2026-0173", # proc-macro-error2 unmaintained
+]

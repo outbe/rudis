@@ -1,0 +1,25 @@
+[Unit]
+Description=Outbe TEE lease renewal
+After=network-online.target outbe-enclave.service
+Requisite=outbe-enclave.service
+
+[Service]
+Type=oneshot
+User=outbe
+Group=outbe
+EnvironmentFile=/opt/outbe-chain/validator.env
+ExecStart=:/bin/sh -ec 'KEY=$(cat /opt/outbe-chain/keys/evm-key.hex); \
+  exec /opt/outbe-chain/outbe-cli tee renew \
+  --enclave-socket 127.0.0.1:17000 \
+  --node-data-dir /opt/outbe-chain/validator-0/data \
+  --reth-p2p-secret-key /opt/outbe-chain/keys/reth-p2p-secret.hex \
+  --private-key "$KEY" \
+  --rpc-url "${OUTBE_CERTIFIED_RPC:?OUTBE_CERTIFIED_RPC is required}"'
+TimeoutStartSec=10min
+UMask=0077
+LimitCORE=0
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/opt/outbe-chain/validator-0/data

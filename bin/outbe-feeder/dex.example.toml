@@ -1,0 +1,74 @@
+# Template only: all token/pool addresses below are illustrative placeholders.
+# Replace them with deployed COEN and stablecoin contracts and actual pools.
+# Also replace the Outbe RPC/chain/account and match the on-chain vote period.
+[chain]
+rpc_endpoint = "http://localhost:8545"
+chain_id = 31337
+
+[account]
+private_key = "REPLACE_WITH_FEEDER_PRIVATE_KEY"
+validator_address = "0x1111111111111111111111111111111111111111"
+
+[oracle]
+vote_period = 8
+poll_interval_secs = 2
+
+# V1 explicitly assumes USDC = USDT = 1 USD. The feeder combines source rates
+# using its existing volume-weighted mean; there is no stablecoin/USD feed.
+[[currency_pairs]]
+base = "COEN"
+quote = "840"
+
+[[currency_pairs.sources]]
+provider = "uniswap"
+base = "COEN"
+quote = "USDC"
+
+[[currency_pairs.sources]]
+provider = "pancakeswap"
+base = "COEN"
+quote = "USDT"
+
+[[dex_providers]]
+name = "uniswap"
+chain_id = 1
+rpc_endpoint = "https://ethereum-rpc.example.invalid"
+poll_interval_secs = 2
+log_chunk_blocks = 2000
+max_finalized_age_secs = 1800
+
+[[dex_providers.markets]]
+base = "COEN"
+quote = "USDC"
+base_token = "0x1111111111111111111111111111111111111111"
+quote_token = "0x2222222222222222222222222222222222222222"
+[dex_providers.markets.pool]
+protocol = "uniswap_v3"
+address = "0x3333333333333333333333333333333333333333"
+
+[[dex_providers]]
+name = "pancakeswap"
+chain_id = 56
+rpc_endpoint = "https://bnb-rpc.example.invalid"
+
+[[dex_providers.markets]]
+base = "COEN"
+quote = "USDT"
+base_token = "0x4444444444444444444444444444444444444444"
+quote_token = "0x5555555555555555555555555555555555555555"
+[dex_providers.markets.pool]
+protocol = "pancakeswap_v3"
+address = "0x6666666666666666666666666666666666666666"
+
+# Add the other quote market to either venue as another markets/source entry.
+# For a V4 pool, replace the pool table (not the enclosing market) with:
+# [dex_providers.markets.pool]
+# protocol = "uniswap_v4"
+# manager = "0x..."
+# state_view = "0x..."
+# fee = 3000
+# tick_spacing = 60
+# hooks = "0x0000000000000000000000000000000000000000"
+#
+# For Infinity use protocol = "infinity_cl" or "infinity_bin", manager,
+# fee, hooks and parameters = "0x..." from the full on-chain pool key.

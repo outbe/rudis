@@ -1,0 +1,42 @@
+[package]
+name = "outbe-rewards"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-macros.workspace = true
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+outbe-validatorset = { path = "../validatorset" }
+outbe-consensus.workspace = true
+outbe-gemfactory.workspace = true
+outbe-oracle.workspace = true
+# settle_window routes escrow residue to terminal Metadosis via
+# the canonical outbe_emissionlimit::block::dispatch_terminal_remainder_at.
+# Acyclic: emissionlimit -> {primitives, agentreward, metadosis}, none dep rewards.
+outbe-emissionlimit.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+tracing.workspace = true
+
+[package.metadata.cargo-machete]
+# Used only through sol!-generated code in schema.rs; cargo-machete cannot see
+# macro-expanded paths.
+ignored = ["alloy-sol-types"]
+
+[dev-dependencies]
+outbe-metadosis = { workspace = true, features = ["test-utils"] }
+outbe-ocomp-protocol.workspace = true
+outbe-promislimit.workspace = true
+outbe-gem.workspace = true
+proptest.workspace = true
+commonware-codec.workspace = true
+commonware-consensus.workspace = true
+commonware-cryptography.workspace = true
+commonware-utils.workspace = true
+rand.workspace = true
+rand_chacha = "0.3"
+
+[lints]
+workspace = true

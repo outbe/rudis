@@ -1,0 +1,26 @@
+[package]
+name = "outbe-gratisfactory"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+outbe-gratis.workspace = true
+outbe-fidelity.workspace = true
+# Prices the credis loan at pledge time (COEN/840 -> gratis collateral).
+outbe-oracle.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+# Drive the confidential Gratis path in tests via the in-process enclave engine.
+outbe-gratis = { workspace = true, features = ["test-enclave"] }
+outbe-fidelity = { workspace = true, features = ["test-enclave"] }
+outbe-tee.workspace = true
+outbe-tee-enclave.workspace = true
+
+[lints]
+workspace = true

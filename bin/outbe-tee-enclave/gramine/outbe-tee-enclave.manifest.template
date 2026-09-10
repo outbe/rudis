@@ -1,0 +1,75 @@
+# DEVELOPMENT/TEST Gramine manifest rendered by entrypoint.test.sh. Localnet
+# mounts the feature-gated outbe-tee-enclave-mock binary as `entrypoint`; this
+# file is never a production release input. The production-shaped manifest is
+# outbe-tee-enclave.release.manifest.template and hard-codes the production
+# binary.
+
+libos.entrypoint = "{{ entrypoint }}"
+
+loader.log_level = "{{ log_level }}"
+# Pass the process argv (--socket / --dkg-seed) straight through from the
+# `gramine-direct outbe-tee-enclave ...` command line.
+loader.insecure__use_cmdline_argv = true
+loader.env.LD_LIBRARY_PATH = "{% if remote_attestation == 'dcap' %}/qvl:{% endif %}/lib:{{ arch_libdir }}:/usr/{{ arch_libdir }}"
+# Avoid repeated 64 MiB glibc thread-arena attempts in the bounded SGX heap.
+loader.env.MALLOC_ARENA_MAX = "1"
+
+# The enclave serves one thread per connection and exits cleanly on SIGTERM.
+sys.enable_sigterm_injection = true
+
+fs.mounts = [
+  { uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
+{% if remote_attestation == 'dcap' %}
+  { uri = "file:{{ qvl_host_dir }}", path = "/qvl" },
+  { uri = "file:{{ network_descriptor }}", path = "{{ network_descriptor }}" },
+{% endif %}
+  { uri = "file:{{ arch_libdir }}", path = "{{ arch_libdir }}" },
+  { uri = "file:/usr/{{ arch_libdir }}", path = "/usr/{{ arch_libdir }}" },
+  { uri = "file:{{ entrypoint }}", path = "{{ entrypoint }}" },
+  # Writable tee dir for the sealed offer-key blob (--tee-dir). The blob is
+  # AES-GCM sealed by the enclave (EGETKEY), so it lives in an UNTRUSTED allowed
+  # file - the enclave's own AEAD provides confidentiality + integrity + the
+  # chain_id/isv_svn binding. `tee_dir` is rendered by the launcher.
+  { uri = "file:{{ tee_dir }}/", path = "{{ tee_dir }}/" },
+]
+# The node reaches the enclave over TCP (`--socket host:port`), which Gramine
+# passes through to the host network - no host<->enclave Unix socket mount needed.
+
+# --- gramine-sgx only (ignored by gramine-direct) ---
+sgx.debug = true
+sgx.edmm_enable = false
+# One Gramine thread per served connection + a margin. A validator normally
+# needs fewer than eight concurrent connections. Keeping this at 16 is
+# deliberate: four local validators otherwise reserve 256 SGX thread slots and
+# can exhaust EPC/TCS resources when E2E scenarios start sequentially.
+sgx.max_threads = 16
+
+# The test launcher renders "dcap" only when it is about to launch gramine-sgx
+# with SGX devices. The non-hardware gramine-direct lanes render "none" and
+# remain a separate dev-only path.
+sgx.remote_attestation = "{{ remote_attestation }}"
+# Enclave identity (MRSIGNER-policy sealing survives an update of the same SVN
+# family). Bump isvsvn on a security-relevant rebuild to enforce anti-rollback.
+sgx.isvprodid = 1
+sgx.isvsvn = 1
+
+sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
+  "file:{{ entrypoint }}",
+  "file:{{ gramine.runtimedir() }}/",
+  "file:{{ arch_libdir }}/",
+  "file:/usr/{{ arch_libdir }}/",
+{% if remote_attestation == 'dcap' %}
+  "file:{{ network_descriptor }}",
+  "file:{{ qvl_host_dir }}/libsgx_dcap_quoteverify.so.1",
+  "file:{{ qvl_host_dir }}/libstdc++.so.6",
+  "file:{{ qvl_host_dir }}/libgcc_s.so.1",
+{% endif %}
+]
+
+# Read-write passthrough for the sealed-blob dir (no integrity check at the
+# Gramine layer - the enclave's AES-GCM sealing is the integrity/confidentiality
+# boundary). Lets the restart fast-path persist/restore `sealed_root.bin`.
+sgx.allowed_files = [
+  "file:{{ tee_dir }}/",
+]

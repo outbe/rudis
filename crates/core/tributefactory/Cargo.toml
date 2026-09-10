@@ -1,0 +1,40 @@
+[package]
+name = "outbe-tributefactory"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[features]
+bench-utils = []
+
+[dependencies]
+outbe-macros.workspace = true
+outbe-compressed-entities.workspace = true
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+outbe-tribute.workspace = true
+outbe-metadosis.workspace = true
+outbe-agentreward.workspace = true
+outbe-oracle.workspace = true
+outbe-l2registry.workspace = true
+outbe-tee.workspace = true
+outbe-protocol.workspace = true
+outbe-zk-backend.workspace = true
+outbe-zk-canonical.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+hex.workspace = true
+eyre.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+outbe-lysis.workspace = true
+outbe-metadosis = { workspace = true, features = ["test-utils"] }
+commonware-codec.workspace = true
+commonware-cryptography.workspace = true
+commonware-math.workspace = true
+rand_core.workspace = true
+
+[lints]
+workspace = true

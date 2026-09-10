@@ -1,0 +1,48 @@
+{
+  "name": "credis-flow",
+  "version": "1.0.0",
+  "description": "Outbe Credis user-flow demo (imported from credis/ts-cca)",
+  "type": "module",
+  "scripts": {
+    "prepare-abis": "node scripts/prepare-abis.mjs",
+    "generate-types": "npm run prepare-abis && typechain --target ethers-v6 --out-dir src/contracts 'abi/*.json'",
+    "build": "npm run generate-types && tsc",
+    "clean": "rm -rf dist abi src/contracts",
+    "info": "tsx src/0-info.ts",
+    "setup-native": "tsx src/0-setup-native.ts",
+    "setup-erc20": "tsx src/0-setup-erc20.ts",
+    "setup-gratis": "tsx src/0-setup-gratis.ts",
+    "pledge-gratis": "tsx src/1-pledge-gratis.ts",
+    "unpledge-gratis": "tsx src/1.1-unpledge-gratis.ts",
+    "top-up-sa": "tsx src/2-top-up-smart-account.ts",
+    "request-credis": "tsx src/3-request-credis.ts",
+    "cca-simulate-purchase": "tsx src/4-cca-simulate-purchase.ts",
+    "user-sa-withdraw": "tsx src/4.1-user-sa-withdraw.ts",
+    "user-settles": "tsx src/5-user-settles.ts"
+  },
+  "dependencies": {
+    "@noble/curves": "^1.6.0",
+    "dotenv": "^16.3.0",
+    "ethers": "^6.13.0"
+  },
+  "devDependencies": {
+    "@typechain/ethers-v6": "^0.5.1",
+    "@types/node": "^20.0.0",
+    "tsx": "^4.7.0",
+    "typechain": "^8.3.2",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "ethereum",
+    "smart-contracts",
+    "cra",
+    "consumption-reflection-agent",
+    "outbe",
+    "credis"
+  ],
+  "author": "Outbe",
+  "license": "MIT"
+}

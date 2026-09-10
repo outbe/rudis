@@ -1,0 +1,69 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# Alert rules: copy scripts/monitoring/alerts.example.yaml (the maintained
+# template, incl. the outbe-chain.tee group) to this path and keep in sync.
+rule_files:
+  - /etc/prometheus/rules/outbe-chain.yaml
+
+scrape_configs:
+  - job_name: 'outbe-chain'
+    static_configs:
+      - targets:
+          # run-testnet.sh / prepare_network.py expose `--metrics 0.0.0.0:9101+i`
+          # (add :9102..:910N for more validators). Production units choose their
+          # own port - keep this target in sync with the unit's `--metrics` flag.
+          - 'localhost:9101'
+        labels:
+          chain: 'outbe'
+          role: 'validator'
+
+    # Reth exports metrics at /metrics by default.
+    metrics_path: /metrics
+
+    # Custom outbe metrics to watch:
+    #   outbe_blocks_proposed_total           - blocks proposed by this node
+    #   outbe_proposed_height                 - latest proposed block height
+    #   outbe_finalized_view                  - latest finalized Simplex view
+    #   outbe_validator_count                 - number of validators in set
+    #   outbe_participation_rate              - ratio of signers to total validators
+    #   outbe_views_skipped_total             - skipped views (missed proposers)
+    #   outbe_epoch_number                    - current consensus epoch
+    #   commonware_p2p_tracked_peer_set_size - Commonware P2P tracked peer-set size (membership, not live connections)
+    #   outbe_consensus_reth_tip_hash_match   - consensus tip is available in Reth provider
+    #   outbe_dkg_status                      - DKG status (0=idle, 1=in_progress, 2=completed, 3=expired)
+    #   outbe_reshares_completed_total        - number of DKG reshares completed
+    #   outbe_parent_cert_store_size          - exact-parent certificate handoff records retained
+    #   outbe_parent_cert_included_total      - Phase 1 parent certificate metadata included
+    #   outbe_parent_cert_missing_total       - proposer slot forfeits/misses due to unavailable certificate
+    #   outbe_ocomp_finalized_reader_lag_blocks - unified reader backlog to finalized head
+    #   outbe_ocomp_closure_lag_blocks        - finalized history retained by open OCOMP jobs
+    #   outbe_ocomp_discovery_pending_offers  - durable refs awaiting exporter ACK
+    #   outbe_ocomp_finalized_loop_fatal      - sticky node-side reader fatal state
+    #   outbe_ocomp_recovery_open_windows     - validators inside OCOMP recovery windows
+    #   outbe_ocomp_recovery_block_number     - block checked by the per-block recovery sweep
+
+  # Standalone OCOMP roles reuse their loopback-only Salvo observability
+  # server for `/healthz`, `/status`, and `/metrics`. Keep these ports aligned
+  # with the Supervisor address passed to the generated launch-bundle units.
+  - job_name: 'outbe-ocomp-worker'
+    static_configs:
+      - targets:
+          - 'localhost:30403'
+          # The successor ordinal-0 unit uses localhost:30409. Add that target
+          # only while outbe-ocomp-successor-worker@... is enabled; the unit is
+          # normally dormant, so scraping it permanently creates a false alert.
+        labels:
+          chain: 'outbe'
+          role: 'ocomp-worker'
+    metrics_path: /metrics
+
+  - job_name: 'outbe-ocomp-snapshot-exporter'
+    static_configs:
+      - targets:
+          - 'localhost:30413'
+        labels:
+          chain: 'outbe'
+          role: 'ocomp-snapshot-exporter'
+    metrics_path: /metrics

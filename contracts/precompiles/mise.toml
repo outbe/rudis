@@ -1,0 +1,47 @@
+[tasks.install]
+description = "Install dependencies using soldeer"
+run = "forge soldeer install"
+
+[tasks.build]
+description = "Build Solidity contracts using forge"
+run = "forge build"
+
+[tasks.export-abi]
+description = "Export contracts ABI (auto-discovers src/I*.sol)"
+depends = ["build"]
+run = '''
+echo 'Exporting ABI for smart contracts'
+mkdir -p ./abi-export
+rm -rf ./abi-export/*.json
+# Addressed as `<path>:<name>`, not via out/<name>.sol/: a dependency interface
+# sharing a basename with ours would otherwise silently win the artifact slot.
+for sol_file in ./src/I*.sol; do
+  contract=$(basename "$sol_file" .sol)
+  if forge inspect "${sol_file#./}:${contract}" abi --json > ./abi-export/${contract}.json 2>/dev/null; then
+    echo "  exported ${contract}"
+  else
+    rm -f ./abi-export/${contract}.json
+    echo "  WARNING: no compiled artifact for ${contract}" >&2
+  fi
+done
+'''
+
+[tasks.test]
+description = "Test Solidity contracts using forge"
+run = "forge test"
+
+[tasks.fmt]
+description = "Format code"
+run = "forge fmt"
+
+[tasks.clean]
+description = "Clean up forge artifacts"
+run = "forge clean"
+
+[tasks.clean-all]
+description = "Clean all build artifacts, and caches"
+depends = ["clean"]
+run = '''
+forge soldeer clean
+rm -rf ./out ./build ./cache
+'''

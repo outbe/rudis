@@ -1,0 +1,394 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "outbe-overview",
+    "title": "Outbe Chain Overview",
+    "tags": ["outbe", "blockchain", "validator"],
+    "timezone": "browser",
+    "schemaVersion": 39,
+    "version": 1,
+    "refresh": "10s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "Finalized View",
+        "type": "stat",
+        "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+        "targets": [
+          {
+            "expr": "outbe_finalized_view",
+            "legendFormat": "{{instance}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Proposed Height",
+        "type": "stat",
+        "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+        "targets": [
+          {
+            "expr": "outbe_proposed_height",
+            "legendFormat": "{{instance}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "blue", "value": null }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Validator Count",
+        "type": "stat",
+        "gridPos": { "h": 4, "w": 4, "x": 12, "y": 0 },
+        "targets": [
+          {
+            "expr": "outbe_validator_count",
+            "legendFormat": "validators"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 3 },
+                { "color": "red", "value": 1 }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Tracked Consensus Peer Set",
+        "type": "stat",
+        "gridPos": { "h": 4, "w": 4, "x": 16, "y": 0 },
+        "targets": [
+          {
+            "expr": "commonware_p2p_tracked_peer_set_size",
+            "legendFormat": "peer set"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "red", "value": null },
+                { "color": "yellow", "value": 1 },
+                { "color": "green", "value": 2 }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Epoch Number",
+        "type": "stat",
+        "gridPos": { "h": 4, "w": 4, "x": 20, "y": 0 },
+        "targets": [
+          {
+            "expr": "outbe_epoch_number",
+            "legendFormat": "epoch"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "purple", "value": null }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "Block Production Rate",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+        "targets": [
+          {
+            "expr": "rate(outbe_blocks_proposed_total[5m]) * 60",
+            "legendFormat": "blocks/min"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10
+            }
+          }
+        }
+      },
+      {
+        "id": 7,
+        "title": "Consensus Tip vs Proposed Height",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+        "targets": [
+          {
+            "expr": "outbe_proposed_height",
+            "legendFormat": "proposed"
+          },
+          {
+            "expr": "outbe_consensus_tip_block_height",
+            "legendFormat": "consensus tip"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 0
+            }
+          }
+        }
+      },
+      {
+        "id": 8,
+        "title": "Participation Rate",
+        "type": "gauge",
+        "gridPos": { "h": 6, "w": 8, "x": 0, "y": 12 },
+        "targets": [
+          {
+            "expr": "outbe_participation_rate",
+            "legendFormat": "participation"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 1,
+            "unit": "percentunit",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "red", "value": null },
+                { "color": "yellow", "value": 0.5 },
+                { "color": "green", "value": 0.8 }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 9,
+        "title": "DKG Status",
+        "type": "stat",
+        "gridPos": { "h": 6, "w": 4, "x": 8, "y": 12 },
+        "targets": [
+          {
+            "expr": "outbe_dkg_status",
+            "legendFormat": "status"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              { "type": "value", "options": { "0": { "text": "Idle", "color": "blue" } } },
+              { "type": "value", "options": { "1": { "text": "In Progress", "color": "yellow" } } },
+              { "type": "value", "options": { "2": { "text": "Completed", "color": "green" } } }
+            ],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "blue", "value": null }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 10,
+        "title": "DKG Reshares Completed",
+        "type": "stat",
+        "gridPos": { "h": 6, "w": 4, "x": 12, "y": 12 },
+        "targets": [
+          {
+            "expr": "outbe_reshares_completed_total",
+            "legendFormat": "reshares"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 11,
+        "title": "Views Skipped",
+        "type": "timeseries",
+        "gridPos": { "h": 6, "w": 8, "x": 16, "y": 12 },
+        "targets": [
+          {
+            "expr": "rate(outbe_views_skipped_total[5m]) * 60",
+            "legendFormat": "skipped/min"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "custom": {
+              "drawStyle": "bars",
+              "lineWidth": 1,
+              "fillOpacity": 50
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 1 },
+                { "color": "red", "value": 5 }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 14,
+        "title": "Parent Cert Store Size",
+        "type": "stat",
+        "gridPos": { "h": 6, "w": 6, "x": 0, "y": 18 },
+        "targets": [
+          {
+            "expr": "outbe_parent_cert_store_size",
+            "legendFormat": "records"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 128 },
+                { "color": "red", "value": 256 }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 15,
+        "title": "Parent Cert Handoff Rate",
+        "type": "timeseries",
+        "gridPos": { "h": 6, "w": 18, "x": 6, "y": 18 },
+        "targets": [
+          {
+            "expr": "rate(outbe_parent_cert_included_total[5m])",
+            "legendFormat": "included/s"
+          },
+          {
+            "expr": "rate(outbe_parent_cert_missing_total[5m])",
+            "legendFormat": "missing/s"
+          },
+          {
+            "expr": "rate(outbe_parent_cert_invalid_omitted_total[5m])",
+            "legendFormat": "invalid/s"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "ops",
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 10
+            }
+          }
+        }
+      },
+      {
+        "id": 12,
+        "title": "Blocks Proposed (Total)",
+        "type": "timeseries",
+        "gridPos": { "h": 6, "w": 12, "x": 0, "y": 24 },
+        "targets": [
+          {
+            "expr": "outbe_blocks_proposed_total",
+            "legendFormat": "{{instance}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 5
+            }
+          }
+        }
+      },
+      {
+        "id": 13,
+        "title": "Consensus/Reth Readiness Gap",
+        "type": "timeseries",
+        "gridPos": { "h": 6, "w": 12, "x": 12, "y": 24 },
+        "targets": [
+          {
+            "expr": "outbe_consensus_reth_readiness_gap_blocks",
+            "legendFormat": "readiness gap (blocks)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2,
+              "fillOpacity": 20
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 5 },
+                { "color": "red", "value": 20 }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "overwrite": true
+}

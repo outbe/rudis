@@ -1,0 +1,62 @@
+[package]
+name = "outbe-ocomp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[features]
+default = []
+test-protocol-overrides = []
+
+[[bin]]
+name = "outbe-ocomp"
+path = "src/main.rs"
+
+[dependencies]
+alloy-consensus.workspace = true
+alloy-eips.workspace = true
+alloy-primitives = { workspace = true, features = ["std"] }
+alloy-sol-types.workspace = true
+axum.workspace = true
+bytes.workspace = true
+clap.workspace = true
+hex.workspace = true
+k256.workspace = true
+libc.workspace = true
+metrics.workspace = true
+metrics-exporter-prometheus.workspace = true
+outbe-compressed-entities.workspace = true
+outbe-consensus.workspace = true
+outbe-intex.workspace = true
+outbe-intexfactory.workspace = true
+outbe-lysis.workspace = true
+outbe-metadosis.workspace = true
+outbe-node.workspace = true
+outbe-ocomp-protocol.workspace = true
+outbe-offchain-data.workspace = true
+outbe-offchain-storage.workspace = true
+outbe-oracle.workspace = true
+outbe-primitives.workspace = true
+outbe-tribute.workspace = true
+outbe-zerofee.workspace = true
+reqwest = { workspace = true, features = ["blocking"] }
+salvo.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha3.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+zeroize.workspace = true
+zeromq.workspace = true
+
+[dev-dependencies]
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+alloy-sol-types.workspace = true
+outbe-validatorset.workspace = true
+reth-ethereum.workspace = true
+tempfile.workspace = true
+
+[lints]
+workspace = true

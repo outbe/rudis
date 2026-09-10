@@ -1,0 +1,43 @@
+[package]
+name = "outbe-slashindicator"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-macros.workspace = true
+outbe-primitives.workspace = true
+outbe-validatorset = { path = "../validatorset" }
+outbe-staking = { path = "../staking" }
+outbe-consensus.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+
+# header lookups.
+alloy-consensus = { workspace = true, features = ["k256"] }
+alloy-eips.workspace = true
+blst.workspace = true
+tracing.workspace = true
+metrics.workspace = true
+# the evidence verifier builds the committee-bound vote namespaces from the
+# ordered committee `Set<bls12381::PublicKey>`, sharing the single derivation in
+# `outbe_consensus::proof` - so these are runtime (not just test) dependencies.
+commonware-codec.workspace = true
+commonware-cryptography.workspace = true
+commonware-utils.workspace = true
+
+[dev-dependencies]
+#     we can register in ValidatorSet + put in the committee snapshot.
+#   - commonware-consensus + rand_chacha: build a real BLS+VRF fixture so
+#     verify_v2_proof reaches the VRF check (BLS must pass first).
+alloy-signer.workspace = true
+alloy-signer-local.workspace = true
+commonware-consensus.workspace = true
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+outbe-validatorset = { path = "../validatorset", features = ["test-utils"] }
+rand.workspace = true
+rand_chacha = "0.3"
+
+[lints]
+workspace = true

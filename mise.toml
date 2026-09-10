@@ -1,0 +1,335 @@
+[tools]
+# -- Core -------------------------------------------------------------- #
+rust = "1.96"                      # build outbe-chain + all crates
+foundry = "latest"                 # forge, cast, anvil (Solidity + Ethereum CLI)
+
+# -- System deps ----------------------------------- #
+# These must come from the system package manager:
+#   - gcc / clang   (C/C++ toolchain for native crates)
+#   - openssl       (linked by openssl-sys; pkg-config locates it)
+# macOS: `brew install openssl pkg-config` (clang ships with Xcode CLT)
+# Debian/Ubuntu: `sudo apt install build-essential clang libssl-dev pkg-config libc++-dev libc++abi-dev`
+
+# -- Cargo tools ------------------------------------------------------- #
+# Core tools needed by build/test/audit tasks. The heavier audit toolchain
+# (machete, udeps, bloat, llvm-lines, llvm-cov) is installed on
+# demand by `mise run audit-tools-install` to mirror the old Makefile.
+"cargo:cargo-binstall"  = "latest"
+"cargo:cargo-nextest"   = "latest"
+"cargo:cargo-deny"      = "latest"
+"cargo:cargo-auditable" = "latest"
+"cargo:cargo-audit"     = "latest"
+
+# -- Release / versioning ---------------------------------------------- #
+cocogitto = "7"                    # `cog` - conventional-commit check + auto-version bump
+duckdb = "latest"
+
+[env]
+# Localnet harness knobs (override per-invocation, e.g. `OUT_DIR=/tmp/x mise run localnet`).
+OUT_DIR            = "/tmp/outbe-testnet"
+VALIDATORS         = "4"
+# radicle-node (outbe-heartwood) bakes this in at compile time via `env!`;
+# without it every workspace-wide build fails. Release builds pass their own
+# value through the reproducible-build container args.
+SOURCE_DATE_EPOCH  = "0"
+# SEED_FILE is optional; localnet-bootstrap branches on whether it is set.
+# The persistent Rust harness owns RocksDB storage, mock enclaves, and
+# validator processes for the complete localnet-start -> localnet-stop lifetime.
+
+# --- Build ------------------------------------------------------------ #
+
+[tasks.build]
+description = "Build the workspace (debug, cargo auditable)"
+run = [
+  "cargo auditable build",
+  "cargo auditable build -p outbe-tee-enclave --features mock --bin outbe-tee-enclave-mock",
+]
+
+[tasks.build-release]
+description = "Build the workspace (release, cargo auditable)"
+run = "cargo auditable build --release"
+
+# --- Format / Lint ---------------------------------------------------- #
+
+[tasks.export-abi]
+description = "Regenerate contracts/*/abi-export from Solidity (Rust reads the .sol; the MCP reads these JSONs)"
+run = "mise run -C contracts export-abi"
+
+[tasks.fmt]
+description = "Format all Rust code"
+run = "cargo fmt --all"
+
+[tasks.fmt-check]
+description = "Check formatting without writing changes"
+run = "cargo fmt --all --check"
+
+[tasks.lint]
+description = "Run clippy on all crates"
+# No --all-features: it would turn on outbe-tee's `native-dcap`, whose build.rs
+# links the pinned Intel SGX/DCAP toolchain (headers + .so) that only exists on
+# the gramine-sgx build. Lint native-dcap only where that toolchain is present.
+run = """
+cargo clippy --all-targets -- -D warnings
+if [ -f /usr/include/sgx_dcap_quoteverify.h ]; then
+  cargo clippy -p outbe-tee --all-targets --features native-dcap -- -D warnings
+fi
+"""
+
+[tasks.check]
+description = "Type-check the workspace"
+run = "cargo check --workspace"
+
+# --- Test ------------------------------------------------------------- #
+
+[tasks.test]
+description = "Run the default test suite (cargo nextest run + cargo test --doc)"
+run = [
+  "cargo nextest run --workspace",
+  "cargo test --doc --workspace",
+]
+
+[tasks.test-doc]
+description = "Run workspace doctests only (nextest skips doctests)"
+run = "cargo test --doc --workspace"
+
+[tasks.test-consensus]
+description = "Run consensus crate tests via nextest"
+run = "cargo nextest run -p outbe-consensus"
+
+[tasks.nextest-install]
+description = "Install cargo-nextest locally (one-shot helper)"
+run = "cargo install --locked cargo-nextest"
+
+# --- Audit (RustSec on built binaries) -------------------------------- #
+
+[tasks.audit]
+description = "Audit debug binaries for known vulnerabilities"
+depends = ["build"]
+run = "find target/debug -maxdepth 1 -type f -perm +111 -name 'outbe-*' -exec cargo audit --db ~/.cargo/rustsec-audit-db --ignore RUSTSEC-2025-0055 --ignore RUSTSEC-2026-0118 --ignore RUSTSEC-2026-0119 bin {} \\;"
+
+[tasks.audit-release]
+description = "Audit release binaries for known vulnerabilities"
+depends = ["build-release"]
+run = "find target/release -maxdepth 1 -type f -perm +111 -name 'outbe-*' -exec cargo audit --db ~/.cargo/rustsec-audit-db --ignore RUSTSEC-2025-0055 --ignore RUSTSEC-2026-0118 --ignore RUSTSEC-2026-0119 bin {} \\;"
+
+# --- Audit toolchain (rust-module-audit skill entry points) ----------- #
+
+[tasks.audit-tools-install]
+description = "Install full cargo audit toolchain + nightly + miri/llvm components"
+run = [
+  "cargo install --locked cargo-nextest cargo-machete cargo-deny cargo-audit cargo-llvm-cov cargo-llvm-lines cargo-bloat",
+  "cargo install --locked cargo-udeps",
+  "rustup toolchain install nightly",
+  "rustup +nightly component add miri rust-src",
+  "rustup component add llvm-tools-preview clippy rustfmt",
+]
+
+[tasks.audit-quick]
+description = "Fast cycle: clippy -D warnings + cargo nextest run"
+run = [
+  "cargo clippy --all-targets -- -D warnings",
+  "cargo nextest run --workspace",
+]
+
+[tasks.audit-consensus-deps]
+description = "Ensure consensus has no transitive dependency on the EVM"
+run = "bash scripts/check-consensus-deps.sh"
+
+[tasks.audit-full]
+description = "Full cycle: machete + deny + rustsec + udeps"
+depends = ["audit-machete", "audit-deny", "audit-rustsec", "audit-udeps"]
+
+[tasks.audit-deny]
+description = "cargo deny check (licenses, advisories, bans, sources)"
+run = "cargo deny check"
+
+[tasks.audit-rustsec]
+description = "cargo audit (RustSec workspace dependency advisories)"
+# Keep the adjudicated exceptions aligned with deny.toml and cve-scan.yml.
+# RUSTSEC-2026-0118/-0119 are not applicable because Outbe disables DNS
+# discovery and does not enable Hickory DNSSEC. cargo-deny uses a hashed
+# database layout under ~/.cargo/advisory-db, so cargo-audit needs its own path.
+run = "cargo audit --db ~/.cargo/rustsec-audit-db --ignore RUSTSEC-2025-0055 --ignore RUSTSEC-2026-0118 --ignore RUSTSEC-2026-0119"
+
+[tasks.audit-machete]
+description = "cargo machete (unused workspace dependencies)"
+run = "cargo machete"
+
+[tasks.audit-udeps]
+description = "cargo +nightly udeps --workspace --all-targets"
+run = "cargo +nightly udeps --workspace --all-targets"
+
+[tasks.audit-miri]
+description = "cargo +nightly miri test --lib (UB / unsafe surface)"
+run = "cargo +nightly miri test --lib"
+
+[tasks.audit-bloat]
+description = "cargo bloat --release --crates -n 30"
+run = "cargo bloat --release --crates -n 30"
+
+[tasks.audit-llvm-lines]
+description = "cargo llvm-lines --release | head -50"
+run = "cargo llvm-lines --release | head -50"
+
+[tasks.audit-coverage]
+description = "cargo llvm-cov nextest --html (HTML coverage report)"
+run = "cargo llvm-cov nextest --workspace --html"
+
+[tasks.audit-bench]
+description = "cargo bench (criterion baseline; configure benches per crate)"
+run = "cargo bench --workspace"
+
+# --- Localnet --------------------------------------------------------- #
+
+[tasks.localnet-bootstrap]
+description = "Bootstrap a fresh dev/mock LocalNet through the LocalNet runner"
+run = """
+if [ -z "${SEED_FILE:-}" ]; then
+  ./target/release/outbe-e2e localnet bootstrap --repo . --data-dir "$OUT_DIR" --validators "$VALIDATORS"
+else
+  ./target/release/outbe-e2e localnet bootstrap --repo . --data-dir "$OUT_DIR" --validators "$VALIDATORS" --seed "$SEED_FILE"
+fi
+"""
+
+[tasks.localnet-start]
+description = "Start the persistent dev/mock LocalNet owner and wait for all RPCs to advance"
+run = './target/release/outbe-e2e localnet start --repo . --data-dir "$OUT_DIR" --validators "$VALIDATORS"'
+
+[tasks.localnet-stop]
+description = "Stop the exact persistent LocalNet owner in OUT_DIR"
+run = './target/release/outbe-e2e localnet stop --repo . --data-dir "$OUT_DIR" --validators "$VALIDATORS"'
+
+[tasks.localnet-status]
+description = "Show the owner and every validator RPC height"
+run = './target/release/outbe-e2e localnet status --repo . --data-dir "$OUT_DIR" --validators "$VALIDATORS"'
+
+[tasks.localnet]
+description = "Build release binaries, bootstrap, and start the dev/mock LocalNet"
+run = """
+cargo build --release -p outbe-chain --features test-protocol-overrides --bin outbe-chain
+cargo build --release -p outbe-ocomp --bin outbe-ocomp -p outbe-cli --bin outbe-cli -p outbe-keygen --bin outbe-keygen
+cargo build --locked --release -p outbe-radicle-sidecar --bin outbe-radicle
+cargo build --release -p outbe-tee-enclave --features mock --bin outbe-tee-enclave-mock
+mise run localnet-bootstrap
+mise run localnet-start
+"""
+
+[tasks.localnet-restart]
+description = "Stop and start the bootstrapped localnet"
+run = """
+mise run localnet-stop
+mise run localnet-start
+"""
+
+[tasks.localnet-clean]
+description = "Stop LocalNet and clear validator runtime data inside dedicated OUT_DIR"
+run = """
+mise run localnet-stop
+./scripts/clean-testnet-data.sh "$OUT_DIR"
+"""
+
+[tasks.localnet-smoke]
+description = "Dev/mock consensus smoke through the canonical harness"
+run = """
+mise run localnet-bootstrap
+mise run localnet-start
+mise run localnet-status
+mise run localnet-stop
+"""
+
+[tasks.localnet-stack-start]
+description = "Start or resume a 4-validator localnet with mock TEE and RocksDB by default"
+run = "bash ./scripts/localnet-stack.sh start"
+
+[tasks.localnet-stack-stop]
+description = "Stop the managed localnet (keep chain data)"
+run = "bash ./scripts/localnet-stack.sh stop"
+
+[tasks.localnet-stack-clean]
+description = "Stop the managed localnet, then remove chain data"
+run = "bash ./scripts/localnet-stack.sh clean"
+
+[tasks.localnet-sgx-bootstrap]
+description = "Deferred real-SGX LocalNet bootstrap (tracked by outbe-chain-8lp)"
+run = './target/release/outbe-e2e localnet-sgx bootstrap --repo . --data-dir "${OUT_DIR}-sgx" --validators "$VALIDATORS"'
+
+[tasks.localnet-sgx-start]
+description = "Deferred real-SGX LocalNet start (tracked by outbe-chain-8lp)"
+run = './target/release/outbe-e2e localnet-sgx start --repo . --data-dir "${OUT_DIR}-sgx" --validators "$VALIDATORS"'
+
+[tasks.localnet-sgx-status]
+description = "Deferred real-SGX LocalNet status (tracked by outbe-chain-8lp)"
+run = './target/release/outbe-e2e localnet-sgx status --repo . --data-dir "${OUT_DIR}-sgx" --validators "$VALIDATORS"'
+
+[tasks.localnet-sgx-stop]
+description = "Deferred real-SGX LocalNet stop (tracked by outbe-chain-8lp)"
+run = './target/release/outbe-e2e localnet-sgx stop --repo . --data-dir "${OUT_DIR}-sgx" --validators "$VALIDATORS"'
+
+[tasks.tribute-offer]
+description = "Create one encrypted Tribute on the running managed localnet"
+run = "bash ./scripts/tribute-demo-actions.sh offer"
+
+[tasks.tribute-show-mongo]
+description = "Show the Tribute from the most recent tribute-offer in every validator MongoDB projection"
+run = "bash ./scripts/tribute-demo-actions.sh show-mongo"
+
+# Full Rust/Cucumber gramine-mock TEE e2e suite.
+# Builds the node, CLI, keygen, and mock enclave, then runs every feature.
+# Requires sudo + Docker; the `outbe-tee-enclave-gramine-test` image (joiner
+# enclave). Runnable on any box with gramine-direct (no SGX hardware required for
+# the mock); the real-SGX smoke is `sgx-smoke`.
+
+# --- Off-chain Computation PoC --------------------------------------- #
+#
+# These names are the stable surfaces frozen by the OCOMP PoC plan. OCM-00
+# intentionally leaves future lanes fail-closed: only the named task-progress
+# command may pass while later stable IDs are still reported as MISSING.
+
+# The hardware lane must be distinct from `e2e`: the default suite intentionally
+# uses gramine-direct/mock so it runs on developer machines. This task builds the
+# real enclave binary and makes the harness request gramine-sgx containers.
+
+[tasks.release-sgx-prepare]
+description = "Prepare an unsigned deterministic SGX bundle for an explicit production network"
+run = 'cargo xtask release sgx prepare "$@"'
+
+[tasks.release-sgx-compare]
+description = "Compare two independently prepared unsigned SGX bundles"
+run = 'cargo xtask release sgx compare "$@"'
+
+[tasks.release-sgx-sign]
+description = "Sign an unsigned SGX bundle with an explicitly supplied network release key"
+run = 'cargo xtask release sgx sign "$@"'
+
+[tasks.release-sgx-verify]
+description = "Verify a pre-signed network SGX bundle and its SIGSTRUCT"
+run = 'cargo xtask release sgx verify "$@"'
+
+[tasks.release-sgx-archive]
+description = "Archive a verified signed network SGX bundle deterministically"
+run = 'cargo xtask release sgx archive "$@"'
+
+[tasks.release-sgx-image]
+description = "Build an immutable OCI image from a verified signed SGX bundle"
+run = 'cargo xtask release sgx image "$@"'
+
+[tasks.release-sgx-manifest]
+description = "Assemble a network-bound ReleaseManifest from exact SGX release evidence"
+run = 'cargo xtask release sgx manifest "$@"'
+
+# Tribute-offer enclave throughput. Two layers:
+#  1) criterion micro-bench: pure in-enclave CPU cost per offer;
+#  2) e2e test: same path INCLUDING the Noise/UDS transport round-trip.
+[tasks.bench-tribute]
+description = "Tribute-offer enclave throughput (criterion micro-bench + e2e transport)"
+run = """
+cargo bench -p outbe-tee-enclave --bench tribute_offer_throughput
+cargo test -p outbe-tee-enclave --release --test transport \
+  transport_throughput_offers_per_sec -- --ignored --nocapture
+"""
+
+# Production throughput figure: drive offers through the enclave under REAL
+# gramine-sgx. Requires gramine + SGX hardware; SKIPs on non-SGX boxes.
+[tasks.bench-tribute-sgx]
+description = "Production tribute throughput under real gramine-sgx"
+run = "./scripts/sgx-bench.sh"

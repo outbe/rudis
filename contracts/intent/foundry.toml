@@ -1,0 +1,75 @@
+# Full reference https://github.com/foundry-rs/foundry/tree/master/crates/config
+
+[profile.default]
+  bytecode_hash = "none"
+  cbor_metadata = false
+  evm_version = "Prague"
+  gas_reports = ["*"]
+  optimizer = true
+  optimizer_runs = 10_000
+  via_ir = true
+  dynamic_test_linking = true
+  out = "out"
+  script = "script"
+  solc = "0.8.30"
+  src = "src"
+  test = "test"
+  libs = ["dependencies"]
+  remappings = [
+    "@openzeppelin/contracts/=dependencies/openzeppelin-contracts-5.6.1/contracts/",
+    "forge-std/=dependencies/forge-std-1.8.1/src/",
+    "the-compact/=dependencies/the-compact-1.0.0/",
+    "solady/=dependencies/the-compact-1.0.0/lib/solady/src/",
+    "@shared/=../shared/src/",
+  ]
+  # @shared files import their own vendored deps by relative path, which land outside this project.
+  allow_paths = ["../shared/src"]
+
+
+[profile.ci]
+  fuzz = { runs = 10_000 }
+  verbosity = 4
+
+[etherscan]
+  mainnet = { key = "${API_KEY_ETHERSCAN}" }
+  optimism = { key = "${API_KEY_OPTIMISTIC_ETHERSCAN}" }
+  arbitrum = { key = "${API_KEY_ARBISCAN}" }
+  base = { key = "${API_KEY_BASESCAN}" }
+
+
+  avalanche = { key = "${API_KEY_SNOWTRACE}" }
+  bnb_smart_chain = { key = "${API_KEY_BSCSCAN}" }
+  goerli = { key = "${API_KEY_ETHERSCAN}" }
+  polygon = { key = "${API_KEY_POLYGONSCAN}" }
+  sepolia = { key = "${API_KEY_ETHERSCAN}" }
+
+[rpc_endpoints]
+  outbe-dev="https://eth.d.outbe.net"
+  bsc-testnet="https://cosmopolitan-solemn-emerald.bsc-testnet.quiknode.pro/10f3eba8ae928e9655a53773651d528c78a45b4c/"
+  outbe-testnet="${OUTBE_RPC_URL}"
+
+[lint]
+exclude_lints = ["mixed-case-function", "mixed-case-variable", "pascal-case-struct", "unsafe-cheatcode", "unsafe-typecast"]
+
+[fuzz]
+runs = 1000
+max_test_rejects = 65536
+
+[invariant]
+runs = 256
+depth = 15
+fail_on_revert = false
+show_metrics = true
+
+[soldeer]
+# Remappings are maintained by hand in foundry.toml [profile.default];
+# do not let soldeer regenerate/overwrite them.
+remappings_generate = false
+# Fetch a git dependency's own submodules on restore (the-compact needs solady/forge-std),
+# so a clean `forge soldeer install` reproduces the full tree.
+recursive_deps = true
+
+[dependencies]
+the-compact = { version = "1.0.0", git = "https://github.com/Uniswap/the-compact", tag = "V1" }
+forge-std = { version = "1.8.1", git = "https://github.com/foundry-rs/forge-std", tag = "v1.8.1" }
+openzeppelin-contracts = { version = "5.6.1", git = "https://github.com/OpenZeppelin/openzeppelin-contracts", rev = "5a3b28fc5bd3976da5ea38d90d88ba26f1e0a335" }

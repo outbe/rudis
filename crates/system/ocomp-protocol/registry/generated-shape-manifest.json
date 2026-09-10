@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "classification": "measurement_only",
+  "armable": false,
+  "generator": {
+    "invocation": "cargo xtask ocomp shape",
+    "source_sha256": "03d1fb4ec66fd75c07e858ea42b623b244417c9d2a3ce5f3a075f840ae818360",
+    "input_set_sha256": "b372126e8ff1eae8816b803fae03163d9f775cd2629bc92db45b93720f8247ed"
+  },
+  "registries": {
+    "object_domain_list_sha256": "2b464828701915959a259d29715597028f828206b7f1fc9b04227300734d5bf6",
+    "input_codecs_sha256": "b4d5b14491b0b5d6d5f26426804c64ba98f249e676f1fad2706c9d1a8e0afa65",
+    "canonical_schema_sha256": "d51a705e2d9b86e59907de232905823ba9214cc6860c5f9993e131b392234394",
+    "domain_preimage_sha256": "b5fcdf3d20b347bff2246e290ab2f008654cc23f7a97159c9c1bb94d8042d821",
+    "object_count": 36,
+    "tribute_body_codec_id": "52e3d1c35620ae70cc1da8e840348c60c4b58971960badea704a37fe3340ffca",
+    "fidelity_opening_codec_id": "3d3ac5818fb82e51c3041e24e9ff36cc5fdce8dbdb74da1fbf3978ff0e19de1a",
+    "oracle_opening_codec_id": "42efe0c9482a70a564d346943285b5f548ea2164450a9f765ddb72e02ebda9d1",
+    "opening_codec_registry_hash": "9315d690c6de3e636622dcc7111cb5766e36b9b14d57a86f0fd11e374e5154a9"
+  },
+  "profiles": {
+    "correctness_profile_sha256": "e400f91e97aea2367adfacd0e7f684cce9d00615be57a5d82e5fbcddbca754b2",
+    "candidate_compile_ceiling_sha256": "a3c6ad4cf52140a9ebfc48eef7aafb8af80af59104f0070d09959cd042b13150",
+    "minimum_devnet_hardware_profile_sha256": "a54ca8d53824f9dcf439267cbd93a939d3f09823703d1678540acb9a588720b7",
+    "headroom_policy_sha256": "3a44462d5a5a61bb9065dce7549f727b160757ec50ac574ebe69121feeaa0aaf",
+    "bundle_template_sha256": "b90b8bde19bc4896e9c9f5040d77f8c87528f1bc6c2d8276f7a006d0bde26eb3"
+  },
+  "independent_verification": {
+    "result": "PASS",
+    "method": "generated envelope vectors are independently reconstructed and decoded by OCM-BYT-001"
+  },
+  "network_binding": {
+    "chain_id": null,
+    "genesis_hash": null,
+    "committee_snapshot_hash": null,
+    "protocol_bundle_hash": null,
+    "capacity_profile_hash": null,
+    "network_manifest_hash": null
+  }
+}

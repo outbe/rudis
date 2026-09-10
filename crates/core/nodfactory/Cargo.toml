@@ -1,0 +1,47 @@
+[package]
+name = "outbe-nodfactory"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-common.workspace = true
+outbe-chain-constants.workspace = true
+outbe-compressed-entities.workspace = true
+outbe-ocomp-protocol.workspace = true
+outbe-primitives.workspace = true
+outbe-nod.workspace = true
+outbe-vaultrouter.workspace = true
+outbe-paynote.workspace = true
+outbe-gratisfactory.workspace = true
+outbe-validatorset.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+thiserror.workspace = true
+hex.workspace = true
+
+[dev-dependencies]
+outbe-nod = { workspace = true, features = ["test-utils"] }
+# Real PayNote proofs for the cost-discharge tests.
+outbe-paynote = { workspace = true, features = ["test-utils"] }
+outbe-validatorset = { workspace = true, features = ["test-utils"] }
+outbe-offchain-storage.workspace = true
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+# `test-enclave` drives the confidential Gratis path in `mine_gratis` tests via
+# the in-process enclave engine; unioned into the gratis dep for test builds.
+outbe-gratis = { workspace = true, features = ["test-enclave"] }
+outbe-tee.workspace = true
+outbe-tee-enclave.workspace = true
+alloy-primitives = { workspace = true, features = ["rand"] }
+revm.workspace = true
+
+[features]
+default = []
+test-utils = ["outbe-primitives/test-utils"]
+
+[package.metadata.cargo-machete]
+ignored = ["hex"]
+
+[lints]
+workspace = true

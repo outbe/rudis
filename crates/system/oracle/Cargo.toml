@@ -1,0 +1,23 @@
+[package]
+name = "outbe-oracle"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-macros.workspace = true
+outbe-chain-constants.workspace = true
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+outbe-validatorset.workspace = true
+outbe-staking.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
+outbe-validatorset = { workspace = true, features = ["test-utils"] }
+
+[lints]
+workspace = true

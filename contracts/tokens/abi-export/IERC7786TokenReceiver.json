@@ -1,0 +1,36 @@
+[
+  {
+    "type": "function",
+    "name": "onCrosschainTokensReceived",
+    "inputs": [
+      {
+        "name": "sourceDomain",
+        "type": "uint32",
+        "internalType": "uint32"
+      },
+      {
+        "name": "from",
+        "type": "bytes",
+        "internalType": "bytes"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "extraData",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes4",
+        "internalType": "bytes4"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  }
+]

@@ -1,0 +1,38 @@
+/target
+*.swp
+*.swo
+*.pyc
+__pycache__/
+.DS_Store
+piolium
+
+# Ruler-generated local tool output.
+.codex/
+.claude/
+.cursor/
+.grok/
+
+# Pi project-local packages (if using pi install -l)
+.serena
+/.vscode
+
+.idea
+/e2e/evm/out
+/e2e/evm/cache
+
+# codegraph index (local code-intelligence cache)
+/.codegraph
+
+# Barretenberg CRS downloaded/generated for local proving and verification.
+/.bb-crs/
+/contracts/account-abstraction/lib/kernel/broadcast
+/.ruler
+
+target-docker/
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
+.beads/proxieddb/
+.beads

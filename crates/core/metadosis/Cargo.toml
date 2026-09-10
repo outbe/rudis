@@ -1,0 +1,49 @@
+[package]
+name = "outbe-metadosis"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-chain-constants.workspace = true
+outbe-macros.workspace = true
+outbe-compressed-entities.workspace = true
+outbe-consensus.workspace = true
+outbe-ocomp-protocol.workspace = true
+outbe-ocompregistry.workspace = true
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+outbe-desis.workspace = true
+outbe-fidelity.workspace = true
+outbe-intex.workspace = true
+outbe-tribute.workspace = true
+outbe-validatorset.workspace = true
+outbe-nod.workspace = true
+outbe-nodfactory.workspace = true
+outbe-promislimit.workspace = true
+outbe-lysis.workspace = true
+outbe-oracle.workspace = true
+outbe-staking.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+k256 = { workspace = true, optional = true }
+
+[dev-dependencies]
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+k256.workspace = true
+num-bigint.workspace = true
+outbe-offchain-storage.workspace = true
+outbe-validatorset = { workspace = true, features = ["test-utils"] }
+proptest.workspace = true
+# Drive the confidential Fidelity league snapshot in tests via the in-process engine.
+outbe-fidelity = { workspace = true, features = ["test-enclave"] }
+
+[features]
+default = []
+bench-utils = []
+test-utils = ["dep:k256", "outbe-validatorset/test-utils"]
+
+[lints]
+workspace = true

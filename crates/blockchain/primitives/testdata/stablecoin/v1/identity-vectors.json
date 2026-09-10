@@ -1,0 +1,33 @@
+{
+  "generator": "Foundry cast 1.7.1 (independent Keccak/address fixture)",
+  "vectors": [
+    {
+      "name": "example",
+      "chainId": 1,
+      "factory": "0x000000000000000000000000000000000000ee10",
+      "issuer": "0x1111111111111111111111111111111111111111",
+      "ticker": "EXUSD",
+      "prefix": "0xabcd",
+      "preimage": "0x4f555442455f535441424c45434f494e5f56310000000000000001000000000000000000000000000000000000ee101111111111111111111111111111111111111111054558555344",
+      "tokenId": "0x755e3654a0aeca05302d857a61b3b5568391aa232879f08daa2a3bb3b4a1feb9",
+      "token": "0xabcdb5568391aa232879f08daa2a3bb3b4a1feb9"
+    },
+    {
+      "name": "u64-max-and-max-ticker",
+      "chainId": 18446744073709551615,
+      "factory": "0x2222222222222222222222222222222222222222",
+      "issuer": "0x3333333333333333333333333333333333333333",
+      "ticker": "A12345678901",
+      "prefix": "0x1234",
+      "preimage": "0x4f555442455f535441424c45434f494e5f5631ffffffffffffffff222222222222222222222222222222222222222233333333333333333333333333333333333333330c413132333435363738393031",
+      "tokenId": "0x4bef15f6b34d48f0ad78bd7977c170429964fe2ccb63d6be8c73d2d1822d587f",
+      "token": "0x123470429964fe2ccb63d6be8c73d2d1822d587f"
+    }
+  ],
+  "tailCollision": {
+    "prefix": "0xcdef",
+    "firstTokenId": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaa00112233445566778899aabbccddeeff0011",
+    "secondTokenId": "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbb00112233445566778899aabbccddeeff0011",
+    "token": "0xcdef00112233445566778899aabbccddeeff0011"
+  }
+}

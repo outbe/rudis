@@ -1,0 +1,15 @@
+[Unit]
+Description=Outbe Validator stack
+Requires=outbe-mongodb.service
+Requires=outbe-enclave.service
+Requires=outbe-radicle.service
+Requires=outbe-validator.service
+Requires=outbe-feeder.service
+Requires=outbe-ocomp-exporter.service
+Requires=outbe-ocomp-worker@0.service
+After=outbe-mongodb.service outbe-enclave.service outbe-radicle.service
+After=outbe-validator.service outbe-feeder.service
+After=outbe-ocomp-exporter.service outbe-ocomp-worker@0.service
+
+[Install]
+WantedBy=multi-user.target

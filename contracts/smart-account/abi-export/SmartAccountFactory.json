@@ -1,0 +1,285 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "kernelFactory_",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "sudoPolicy_",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "bundleModulePlugin_",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "callerHook_",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "bundleSpendProtectorHook_",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "withdrawalLimitPolicy_",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "ecdsaSigner_",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "bundleWithdrawHook_",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "CCA_REGISTRY",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "DAILY_LIMIT",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "LIMIT_INTERVAL",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint48",
+        "internalType": "uint48"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "bundleModulePlugin",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "bundleSpendProtectorHook",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "bundleWithdrawHook",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "callerHook",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "createAccount",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "cca",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "bundleTokens",
+        "type": "address[]",
+        "internalType": "address[]"
+      },
+      {
+        "name": "bundleSenders",
+        "type": "address[]",
+        "internalType": "address[]"
+      },
+      {
+        "name": "salt",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "ecdsaSigner",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getAccountAddress",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "cca",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "bundleTokens",
+        "type": "address[]",
+        "internalType": "address[]"
+      },
+      {
+        "name": "bundleSenders",
+        "type": "address[]",
+        "internalType": "address[]"
+      },
+      {
+        "name": "salt",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "kernelFactory",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "sudoPolicy",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "withdrawalLimitPolicy",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "error",
+    "name": "CcaNotActive",
+    "inputs": [
+      {
+        "name": "cca",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "state",
+        "type": "uint8",
+        "internalType": "enum ICca.State"
+      }
+    ]
+  }
+]

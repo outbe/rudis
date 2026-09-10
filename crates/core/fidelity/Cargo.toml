@@ -1,0 +1,38 @@
+[package]
+name = "outbe-fidelity"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+outbe-macros.workspace = true
+outbe-primitives.workspace = true
+outbe-tee.workspace = true
+outbe-fidelity-math.workspace = true
+alloy-primitives.workspace = true
+alloy-sol-types.workspace = true
+
+# In-process enclave engine for the `test-enclave` seam (see enclave_client.rs).
+# Optional: pulled in only when a downstream crate enables `test-enclave` to
+# drive the confidential Fidelity path without a real SGX sidecar. Reaches the
+# enclave via the leaf math crate only (no cycle).
+outbe-tee-enclave = { workspace = true, optional = true }
+
+[dev-dependencies]
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+serde_json.workspace = true
+# Fidelity's own tests run the confidential path against the in-process engine.
+outbe-tee-enclave.workspace = true
+# Sign EIP-191 owner authorizations for the query-path tests.
+k256.workspace = true
+
+[features]
+default = []
+test-utils = ["outbe-primitives/test-utils"]
+# Exposes the in-process enclave stand-in so other crates' tests can drive the
+# confidential Fidelity path (mirrors gratis' `test-enclave`).
+test-enclave = ["dep:outbe-tee-enclave"]
+
+[lints]
+workspace = true

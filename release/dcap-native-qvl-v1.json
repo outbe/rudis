@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "status": "active",
+  "target": "x86_64-unknown-linux-gnu",
+  "gramine_version": "1.9",
+  "intel_dcap": {
+    "runtime_package": "libsgx-dcap-quote-verify",
+    "runtime_package_version": "1.26.100.1-noble1",
+    "development_package": "libsgx-dcap-quote-verify-dev",
+    "development_package_version": "1.26.100.1-noble1",
+    "headers_package": "libsgx-headers",
+    "headers_package_version": "2.29.100.1-noble1",
+    "collateral_major_version": 3,
+    "collateral_minor_version": 1,
+    "qve_report_info": "null",
+    "qve_enabled": false,
+    "tvl_enabled": false,
+    "qpl_or_pccs_during_consensus": false
+  },
+  "build_inputs": [
+    {
+      "role": "qvl-api-header",
+      "package": "libsgx-dcap-quote-verify-dev",
+      "package_version": "1.26.100.1-noble1",
+      "path": "/usr/include/sgx_dcap_quoteverify.h",
+      "size": 18643,
+      "sha256": "22311e0b4332276c315fdc2f792b28197a3d9a7bfd376246fa5fa3c1bef870ef"
+    },
+    {
+      "role": "qve-status-header",
+      "package": "libsgx-headers",
+      "package_version": "2.29.100.1-noble1",
+      "path": "/usr/include/sgx_qve_header.h",
+      "size": 10590,
+      "sha256": "f8994fcb1b56ed938adbf923146b5fed8c3e8d5d7d6827f45342db0a23e56677"
+    },
+    {
+      "role": "sgx-key-header",
+      "package": "libsgx-headers",
+      "package_version": "2.29.100.1-noble1",
+      "path": "/usr/include/sgx_key.h",
+      "size": 4211,
+      "sha256": "8cf1a8ef06f5ede977b15392e23a368b4a78e895fabf9680018d81a8e014c21d"
+    },
+    {
+      "role": "sgx-attributes-header",
+      "package": "libsgx-headers",
+      "package_version": "2.29.100.1-noble1",
+      "path": "/usr/include/sgx_attributes.h",
+      "size": 3773,
+      "sha256": "ba8e81f44a76518920ab086546970d636c2379ca372e0dfb0fef4b3ce78ed8b5"
+    },
+    {
+      "role": "qvl-quote-header",
+      "package": "libsgx-headers",
+      "package_version": "2.29.100.1-noble1",
+      "path": "/usr/include/sgx_ql_quote.h",
+      "size": 4630,
+      "sha256": "d88804c288c15f03958ac6b54d56513ce790ffc190fe32563a178ba5360fc3df"
+    },
+    {
+      "role": "qvl-common-header",
+      "package": "libsgx-headers",
+      "package_version": "2.29.100.1-noble1",
+      "path": "/usr/include/sgx_ql_lib_common.h",
+      "size": 20764,
+      "sha256": "2bc3c7ef75c7230bc4b4a1b484800199e791fe78aee7a8161e78e6ebb6fc3c2d"
+    },
+    {
+      "role": "sgx-quote-header",
+      "package": "libsgx-headers",
+      "package_version": "2.29.100.1-noble1",
+      "path": "/usr/include/sgx_quote.h",
+      "size": 6247,
+      "sha256": "1c4582245fffb8b8ca409af2de5810f83ad15f79c17183634757bb913cb51d68"
+    },
+    {
+      "role": "sgx-report-header",
+      "package": "libsgx-headers",
+      "package_version": "2.29.100.1-noble1",
+      "path": "/usr/include/sgx_report.h",
+      "size": 5273,
+      "sha256": "2759b2579a5c62e8889b4296c3f9f6ff7fde2983823c67b825105585b796101b"
+    },
+    {
+      "role": "sgx-defs-header",
+      "package": "libsgx-headers",
+      "package_version": "2.29.100.1-noble1",
+      "path": "/usr/include/sgx_defs.h",
+      "size": 2378,
+      "sha256": "a2be53305ec098f18e9e62550781e7e405c6b4485f87e31d6446bec5a6eefa0b"
+    },
+    {
+      "role": "sgx-quote3-header",
+      "package": "libsgx-headers",
+      "package_version": "2.29.100.1-noble1",
+      "path": "/usr/include/sgx_quote_3.h",
+      "size": 9724,
+      "sha256": "d569890a4c1236e94c13a8673d4006e1542e04a313c26f8cdc2fdc8456a9d6ea"
+    },
+    {
+      "role": "sgx-pce-header",
+      "package": "libsgx-headers",
+      "package_version": "2.29.100.1-noble1",
+      "path": "/usr/include/sgx_pce.h",
+      "size": 5748,
+      "sha256": "ecc31a29dc046bcb6bfea6bc6427600e0d98b43310c6edcc4f9e82284dc70968"
+    }
+  ],
+  "artifacts": [
+    {
+      "role": "qvl",
+      "package": "libsgx-dcap-quote-verify",
+      "package_version": "1.26.100.1-noble1",
+      "path": "/usr/lib/x86_64-linux-gnu/libsgx_dcap_quoteverify.so.1.13.103.0",
+      "install_name": "libsgx_dcap_quoteverify.so.1",
+      "size": 5322424,
+      "sha256": "4745bc5b46cbdc17a78119ae2db08f54b86ff9077c5ab480f378741396365aef",
+      "elf_build_id": "663c0acf2b4673c22c66f01112c5f38d856fd5a5"
+    },
+    {
+      "role": "cxx-runtime",
+      "package": "libstdc++6",
+      "package_version": "14.2.0-4ubuntu2~24.04.1",
+      "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33",
+      "install_name": "libstdc++.so.6",
+      "size": 2592224,
+      "sha256": "1fd75fe70354a416d75aef22bcae68c47bd25d20e2d0568c30b1a9838cf62f11"
+    },
+    {
+      "role": "gcc-runtime",
+      "package": "libgcc-s1",
+      "package_version": "14.2.0-4ubuntu2~24.04.1",
+      "path": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "install_name": "libgcc_s.so.1",
+      "size": 183024,
+      "sha256": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb"
+    }
+  ]
+}

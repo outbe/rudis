@@ -1,0 +1,31 @@
+# Reproducible I1 feasibility harness. This is deliberately separate from the
+# inactive production release manifest, which is activated only in I9.
+
+libos.entrypoint = "{{ entrypoint }}"
+
+loader.log_level = "error"
+loader.insecure__use_cmdline_argv = true
+loader.env.LD_LIBRARY_PATH = "{{ qvl_lib_dir }}:/lib"
+loader.env.TZ = "UTC"
+
+fs.mounts = [
+  { uri = "file:{{ gramine.runtimedir() }}", path = "/lib" },
+  { uri = "file:{{ entrypoint }}", path = "{{ entrypoint }}" },
+  { uri = "file:{{ qvl_lib_dir }}", path = "{{ qvl_lib_dir }}" },
+]
+
+sgx.debug = true
+sgx.edmm_enable = false
+sgx.max_threads = 4
+sgx.remote_attestation = "none"
+sgx.isvprodid = 1
+sgx.isvsvn = 1
+
+sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
+  "file:{{ entrypoint }}",
+  "file:{{ gramine.runtimedir() }}/",
+  "file:{{ qvl_lib_dir }}/libsgx_dcap_quoteverify.so.1",
+  "file:{{ qvl_lib_dir }}/libstdc++.so.6",
+  "file:{{ qvl_lib_dir }}/libgcc_s.so.1",
+]

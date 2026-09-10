@@ -1,0 +1,51 @@
+[package]
+name = "outbe-rpc"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[features]
+default = []
+test-support = []
+
+[dependencies]
+# Internal
+outbe-primitives.workspace = true
+outbe-compressed-entities.workspace = true
+outbe-offchain-data.workspace = true
+outbe-radicle.workspace = true
+outbe-tee.workspace = true
+outbe-validatorset.workspace = true
+outbe-staking.workspace = true
+outbe-rewards.workspace = true
+outbe-slashindicator.workspace = true
+
+# Reth
+reth-ethereum = { workspace = true, features = ["storage-api"] }
+reth-provider.workspace = true
+
+# Alloy
+alloy-primitives.workspace = true
+
+# RPC
+jsonrpsee.workspace = true
+
+# Utilities
+hex.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+eyre.workspace = true
+tokio.workspace = true
+
+[dev-dependencies]
+reth-provider = { workspace = true, features = ["test-utils"] }
+commonware-cryptography.workspace = true
+outbe-primitives = { workspace = true, features = ["test-utils"] }
+outbe-update.workspace = true
+outbe-vote.workspace = true
+alloy-sol-types.workspace = true
+serde_json.workspace = true
+
+[lints]
+workspace = true

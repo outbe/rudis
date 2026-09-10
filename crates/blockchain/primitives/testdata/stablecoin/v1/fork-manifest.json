@@ -1,0 +1,73 @@
+{
+  "manifestVersion": 1,
+  "canonicalSource": "outbe_primitives::stablecoin_fork",
+  "stablecoinSchemaVersion": 1,
+  "activation": {
+    "mode": "genesis",
+    "namespaceReservation": "reserved-in-genesis",
+    "supportedNetworks": [
+      "outbe-devnet-1-fresh-genesis",
+      "rudis-rehearsal-fresh-genesis",
+      "outbe-mainnet-1-fresh-genesis"
+    ]
+  },
+  "proposal": {
+    "bondBaseUnits": "1000000000000000000000000",
+    "maxPendingPublicBonded": 16,
+    "maxPendingPublicBondedPerProposer": 1,
+    "absoluteVotePendingCap": 64
+  },
+  "policy": {
+    "memberBatchCap": 64,
+    "memberPagination": "count-plus-list"
+  },
+  "lists": {
+    "maximumPageSize": 100,
+    "minimumPageSize": 1,
+    "ordering": "unspecified",
+    "cursorAndFilters": false
+  },
+  "gas": {
+    "dispatchBase": 200,
+    "storageRead": 100,
+    "storageWrite": 5000,
+    "storageRefund": 0,
+    "nativeColdSurcharge": 0,
+    "ecrecover": 3000,
+    "keccakBase": 30,
+    "keccakWord": 6,
+    "dynamicClassEnumeratedAsWarm": false,
+    "accountAccessOwner": "revm",
+    "formula": "dispatchBase + explicitCryptoAndHash + actualStorageOperations"
+  },
+  "benchmarkBudgets": {
+    "policyAuthorizationGas": 10000,
+    "policyMemberBatchGas": 750000,
+    "transferWithPolicyGas": 100000,
+    "permitGas": 125000,
+    "o1P99Micros": 1000,
+    "batchP99Micros": 5000,
+    "measurementMarginPercent": 125,
+    "gasRoundingQuantum": 10000,
+    "wallTimeClassification": "non-consensus-telemetry"
+  },
+  "eip712": {
+    "domainVersion": "1",
+    "domainFields": [
+      "name",
+      "version",
+      "chainId",
+      "verifyingContract"
+    ]
+  },
+  "tooling": {
+    "owner": "bin/outbe-cli",
+    "maintainedSdk": false,
+    "abiExports": "contract-artifacts-not-sdk-support"
+  },
+  "reopenRules": [
+    "SCF-034-or-SCF-047-measurement-plus-25-percent-rounded-up-to-10000-exceeds-its-gas-ceiling",
+    "nested-and-top-level-calls-do-not-produce-identical-native-charges-for-identical-work",
+    "supported-network-genesis-does-not-preserve-the-reserved-namespace"
+  ]
+}
