@@ -31,7 +31,6 @@ export const OUTBE_CHAINS = {
 export const NETWORK_CHAIN_IDS: Record<string, number> = {
   bscTestnet: 97,
   bsc: 56,
-  outbePrivnet: 512512,
   outbeDevnet: 424242,
   outbeTestnet: 512215,
   outbeTestnetNew: 70860602,

@@ -45,7 +45,6 @@ contract BaseScript is Script {
         if (chainId == 42161) return "arbitrum";
         if (chainId == 10) return "optimism";
         if (chainId == 8453) return "base";
-        if (chainId == 512512) return "outbe-privnet";
         if (chainId == 512215) return "local-reth";
         if (chainId == 70860602) return "outbe-peira";
 

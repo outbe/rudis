@@ -353,7 +353,7 @@ debug = 0
 # which adds the `ctx_dispatch` hook required to expose `&mut Context` to outbe
 # stateful precompiles. Pinned by exact commit revision for reproducible builds.
 [patch.crates-io]
-alloy-evm = { git = "https://github.com/outbedev/alloy-evm", rev = "88e239e601eea130ef6644ffa672970e39332f70" }
+alloy-evm = { git = "https://github.com/outbe/alloy-evm", rev = "88e239e601eea130ef6644ffa672970e39332f70" }
 
 [patch."https://github.com/paradigmxyz/reth.git"]
 reth-transaction-pool = { path = "vendor/reth-transaction-pool" }

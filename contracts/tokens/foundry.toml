@@ -56,7 +56,6 @@ ethereum = { key = "${ETHERSCAN_API_KEY}" }
 bsc = { key = "${BSCSCAN_API_KEY}" }
 sepolia = { key = "${ETHERSCAN_API_KEY}" }
 bsc-testnet = { key = "${ETHERSCAN_API_KEY}", url = "https://api-testnet.bscscan.com/api" }
-outbe-privnet = { key = "${ETHERSCAN_API_KEY}", url = "TODO" }
 
 [soldeer]
 # Remappings are maintained by hand in foundry.toml; do not let soldeer overwrite them.
