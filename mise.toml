@@ -289,34 +289,6 @@ run = "bash ./scripts/tribute-demo-actions.sh show-mongo"
 # uses gramine-direct/mock so it runs on developer machines. This task builds the
 # real enclave binary and makes the harness request gramine-sgx containers.
 
-[tasks.release-sgx-prepare]
-description = "Prepare an unsigned deterministic SGX bundle for an explicit production network"
-run = 'cargo xtask release sgx prepare "$@"'
-
-[tasks.release-sgx-compare]
-description = "Compare two independently prepared unsigned SGX bundles"
-run = 'cargo xtask release sgx compare "$@"'
-
-[tasks.release-sgx-sign]
-description = "Sign an unsigned SGX bundle with an explicitly supplied network release key"
-run = 'cargo xtask release sgx sign "$@"'
-
-[tasks.release-sgx-verify]
-description = "Verify a pre-signed network SGX bundle and its SIGSTRUCT"
-run = 'cargo xtask release sgx verify "$@"'
-
-[tasks.release-sgx-archive]
-description = "Archive a verified signed network SGX bundle deterministically"
-run = 'cargo xtask release sgx archive "$@"'
-
-[tasks.release-sgx-image]
-description = "Build an immutable OCI image from a verified signed SGX bundle"
-run = 'cargo xtask release sgx image "$@"'
-
-[tasks.release-sgx-manifest]
-description = "Assemble a network-bound ReleaseManifest from exact SGX release evidence"
-run = 'cargo xtask release sgx manifest "$@"'
-
 # Tribute-offer enclave throughput. Two layers:
 #  1) criterion micro-bench: pure in-enclave CPU cost per offer;
 #  2) e2e test: same path INCLUDING the Noise/UDS transport round-trip.

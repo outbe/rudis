@@ -2,10 +2,10 @@ use std::path::PathBuf;
 
 use clap::{Args, Parser, Subcommand};
 use eyre::Result;
-use xtask::{ocomp, protocol_bench, release::sgx, stablecoin};
+use xtask::{ocomp, protocol_bench, stablecoin};
 
 #[derive(Debug, Parser)]
-#[command(about = "Outbe repository development and release automation")]
+#[command(about = "Outbe repository development automation")]
 struct Cli {
     #[command(subcommand)]
     command: Command,
@@ -13,8 +13,6 @@ struct Cli {
 
 #[derive(Debug, Subcommand)]
 enum Command {
-    /// Build, verify and publish release artifacts.
-    Release(Box<ReleaseArgs>),
     /// Validate Stablecoin V1 repository and genesis invariants.
     Stablecoin(StablecoinArgs),
     /// Generate and verify Off-chain Computation PoC development artifacts.
@@ -134,159 +132,9 @@ enum StablecoinCommand {
     },
 }
 
-#[derive(Debug, Args)]
-struct ReleaseArgs {
-    #[command(subcommand)]
-    command: ReleaseCommand,
-}
-
-#[derive(Debug, Subcommand)]
-enum ReleaseCommand {
-    /// Prepare, authorize and verify a pre-signed Gramine SGX bundle.
-    Sgx(SgxArgs),
-}
-
-#[derive(Debug, Args)]
-struct SgxArgs {
-    #[command(subcommand)]
-    command: SgxCommand,
-}
-
-// This command is parsed once and immediately executed. Keeping the manifest paths as
-// strongly typed clap fields is clearer than heap-boxing one arbitrary argument solely to
-// equalize enum layout.
-#[allow(clippy::large_enum_variant)]
-#[derive(Debug, Subcommand)]
-enum SgxCommand {
-    /// Prepare an unsigned deterministic Gramine bundle from a verified ELF build.
-    Prepare {
-        #[arg(long, value_enum)]
-        network: sgx::SgxReleaseNetwork,
-        /// Approved seeded ChainSpec. Its chain identity and epoch-0 committee are measured into the enclave.
-        #[arg(long)]
-        genesis: PathBuf,
-        #[arg(long)]
-        elf_output: PathBuf,
-        #[arg(long)]
-        output: PathBuf,
-    },
-    /// Compare two independently prepared unsigned bundles.
-    Compare {
-        #[arg(long)]
-        first: PathBuf,
-        #[arg(long)]
-        second: PathBuf,
-        #[arg(long)]
-        output: PathBuf,
-    },
-    /// Authorize an unsigned bundle with the protected network SGX key.
-    Sign {
-        #[arg(long, value_enum)]
-        network: sgx::SgxReleaseNetwork,
-        #[arg(long)]
-        unsigned: PathBuf,
-        #[arg(long)]
-        key_file: PathBuf,
-        #[arg(long)]
-        output: PathBuf,
-    },
-    /// Materialize the only allowed final-genesis change from a signed bundle.
-    FinalizeGenesis {
-        #[arg(long, value_enum)]
-        network: sgx::SgxReleaseNetwork,
-        /// Approved genesis without teeAttestationV1.
-        #[arg(long)]
-        seeded_genesis: PathBuf,
-        /// Signed SGX bundle whose measurements become the block-1 policy.
-        #[arg(long)]
-        bundle: PathBuf,
-        /// New final genesis; an existing path is never overwritten.
-        #[arg(long)]
-        output: PathBuf,
-        /// Canonical evidence for the seeded-to-final transformation.
-        #[arg(long)]
-        evidence_output: PathBuf,
-    },
-    /// Verify checksums, SIGSTRUCT and the exact final genesis policy binding.
-    Verify {
-        #[arg(long, value_enum)]
-        network: sgx::SgxReleaseNetwork,
-        #[arg(long)]
-        bundle: PathBuf,
-        /// Final genesis whose block-1 policy must authorize this exact bundle.
-        #[arg(long)]
-        genesis: PathBuf,
-    },
-    /// Create a deterministic archive from an already verified signed bundle.
-    Archive {
-        #[arg(long, value_enum)]
-        network: sgx::SgxReleaseNetwork,
-        #[arg(long)]
-        bundle: PathBuf,
-        #[arg(long)]
-        output: PathBuf,
-    },
-    /// Build an immutable OCI image from an already verified signed bundle.
-    Image {
-        #[arg(long, value_enum)]
-        network: sgx::SgxReleaseNetwork,
-        #[arg(long)]
-        bundle: PathBuf,
-        #[arg(long)]
-        image: String,
-        #[arg(long)]
-        output: PathBuf,
-        /// Push by digest and emit BuildKit SBOM/provenance attestations.
-        #[arg(long)]
-        push: bool,
-    },
-    /// Promote one exact ELF, signed SGX bundle and OCI image to a verified ReleaseManifest.
-    Manifest {
-        #[arg(long, value_enum)]
-        network: sgx::SgxReleaseNetwork,
-        #[arg(long)]
-        elf_manifest: PathBuf,
-        #[arg(long)]
-        bundle: PathBuf,
-        #[arg(long)]
-        bundle_archive: PathBuf,
-        #[arg(long)]
-        oci_evidence: PathBuf,
-        #[arg(long)]
-        cosign_image_verification: PathBuf,
-        #[arg(long)]
-        cosign_sbom_verification: PathBuf,
-        #[arg(long)]
-        cosign_provenance_verification: PathBuf,
-        #[arg(long)]
-        sbom: PathBuf,
-        #[arg(long)]
-        elf_evidence: PathBuf,
-        #[arg(long)]
-        sgx_evidence: PathBuf,
-        #[arg(long)]
-        hardware_evidence: PathBuf,
-        #[arg(long)]
-        processor_dcap_archive: PathBuf,
-        #[arg(long)]
-        processor_dcap_evidence: PathBuf,
-        /// Approved genesis before the release policy is inserted.
-        #[arg(long)]
-        seeded_genesis: PathBuf,
-        /// Canonical evidence for the seeded-to-final genesis transformation.
-        #[arg(long)]
-        network_binding_evidence: PathBuf,
-        /// Final network genesis whose block-1 policy authorizes this enclave.
-        #[arg(long)]
-        genesis: PathBuf,
-        #[arg(long)]
-        output: PathBuf,
-    },
-}
-
 fn main() -> Result<()> {
     let cli = Cli::parse();
-    let repo_root = sgx::repository_root()?;
+    let repo_root = xtask::repository_root()?;
     match cli.command {
         Command::ProtocolBench(arguments) => {
             let (action, options) = match arguments.command {
@@ -349,140 +197,6 @@ fn main() -> Result<()> {
             OcompCommand::Shape { check } => {
                 ocomp::shape::run(&repo_root, check)?;
             }
-        },
-        Command::Release(release) => match release.command {
-            ReleaseCommand::Sgx(sgx_args) => match sgx_args.command {
-                SgxCommand::Prepare {
-                    network,
-                    genesis,
-                    elf_output,
-                    output,
-                } => {
-                    sgx::prepare(&repo_root, network, &genesis, &elf_output, &output)?;
-                    println!(
-                        "unsigned deterministic {network:?} SGX bundle: {}",
-                        output.display()
-                    );
-                }
-                SgxCommand::Compare {
-                    first,
-                    second,
-                    output,
-                } => {
-                    sgx::compare(&first, &second, &output)?;
-                    println!(
-                        "unsigned SGX reproducibility evidence: {}",
-                        output.display()
-                    );
-                }
-                SgxCommand::Sign {
-                    network,
-                    unsigned,
-                    key_file,
-                    output,
-                } => {
-                    sgx::sign(&repo_root, network, &unsigned, &key_file, &output)?;
-                    println!("signed {network:?} SGX bundle: {}", output.display());
-                }
-                SgxCommand::FinalizeGenesis {
-                    network,
-                    seeded_genesis,
-                    bundle,
-                    output,
-                    evidence_output,
-                } => {
-                    sgx::finalize_genesis(
-                        &repo_root,
-                        network,
-                        &seeded_genesis,
-                        &bundle,
-                        &output,
-                        &evidence_output,
-                    )?;
-                    println!(
-                        "final {network:?} genesis: {} (evidence: {})",
-                        output.display(),
-                        evidence_output.display()
-                    );
-                }
-                SgxCommand::Verify {
-                    network,
-                    bundle,
-                    genesis,
-                } => {
-                    sgx::verify_with_genesis(&repo_root, network, &bundle, &genesis)?;
-                    println!(
-                        "verified signed {network:?} SGX bundle: {}",
-                        bundle.display()
-                    );
-                }
-                SgxCommand::Archive {
-                    network,
-                    bundle,
-                    output,
-                } => {
-                    sgx::archive(&repo_root, network, &bundle, &output)?;
-                    println!(
-                        "deterministic signed {network:?} SGX archive: {}",
-                        output.display()
-                    );
-                }
-                SgxCommand::Image {
-                    network,
-                    bundle,
-                    image,
-                    output,
-                    push,
-                } => {
-                    sgx::build_image(&repo_root, network, &bundle, &image, &output, push)?;
-                    println!("{network:?} SGX OCI evidence: {}", output.display());
-                }
-                SgxCommand::Manifest {
-                    network,
-                    elf_manifest,
-                    bundle,
-                    bundle_archive,
-                    oci_evidence,
-                    cosign_image_verification,
-                    cosign_sbom_verification,
-                    cosign_provenance_verification,
-                    sbom,
-                    elf_evidence,
-                    sgx_evidence,
-                    hardware_evidence,
-                    processor_dcap_archive,
-                    processor_dcap_evidence,
-                    seeded_genesis,
-                    network_binding_evidence,
-                    genesis,
-                    output,
-                } => {
-                    sgx::finalize_release_manifest(
-                        &repo_root,
-                        &sgx::VerifiedReleaseInputs {
-                            network,
-                            bundle,
-                            bundle_archive,
-                            cosign_image_verification,
-                            cosign_provenance_verification,
-                            cosign_sbom_verification,
-                            elf_evidence,
-                            elf_manifest,
-                            hardware_evidence,
-                            processor_dcap_archive,
-                            processor_dcap_evidence,
-                            oci_evidence,
-                            sbom,
-                            sgx_evidence,
-                            seeded_genesis,
-                            network_binding_evidence,
-                            genesis,
-                        },
-                        &output,
-                    )?;
-                    println!("verified {network:?} ReleaseManifest: {}", output.display());
-                }
-            },
         },
         Command::Stablecoin(stablecoin_args) => match stablecoin_args.command {
             StablecoinCommand::AbiCheck => {

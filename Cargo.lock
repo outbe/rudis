@@ -17337,11 +17337,9 @@ name = "xtask"
 version = "0.1.0"
 dependencies = [
  "alloy-primitives",
- "base64 0.22.1",
  "blst",
  "clap",
  "eyre",
- "filetime",
  "hex",
  "k256 0.13.4",
  "outbe-chain-constants",
@@ -17357,7 +17355,6 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2 0.10.9",
- "tar",
  "tempfile",
  "time",
  "walkdir",

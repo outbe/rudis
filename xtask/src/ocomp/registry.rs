@@ -503,6 +503,6 @@ mod tests {
 
     #[test]
     fn checked_in_registry_is_current() {
-        run(&crate::release::sgx::repository_root().unwrap(), true).unwrap();
+        run(&crate::repository_root().unwrap(), true).unwrap();
     }
 }

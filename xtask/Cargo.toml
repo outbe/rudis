@@ -11,11 +11,9 @@ path = "src/main.rs"
 
 [dependencies]
 alloy-primitives = { workspace = true, features = ["std"] }
-base64 = "0.22"
 blst.workspace = true
 clap.workspace = true
 eyre.workspace = true
-filetime.workspace = true
 hex.workspace = true
 k256.workspace = true
 outbe-chain-constants.workspace = true
@@ -34,7 +32,6 @@ sha2.workspace = true
 time = { workspace = true, features = ["formatting", "parsing"] }
 tempfile.workspace = true
 walkdir.workspace = true
-tar.workspace = true
 
 [lints]
 workspace = true
