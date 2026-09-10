@@ -1,5 +1,5 @@
 //! Execution-level coverage for the Emit precompile route: the full
-//! burn → partial mint → full mint → replay scenario with real generated
+//! burn -> partial mint -> full mint -> replay scenario with real generated
 //! `outbe.emit.mint@1.5.0` proofs, plus frame/value boundary cases extending
 //! the `precompile_value_boundary` patterns.
 
@@ -160,7 +160,7 @@ fn gas_used(result: &ExecutionResult) -> u64 {
         | ExecutionResult::Halt { gas, .. } => gas.tx_gas_used(),
     }
 }
-/// Balance as committed in the chained database — unlike [`balance_of`],
+/// Balance as committed in the chained database - unlike [`balance_of`],
 /// not defaulted to zero for accounts a single transaction did not touch.
 fn committed_balance(db: &CacheDB<EmptyDB>, address: Address) -> U256 {
     use revm::DatabaseRef;
@@ -470,7 +470,7 @@ fn emit_burn_partial_mint_full_mint_and_replay() {
     assert!(gas_used(&outcome.result) >= 3_517_500);
     let db = chained_db(db, outcome);
 
-    // Bob's successor proof mints the remaining 60 to Dave — NoteUsed only.
+    // Bob's successor proof mints the remaining 60 to Dave - NoteUsed only.
     let next_nullifier = derive_nullifier(change, next_key);
     let full_proof = prove_mint(&tree, BOB, next_key, 60, change_leaf, 2, 60);
     let outcome = run(
@@ -557,8 +557,8 @@ fn emit_burn_partial_mint_full_mint_and_replay() {
     assert!(IEmit::hasCommitmentCall::abi_decode_returns(&output).unwrap());
 
     // Replay the first partial mint on a fresh chain state: failed receipt,
-    // and — asserted against the chained database, not the replay
-    // transaction's own state set — the committed payout, tree, and root of
+    // and - asserted against the chained database, not the replay
+    // transaction's own state set - the committed payout, tree, and root of
     // the first mint are untouched.
     let mut db = base_db();
     let burned = run(
@@ -766,7 +766,7 @@ fn value_on_mint_and_borrowed_frames_cannot_reach_emit_state() {
     }
 
     // A STATICCALL frame carries no value, so `burn` refuses at its very
-    // first guard — a static frame can never move native value into the pool
+    // first guard - a static frame can never move native value into the pool
     // and never reaches a write. The borrower bubbles the inner revert up.
     let outcome = run(
         db_with_borrower(0xfa),
@@ -791,7 +791,7 @@ fn value_on_mint_and_borrowed_frames_cannot_reach_emit_state() {
     // A *mutating* mint under STATICCALL: the note is owned by the borrower
     // so every guard passes and execution reaches the checkpoint's first
     // write, which must halt the static frame. No balances, tree state, or
-    // logs may move — this is the write-protection path the zero-value burn
+    // logs may move - this is the write-protection path the zero-value burn
     // case above never reaches.
     {
         let key = Field::from(17u64);
@@ -871,7 +871,7 @@ fn funded_malformed_calldata_fails_without_stranding_value() {
     use alloy_primitives::hex;
 
     // Funded unknown selector: the route's `u64::MAX` base gas halts the
-    // call out-of-gas before dispatch — the frame never runs, so the value
+    // call out-of-gas before dispatch - the frame never runs, so the value
     // never leaves the caller.
     let outcome = run(
         base_db(),
@@ -889,7 +889,7 @@ fn funded_malformed_calldata_fails_without_stranding_value() {
     assert_eq!(balance_of(&outcome, EMIT_ADDRESS), U256::ZERO);
     assert_eq!(storage_writes(&outcome, EMIT_ADDRESS), 0);
 
-    // Funded empty calldata: same halt — no selector is published, so the
+    // Funded empty calldata: same halt - no selector is published, so the
     // base gas is `u64::MAX` and the call dies before the value gate.
     let outcome = run(base_db(), ALICE, EMIT_ADDRESS, 5, 1_000_000, Bytes::new());
     assert!(
@@ -901,7 +901,7 @@ fn funded_malformed_calldata_fails_without_stranding_value() {
     assert_eq!(storage_writes(&outcome, EMIT_ADDRESS), 0);
 
     // Funded selector-only burn: the selector is payable so the value gate
-    // passes and the credited amount rides on the ABI decode failure — the
+    // passes and the credited amount rides on the ABI decode failure - the
     // reverting transaction must refund it in full.
     let outcome = run(
         base_db(),
@@ -921,7 +921,7 @@ fn funded_malformed_calldata_fails_without_stranding_value() {
     assert_eq!(storage_writes(&outcome, EMIT_ADDRESS), 0);
 
     // Zero-value selector-only mint: the route charges the mint base gas
-    // before dispatch fails ABI decoding — pinning that the 3,517,500
+    // before dispatch fails ABI decoding - pinning that the 3,517,500
     // selector-sensitive charge is actually routed.
     let outcome = run(
         base_db(),

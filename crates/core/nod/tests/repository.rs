@@ -259,7 +259,7 @@ fn projection_session_owns_item_prior_state_and_rejects_untracked_identity() {
 
 /// The bucket's `reference_currency` is likewise append-only and omitted on
 /// zero, so every bucket body written before the field existed keeps its exact
-/// prior bytes — which is what keeps the pinned `ces1-noble-poseidon` bucket
+/// prior bytes - which is what keeps the pinned `ces1-noble-poseidon` bucket
 /// payload and its leaf commitment unchanged.
 #[test]
 fn the_bucket_reference_currency_only_appends_to_the_canonical_payload() {

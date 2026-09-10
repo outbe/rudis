@@ -1,8 +1,8 @@
 //! EVM-level integration test for `IPayNote.deposit`.
 //!
 //! The paynote crate's own tests can only cover `deposit`'s pre-mutation
-//! guards: its body performs three real sub-calls — `asset.transferFrom`,
-//! `asset.approve`, and `VaultRouter.deposit` — which an in-memory storage
+//! guards: its body performs three real sub-calls - `asset.transferFrom`,
+//! `asset.approve`, and `VaultRouter.deposit` - which an in-memory storage
 //! provider cannot serve. This test drives the precompile through the actual
 //! EVM (`sub_call::run`, which installs the outbe precompile set in the child
 //! frame), so those sub-calls dispatch for real: the VaultRouter precompile
@@ -10,7 +10,7 @@
 //! ERC20/ERC4626 counterparties are stubbed.
 //!
 //! What this pins that unit tests cannot:
-//!   * `PAYNOTE_ADDRESS` must be a registered VaultRouter liquidity source —
+//!   * `PAYNOTE_ADDRESS` must be a registered VaultRouter liquidity source -
 //!     the `PayNoteDeposit` discriminant seeded at genesis is load-bearing.
 //!   * the asset must have a registered reserve vault.
 //!   * a revert anywhere in that chain rolls the tree back atomically.
@@ -44,7 +44,7 @@ const ASSET: Address = Address::new([0x33; 20]);
 const VAULT: Address = Address::new([0x55; 20]);
 const UNREGISTERED_ASSET: Address = Address::new([0x66; 20]);
 
-/// `StablesSource::PayNoteDeposit` — the discriminant `seed_genesis.py`
+/// `StablesSource::PayNoteDeposit` - the discriminant `seed_genesis.py`
 /// registers for `PAYNOTE_ADDRESS`.
 const PAYNOTE_DEPOSIT_SOURCE: u8 = 4;
 
@@ -74,7 +74,7 @@ fn block() -> BlockContext {
 }
 
 /// The commitment the runtime must derive for a deposit of `amount` of
-/// `asset` under `SPEND_KEY`'s serial — computed independently here.
+/// `asset` under `SPEND_KEY`'s serial - computed independently here.
 fn expected_commitment(asset: Address, amount: u128) -> Field {
     expected_commitment_u256(asset, U256::from(amount))
 }
@@ -225,7 +225,7 @@ fn deposit_routes_full_width_amount_through_vault_router_and_appends_commitment(
     );
 
     // And the appended leaf is the commitment the runtime derived from the
-    // asset and amount it actually moved — not anything the caller supplied.
+    // asset and amount it actually moved - not anything the caller supplied.
     let commitment =
         alloy_primitives::B256::new(field_to_be_bytes(expected_commitment_u256(ASSET, amount)));
     let present = run_call!(

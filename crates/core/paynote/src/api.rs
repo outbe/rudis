@@ -1,6 +1,6 @@
 //! Cross-module API for the PayNote pool.
 //!
-//! In-process Rust surface for other precompile modules (gem, nod, …). This is
+//! In-process Rust surface for other precompile modules (gem, nod, ...). This is
 //! deliberately **not** a Solidity ABI: spending a note is a privileged
 //! in-runtime transition, not something an EOA calls directly, so `consume`
 //! never appears in `IPayNote.sol` and never routes through dispatch.
@@ -26,7 +26,7 @@ pub use crate::runtime::PayNoteClaim;
 ///
 /// The claim comes from the proof itself, so the caller must check that
 /// `claim.asset` and `claim.spend_amount` are what it expected before acting
-/// on them — a valid proof for the *wrong* asset is still a valid proof.
+/// on them - a valid proof for the *wrong* asset is still a valid proof.
 ///
 /// Reverts if the tree is uninitialized, the chain ID does not match, the root
 /// is outside the acceptance window, the nullifier is already spent, or the

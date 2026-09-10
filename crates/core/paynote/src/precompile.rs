@@ -74,7 +74,7 @@ pub fn dispatch(
 
 /// Membership keys are stored as canonical field words. A non-canonical query
 /// argument can never be a stored key, so it answers `false` rather than
-/// reverting — and normalizing keeps a reducible encoding of a stored word
+/// reverting - and normalizing keeps a reducible encoding of a stored word
 /// from reading as absent.
 fn normalize(word: B256) -> B256 {
     match field_from_be_bytes(&word.0) {

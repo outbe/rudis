@@ -1,14 +1,14 @@
 //! End-to-end: one deposited PayNote pays two Nods, the second from its change.
 //!
-//! A Nod's cost is no longer settled by a transfer — the value reaches the
+//! A Nod's cost is no longer settled by a transfer - the value reaches the
 //! reserve vault when a note is deposited, and `mineGratis` only has to be shown
 //! a spend proof. This test drives that whole chain through the real EVM:
 //! `IPayNote.deposit` routes an ERC20 into the vault via VaultRouter and appends
 //! a leaf, then two `INodFactory.mineGratis` calls spend against that leaf.
 //!
 //! What it pins that the module tests cannot:
-//!   * a note deposited by the real `deposit` path — commitment derived by the
-//!     runtime, not handed to it — is spendable by `mineGratis`;
+//!   * a note deposited by the real `deposit` path - commitment derived by the
+//!     runtime, not handed to it - is spendable by `mineGratis`;
 //!   * notes are bearer instruments: `ALICE2` pays for the deposit and `ALICE1`
 //!     spends it. Spend authority is knowledge of the note spend key, and
 //!     nothing on chain ties the depositor to the Nods the note pays for;
@@ -63,7 +63,7 @@ const ALICE2: Address = Address::new([0x12; 20]);
 const ASSET: Address = Address::new([0x33; 20]);
 const VAULT: Address = Address::new([0x55; 20]);
 
-/// `StablesSource::PayNoteDeposit` — the discriminant `seed_genesis.py`
+/// `StablesSource::PayNoteDeposit` - the discriminant `seed_genesis.py`
 /// registers for `PAYNOTE_ADDRESS`.
 const PAYNOTE_DEPOSIT_SOURCE: u8 = 4;
 
@@ -161,7 +161,7 @@ fn seed_compressed_entities_genesis(storage: &StorageHandle<'_>) {
 }
 
 /// A chain with the vault registry seeded and two qualified, costed Nods
-/// already issued to `ALICE1` — everything the scenario needs before the first
+/// already issued to `ALICE1` - everything the scenario needs before the first
 /// note exists.
 fn fixture() -> (
     EvmCtx,
@@ -336,7 +336,7 @@ fn assert_mined(out: &outbe_primitives::storage::SubCallOutput, what: &str) -> U
 }
 
 /// Deposits `note` into the pool through the real `deposit` path, paid for by
-/// `depositor` — who need not be the account that will later spend it.
+/// `depositor` - who need not be the account that will later spend it.
 fn deposit(ctx: &mut EvmCtx, scope: &Arc<ExecutionScope>, depositor: Address, note: &Note) {
     let out = call(
         ctx,

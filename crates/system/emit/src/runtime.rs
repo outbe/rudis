@@ -1,4 +1,4 @@
-//! Emit transition core — the single state machine shared by dispatch and
+//! Emit transition core - the single state machine shared by dispatch and
 //! tests.
 //!
 //! Every mutating path runs under [`StorageHandle::with_checkpoint`], making
@@ -71,7 +71,7 @@ fn append(emit: &EmitContract<'_>, zeros: &[Field], leaf: Field) -> Result<(u32,
     Ok((index, current))
 }
 
-/// `burn(noteSn)` — runtime-only native-COEN transition into a private note.
+/// `burn(noteSn)` - runtime-only native-COEN transition into a private note.
 pub(crate) fn burn(
     storage: StorageHandle<'_>,
     _caller: Address,
@@ -96,7 +96,7 @@ pub(crate) fn burn(
         return Err(EmitError::TreeFull.into());
     }
 
-    // The commitment is always derived — never caller-supplied — so the
+    // The commitment is always derived - never caller-supplied - so the
     // hidden note value is bound to the burned supply and runtime chain ID.
     let commitment = note_commitment(chain_id, serial, value);
     if commitment.is_zero() {
@@ -108,7 +108,7 @@ pub(crate) fn burn(
     }
 
     // One rollback unit: lazy initialization, append, commitment insert,
-    // native burn, NewNote. `leaf_count == 0` is the pristine state —
+    // native burn, NewNote. `leaf_count == 0` is the pristine state -
     // initialization and the first append are one atomic unit, so an active
     // tree never observes `leaf_count == 0`.
     storage.with_checkpoint(|| {
@@ -146,7 +146,7 @@ pub(crate) fn burn(
     })
 }
 
-/// `mint(...)` — consume a frozen `outbe.emit.mint@1.5.0` proof.
+/// `mint(...)` - consume a frozen `outbe.emit.mint@1.5.0` proof.
 pub(crate) fn mint(
     storage: StorageHandle<'_>,
     caller: Address,
@@ -176,7 +176,7 @@ pub(crate) fn mint(
     let change = field_from_be_bytes(&statement.change_commitment.0)
         .ok_or_else(|| PrecompileError::from(EmitError::NonCanonicalField("changeCommitment")))?;
 
-    // The embedded statement must equal the explicit calldata exactly — a
+    // The embedded statement must equal the explicit calldata exactly - a
     // security check, not optional redundancy.
     let statement_matches = embedded.root == statement.root.0
         && embedded.nullifier == statement.nullifier.0
@@ -249,7 +249,7 @@ pub(crate) fn mint(
         }
         // Anyone knowing the current key can pre-create the deterministic
         // change; the resulting duplicate reverts atomically. Accepted DoS
-        // exposure — never a fallback to minting without change.
+        // exposure - never a fallback to minting without change.
         if emit.commitments.read(&change_word)? {
             return Err(EmitError::CommitmentExists.into());
         }

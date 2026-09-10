@@ -315,7 +315,7 @@ fn is_qualified(
 }
 
 /// A reference currency whose COEN pair was never registered must skip the
-/// block's scan, not halt it — the registry lists currencies independently of
+/// block's scan, not halt it - the registry lists currencies independently of
 /// whether their pair has been priced. The bucket stays parked, ready for the
 /// block after the pair appears.
 #[test]

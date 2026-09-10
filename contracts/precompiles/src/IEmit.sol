@@ -13,8 +13,8 @@ interface IEmit {
     function burn(bytes32 noteSn) external payable;
 
     /// Redeem a private note: prove membership under an accepted root,
-    /// nullify the note, credit `mintUnits` to `payoutRecipient`, and — when
-    /// the note holds more than `mintUnits` — append the circuit-derived
+    /// nullify the note, credit `mintUnits` to `payoutRecipient`, and - when
+    /// the note holds more than `mintUnits` - append the circuit-derived
     /// deterministic change commitment. The caller must be `noteOwner`; the
     /// embedded proof statement must equal the explicit calldata fields. The
     /// proof's chain ID must equal the runtime chain ID. `proof` is the combined

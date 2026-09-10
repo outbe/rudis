@@ -7,12 +7,12 @@
 //! - BN254 fields use canonical 32-byte big-endian encodings; a word that
 //!   would require reduction is invalid input.
 //! - `h2(a, b) = Poseidon2([a, b])[0]` and `h3(a, b, c) = Poseidon2([a, b,
-//!   c])[0]` — exactly noir's `hash_2` / `hash_3` (the `outbe-poseidon`
+//!   c])[0]` - exactly noir's `hash_2` / `hash_3` (the `outbe-poseidon`
 //!   sponge with `len = 2` / `len = 3`).
 //! - `p(tag, values)` mirrors noir `hash_multi(tag, values)`: it absorbs
 //!   the tag, the tuple arity, then the ordered values.
-//! - Every purpose tag is domain-folded — `h2(EMIT_DOMAIN, base)` with the
-//!   shared base tags (`NOTE_SN`, `COMMITMENT`, …) — so no Emit hash can
+//! - Every purpose tag is domain-folded - `h2(EMIT_DOMAIN, base)` with the
+//!   shared base tags (`NOTE_SN`, `COMMITMENT`, ...) - so no Emit hash can
 //!   collide with another domain's hash of the same purpose.
 //! - Merkle inner nodes are `h3(EMIT_DOMAIN, left, right)` where
 //!   `EMIT_DOMAIN` is the big-endian ASCII `OUTBE_EMIT`.
@@ -23,7 +23,7 @@ use ark_ff::{BigInteger, PrimeField};
 use outbe_poseidon::{Poseidon2, PoseidonHasher};
 use outbe_protocol::codec::u256_limbs_be;
 
-/// The proving field — BN254 scalar field, matching the noir circuits.
+/// The proving field - BN254 scalar field, matching the noir circuits.
 pub type Field = Fr;
 
 fn ascii_field(value: &str) -> Field {
@@ -37,7 +37,7 @@ fn h2(left: Field, right: Field) -> Field {
         .expect("Poseidon2 sponge is infallible")
 }
 
-/// `h3(a, b, c) = Poseidon2([a, b, c])[0]` — noir's three-input `hash_3`.
+/// `h3(a, b, c) = Poseidon2([a, b, c])[0]` - noir's three-input `hash_3`.
 fn h3(a: Field, b: Field, c: Field) -> Field {
     Poseidon2::<Field>::new()
         .hash(&[a, b, c])
@@ -45,7 +45,7 @@ fn h3(a: Field, b: Field, c: Field) -> Field {
 }
 
 /// Purpose-tagged chaining: `p(tag, values)` = noir `hash_multi(tag,
-/// values)` — absorbs the tag, the tuple arity, then the ordered values.
+/// values)` - absorbs the tag, the tuple arity, then the ordered values.
 pub fn p(tag: Field, values: &[Field]) -> Field {
     let mut state = h2(tag, Field::from(values.len() as u64));
     for value in values {
@@ -115,7 +115,7 @@ pub fn note_sn(note_owner: [u8; 20], note_spend_key: Field) -> Field {
 }
 
 /// `C = P(EMIT_COMMITMENT, [chain_id, note_sn, amount_limb_0,
-/// amount_limb_1, amount_limb_2])` — the only commitment form the runtime ever
+/// amount_limb_1, amount_limb_2])` - the only commitment form the runtime ever
 /// appends. Hashing every canonical radix-2^120 limb keeps the full uint256
 /// amount injective across the BN254 field boundary.
 pub fn note_commitment(chain_id: u64, note_sn: Field, note_amount: U256) -> Field {
@@ -132,14 +132,14 @@ pub fn note_commitment(chain_id: u64, note_sn: Field, note_amount: U256) -> Fiel
     )
 }
 
-/// `nullifier = P(EMIT_NULLIFIER, [note_commitment, spend_key])` — binds the
+/// `nullifier = P(EMIT_NULLIFIER, [note_commitment, spend_key])` - binds the
 /// full commitment (chain, serial, and amount), so distinct commitments
 /// always yield distinct nullifiers.
 pub fn nullifier(note_commitment: Field, note_spend_key: Field) -> Field {
     p(tag_nullifier(), &[note_commitment, note_spend_key])
 }
 
-/// `next_key = P(EMIT_CHANGE_KEY, [spend_key, nullifier])` — the
+/// `next_key = P(EMIT_CHANGE_KEY, [spend_key, nullifier])` - the
 /// circuit-ratcheted successor key of a partial mint.
 pub fn change_key(note_spend_key: Field, note_nullifier: Field) -> Field {
     p(tag_change_key(), &[note_spend_key, note_nullifier])

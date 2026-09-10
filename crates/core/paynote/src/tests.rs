@@ -4,7 +4,7 @@
 //! `outbe.paynote@1.1.0` statement from **Rust-computed** public inputs and
 //! verify it through the production decoder. If `hash.rs` drifted from the
 //! frozen circuit's `paynote.nr`, the Rust root/nullifier would disagree with
-//! the in-circuit ones and proving would fail — that is what pins the mirror.
+//! the in-circuit ones and proving would fail - that is what pins the mirror.
 //!
 //! `deposit` performs ERC20 and VaultRouter sub-calls, which the in-memory
 //! storage provider cannot serve, so only its pre-mutation guards are covered

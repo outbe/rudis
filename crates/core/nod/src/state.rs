@@ -117,7 +117,7 @@ impl NodContract<'_> {
         }
         // ISO 0 is not a currency, and its bin namespace aliases the
         // un-namespaced key while never appearing in the oracle's
-        // reference-currency registry — a bucket parked there would be
+        // reference-currency registry - a bucket parked there would be
         // invisible to the qualifier forever.
         if item.reference_currency == 0 {
             return Err(NodError::ZeroReferenceCurrency.into());

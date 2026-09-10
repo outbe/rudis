@@ -111,7 +111,7 @@ fn bucket_key_binds_the_reference_currency() {
 }
 
 /// Why the bin columns had to widen to `u64`: mapping keys are left-padded to
-/// 32 bytes before hashing, so integer width alone namespaces nothing — the
+/// 32 bytes before hashing, so integer width alone namespaces nothing - the
 /// ISO has to occupy real high bits, and those bits do not fit in a `u32`
 /// alongside a 24-bit bin id.
 #[test]

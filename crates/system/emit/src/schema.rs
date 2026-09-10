@@ -2,7 +2,7 @@
 //!
 //! Tornado-style incremental merkle tree state: no leaves, right nodes,
 //! paths, or empty hashes are ever stored. Slot assignment is by declaration
-//! order; the circular buffer occupies two slots (3–4).
+//! order; the circular buffer occupies two slots (3-4).
 //!
 //! There is deliberately no schema-version field (decision 2026-08-25): a
 //! pristine tree is exactly `leaf_count == 0`, so a version gate adds checks
@@ -34,7 +34,7 @@ pub struct EmitContract {
     pub leaf_count: Value<u32>,
     // slot 2: one completed left subtree per level
     pub filled_subtrees: Map<u8, B256>,
-    // slots 3–4: last 32 root-producing appends, seeded with the empty root
+    // slots 3-4: last 32 root-producing appends, seeded with the empty root
     pub recent_roots: CircularBuffer<B256>,
     // slot 5: permanent duplicate prevention
     pub commitments: Map<B256, bool>,

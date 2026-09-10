@@ -51,7 +51,7 @@ fn production_scalar_bytes_match_independent_encoder() {
         .write_option(Some(&0x1234_u16), |writer, value| writer.write_u16(*value))
         .unwrap();
     production.write_bounded_bytes(&[1, 2, 3], 3).unwrap();
-    production.write_utf8("λ", 2).unwrap();
+    production.write_utf8("\u{3bb}", 2).unwrap();
     production.write_ascii("OCB1", 4).unwrap();
     production
         .write_vec(&[7_u16, 8_u16], 2, |writer, value| writer.write_u16(*value))
@@ -73,7 +73,7 @@ fn production_scalar_bytes_match_independent_encoder() {
     independent.u8(1);
     independent.u16(0x1234);
     independent.bounded(&[1, 2, 3]);
-    independent.bounded("λ".as_bytes());
+    independent.bounded("\u{3bb}".as_bytes());
     independent.bounded(b"OCB1");
     independent.u32(2);
     independent.u16(7);

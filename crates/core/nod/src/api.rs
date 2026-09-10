@@ -10,7 +10,7 @@ use crate::schema::{NodBucketState, NodContract, NodItemState};
 
 /// The Nod's cost: `floor(entry_price_minor * gratis_load_minor / 1e6)`.
 ///
-/// Derived rather than stored — the entry price lives on the Nod's bucket and
+/// Derived rather than stored - the entry price lives on the Nod's bucket and
 /// the load on the Nod itself, and lysis mints the Nod from exactly this
 /// formula.
 pub fn cost_amount_minor(entry_price_minor: U256, gratis_load_minor: U256) -> Result<U256> {

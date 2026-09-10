@@ -14,7 +14,7 @@ fn address_vectors() {
     );
     assert_eq!(EndpointAddress::decode(&ipv6.encode()).unwrap(), ipv6);
 
-    let dns = EndpointAddress::dns("BÜCHER.Example", 8776).unwrap();
+    let dns = EndpointAddress::dns("B\u{dc}CHER.Example", 8776).unwrap();
     assert_eq!(dns.host(), Some("xn--bcher-kva.example"));
     assert_eq!(EndpointAddress::decode(&dns.encode()).unwrap(), dns);
 }

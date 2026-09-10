@@ -1,8 +1,8 @@
 //! PayNote domain errors.
 //!
 //! User-facing failures are `Error(string)`-style reverts with stable texts.
-//! Infrastructure failures — CRS initialization, a corrupt stored field word
-//! — map to [`PrecompileError::Fatal`] and are never reported as "invalid
+//! Infrastructure failures - CRS initialization, a corrupt stored field word
+//! - map to [`PrecompileError::Fatal`] and are never reported as "invalid
 //! proof".
 //!
 //! Verification-phase backend errors are raised on caller-supplied proof

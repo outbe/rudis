@@ -6,7 +6,7 @@ pragma solidity ^0.8.0;
 /// A deposit pulls `amount` of `asset` from the caller, routes it into the
 /// asset's reserve vault via VaultRouter, and appends a note commitment to an
 /// incremental Merkle tree. The commitment is always derived by the runtime
-/// from the transfer it actually performed — opaque caller-supplied commitments
+/// from the transfer it actually performed - opaque caller-supplied commitments
 /// are prohibited, so Merkle membership attests both the asset and the amount.
 ///
 /// Spending is deliberately **not** on this interface. It consumes a frozen
@@ -26,7 +26,7 @@ interface IPayNote {
     error TreeFull();
 
     /// @notice Deposit `amount` of `asset` into the pool under `noteSn`.
-    /// @dev `noteSn` is the note serial number — a hiding commitment to the spend key,
+    /// @dev `noteSn` is the note serial number - a hiding commitment to the spend key,
     /// chosen off-chain as `P(NOTE_SN, [spendKey])`. It reveals nothing about the key.
     /// @param asset ERC20 to deposit; must have a registered reserve vault.
     /// @param amount Units to pull from the caller.

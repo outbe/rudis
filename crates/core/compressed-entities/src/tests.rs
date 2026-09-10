@@ -157,7 +157,7 @@ fn nod_item_v1_uses_one_strict_canonical_protobuf_representation() {
 
 /// Field 12 carried the Nod's settled flag until settlement moved to a PayNote
 /// spend at mine time. It was written only when a Nod was settled, so retiring
-/// it left every live body's bytes untouched — but a body that does carry it
+/// it left every live body's bytes untouched - but a body that does carry it
 /// describes state this schema no longer has, and must be refused rather than
 /// quietly decoded without it.
 #[test]
@@ -177,7 +177,7 @@ fn a_nod_item_carrying_the_retired_settled_field_is_rejected() {
     let payload = encode_nod_item_v1(&body).unwrap();
     assert!(decode_nod_item_v1(&payload).is_ok());
 
-    // `0x60, 0x01` is field 12, varint wire type, value 1 — the settled marker.
+    // `0x60, 0x01` is field 12, varint wire type, value 1 - the settled marker.
     let mut settled = payload.clone();
     settled.extend_from_slice(&[0x60, 0x01]);
     assert!(matches!(

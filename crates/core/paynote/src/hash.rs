@@ -6,7 +6,7 @@
 //!
 //! - BN254 fields use canonical 32-byte big-endian encodings; a word that
 //!   would require reduction is invalid input.
-//! - `h2(a, b)` / `h3(a, b, c)` are noir's `hash_2` / `hash_3` — the
+//! - `h2(a, b)` / `h3(a, b, c)` are noir's `hash_2` / `hash_3` - the
 //!   `outbe-poseidon` sponge at `len = 2` / `len = 3`.
 //! - A purpose tag is *folded with the owning domain*:
 //!   `tag(base) = h2(PAYNOTE_DOMAIN, base)`, so no PayNote hash can collide
@@ -30,7 +30,7 @@ use outbe_protocol::codec::u256_limbs_be;
 
 use crate::errors::PayNoteError;
 
-/// The proving field — BN254 scalar field, matching the noir circuits.
+/// The proving field - BN254 scalar field, matching the noir circuits.
 pub type Field = Fr;
 
 /// Big-endian ASCII tree domain: every PayNote tag and Merkle node hangs off
@@ -57,7 +57,7 @@ fn h2(left: Field, right: Field) -> Result<Field, PayNoteError> {
         .map_err(|_| PayNoteError::Hash)
 }
 
-/// `h3(a, b, c) = Poseidon2([a, b, c])[0]` — noir's three-input `hash_3`.
+/// `h3(a, b, c) = Poseidon2([a, b, c])[0]` - noir's three-input `hash_3`.
 fn h3(a: Field, b: Field, c: Field) -> Result<Field, PayNoteError> {
     Poseidon2::<Field>::new()
         .hash(&[a, b, c])
@@ -76,7 +76,7 @@ fn tag(base: &str) -> Result<Field, PayNoteError> {
 }
 
 /// Purpose-tagged chaining: `p(tag, values)` = noir `hash_multi(tag, values)`
-/// — absorbs the folded tag, the tuple arity, then the ordered values.
+/// - absorbs the folded tag, the tuple arity, then the ordered values.
 pub fn p(tag: Field, values: &[Field]) -> Result<Field, PayNoteError> {
     let mut state = h2(tag, Field::from(values.len() as u64))?;
     for value in values {
@@ -91,7 +91,7 @@ pub fn address_field(address: [u8; 20]) -> Field {
     Field::from_be_bytes_mod_order(&address)
 }
 
-/// `note_sn = P(NOTE_SN, [spend_key])` — a hiding commitment to the spend
+/// `note_sn = P(NOTE_SN, [spend_key])` - a hiding commitment to the spend
 /// key. Chain-, asset- and amount-independent, so the pool can accept one at
 /// deposit time and build the leaf around it.
 pub fn note_sn(note_spend_key: Field) -> Result<Field, PayNoteError> {
@@ -99,7 +99,7 @@ pub fn note_sn(note_spend_key: Field) -> Result<Field, PayNoteError> {
 }
 
 /// `C = P(COMMITMENT, [chain_id, note_sn, asset, amount_limb_0,
-/// amount_limb_1, amount_limb_2])` — the Merkle leaf and the only commitment
+/// amount_limb_1, amount_limb_2])` - the Merkle leaf and the only commitment
 /// form the runtime appends. Hashing all canonical radix-2^120 limbs binds the
 /// full uint256 amount without field-modulus aliases.
 pub fn note_commitment(
@@ -122,7 +122,7 @@ pub fn note_commitment(
     )
 }
 
-/// `nullifier = P(NULLIFIER, [commitment, spend_key])` — derived from the
+/// `nullifier = P(NULLIFIER, [commitment, spend_key])` - derived from the
 /// commitment rather than the serial, so every leaf has exactly one
 /// nullifier. Two leaves sharing a serial carry different amounts, hence
 /// different commitments and different nullifiers, and both stay spendable.
@@ -133,13 +133,13 @@ pub fn note_nullifier(
     p(tag(TAG_NULLIFIER)?, &[note_commitment, note_spend_key])
 }
 
-/// `next_key = P(CHANGE_KEY, [spend_key, nullifier])` — the circuit-ratcheted
+/// `next_key = P(CHANGE_KEY, [spend_key, nullifier])` - the circuit-ratcheted
 /// successor key of a partial spend.
 pub fn change_key(note_spend_key: Field, note_nullifier: Field) -> Result<Field, PayNoteError> {
     p(tag(TAG_CHANGE_KEY)?, &[note_spend_key, note_nullifier])
 }
 
-/// Chain-specific empty leaf: `P(EMPTY, [chain_id])`. Deliberately not zero —
+/// Chain-specific empty leaf: `P(EMPTY, [chain_id])`. Deliberately not zero -
 /// the circuit's `commitment != 0` assert is what blocks spending a
 /// zero-padded slot, and this keeps empty slots distinguishable per chain.
 pub fn empty_leaf(chain_id: u64) -> Result<Field, PayNoteError> {

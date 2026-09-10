@@ -1,5 +1,5 @@
 //! Proving and pool-seeding fixtures for PayNote, shared by this crate's own
-//! tests and by downstream modules that consume notes (`nodfactory`, …).
+//! tests and by downstream modules that consume notes (`nodfactory`, ...).
 //!
 //! Enabled by the `test-utils` feature. Witness construction and proving stay
 //! out of production builds entirely: nothing here is reachable from
@@ -113,7 +113,7 @@ fn note_under_key(chain_id: u64, key: Field, asset: Address, amount: U256) -> No
 /// a note for nothing.
 ///
 /// The change key is derived from the spent note's key and nullifier, so the
-/// spender can rebuild the change note from what they already hold — nothing
+/// spender can rebuild the change note from what they already hold - nothing
 /// about it is published beyond the commitment.
 pub fn change_note(chain_id: u64, note: &Note, spend_amount: U256) -> Option<Note> {
     let remaining = note.amount.checked_sub(spend_amount)?;
@@ -128,7 +128,7 @@ pub fn change_note(chain_id: u64, note: &Note, spend_amount: U256) -> Option<Not
 /// in `tree`, returning combined public-inputs-plus-proof bytes.
 ///
 /// The tree is a parameter because a note's auth path only exists relative to
-/// the pool state it is spent against — including any change leaf an earlier
+/// the pool state it is spent against - including any change leaf an earlier
 /// spend appended.
 pub fn spend_proof(
     chain_id: u64,
@@ -224,7 +224,7 @@ pub struct SpendFixture {
 /// Builds a note of `note_amount` in `asset` and proves a `spend_amount` spend
 /// of it by `spender`, over a tree holding that note alone.
 ///
-/// Proving is real Barretenberg work — roughly half a second per call — so
+/// Proving is real Barretenberg work - roughly half a second per call - so
 /// callers should build one fixture per assertion, not one per iteration.
 pub fn note_and_spend_proof(
     chain_id: u64,

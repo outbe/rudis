@@ -27,7 +27,7 @@
       "domainSeparator": "0x0c42886de638f55263886351ee424f51fc70ccd71565c06342557215ae759ee5"
     },
     {
-      "name": "Yen 円",
+      "name": "Yen \u5186",
       "nameHash": "0x89117ee78e35f108e508b5f5f2355101343c061d6b083583a25f3dab29566d45",
       "chainId": 70860602,
       "verifyingContract": "0x53c0000000000000000000000000000000000001",

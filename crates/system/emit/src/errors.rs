@@ -1,9 +1,9 @@
 //! Emit domain errors.
 //!
 //! User-facing failures are `Error(string)`-style reverts with frozen texts
-//! (the `Emit …` list in the precompile plan). Infrastructure and
-//! invariant failures — a credited balance smaller than the burn, CRS
-//! initialization — map to [`PrecompileError::Fatal`] and are never
+//! (the `Emit ...` list in the precompile plan). Infrastructure and
+//! invariant failures - a credited balance smaller than the burn, CRS
+//! initialization - map to [`PrecompileError::Fatal`] and are never
 //! converted into "invalid proof". Verification-phase backend errors are
 //! raised on caller-supplied proof bytes, cannot be distinguished from
 //! rejected input at the backend seam, and therefore revert (see

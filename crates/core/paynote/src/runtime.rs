@@ -1,4 +1,4 @@
-//! PayNote transition core — the state machine shared by dispatch, the
+//! PayNote transition core - the state machine shared by dispatch, the
 //! cross-module API, and tests.
 //!
 //! Every mutating path runs under [`StorageHandle::with_checkpoint`], making
@@ -86,7 +86,7 @@ pub(crate) fn append(
     Ok((leaf_index, current))
 }
 
-/// `deposit(asset, amount, noteSn)` — pull the ERC20, route it into the
+/// `deposit(asset, amount, noteSn)` - pull the ERC20, route it into the
 /// asset's reserve vault, and append the derived note commitment.
 pub(crate) fn deposit(
     storage: StorageHandle<'_>,
@@ -118,7 +118,7 @@ pub(crate) fn deposit(
     }
 
     // The commitment is always derived from the asset and amount this call
-    // actually moves — never caller-supplied — so Merkle membership attests
+    // actually moves - never caller-supplied - so Merkle membership attests
     // both. A caller-chosen leaf would let a depositor fund a note in a cheap
     // token and spend it as an expensive one.
     let commitment = note_commitment(chain_id, serial, asset.into(), amount)?;
@@ -131,7 +131,7 @@ pub(crate) fn deposit(
     }
 
     // One rollback unit: token movement, lazy initialization, append,
-    // commitment insert, NewNote. `leaf_count == 0` is the pristine state —
+    // commitment insert, NewNote. `leaf_count == 0` is the pristine state -
     // initialization and the first append are atomic, so an active tree never
     // observes `leaf_count == 0`.
     storage.with_checkpoint(|| {
@@ -189,7 +189,7 @@ fn root_after_word(root: Field) -> B256 {
     B256::new(field_to_be_bytes(root))
 }
 
-/// `consume(proof)` — verify a frozen `outbe.paynote@1.1.0` spend proof,
+/// `consume(proof)` - verify a frozen `outbe.paynote@1.1.0` spend proof,
 /// nullify the note, append any change commitment, and return the validated
 /// claim. Moves no tokens.
 ///
@@ -197,8 +197,8 @@ fn root_after_word(root: Field) -> B256 {
 /// calldata path, so there is nothing to cross-check it against and no
 /// statement-mismatch failure mode.
 ///
-/// Notes are bearer instruments — spend authority is knowledge of the spend
-/// key, not an address — so there is deliberately no caller check. The circuit
+/// Notes are bearer instruments - spend authority is knowledge of the spend
+/// key, not an address - so there is deliberately no caller check. The circuit
 /// binds `spender` as the payout target, so a third party who replays someone
 /// else's proof only spends their own gas; the claim still names the intended
 /// spender.
@@ -270,7 +270,7 @@ pub(crate) fn consume(storage: &StorageHandle<'_>, proof: &[u8]) -> Result<PayNo
         }
         // Anyone knowing the current key can pre-create the deterministic
         // change; the resulting duplicate reverts atomically. Accepted DoS
-        // exposure — never a fallback to spending without recording change.
+        // exposure - never a fallback to spending without recording change.
         if paynote.commitments.read(&change_word)? {
             return Err(PayNoteError::CommitmentExists.into());
         }

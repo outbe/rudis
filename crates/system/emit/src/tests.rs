@@ -534,7 +534,7 @@ fn duplicate_burn_keys_the_full_commitment_not_the_serial() {
 
     // Same serial, different amount: allowed. The nullifier binds the full
     // commitment, so the two notes carry distinct nullifiers and each is
-    // independently spendable — no sibling stranding.
+    // independently spendable - no sibling stranding.
     run_burn(&mut provider, ALICE, 60, b256(serial)).unwrap();
     provider.enter(|storage| {
         let emit: EmitContract<'_> = storage.contract();
@@ -645,9 +645,9 @@ fn malformed_proof_tail_reverts_never_fatal() {
     let leaf = tree.append(note_commitment(CHAIN_ID, serial, U256::from(100)));
     run_burn(&mut provider, ALICE, 100, b256(serial)).unwrap();
 
-    // Every pre-verification guard passes on this real proof — the statement
+    // Every pre-verification guard passes on this real proof - the statement
     // matches calldata, the root is the current root, the nullifier is
-    // fresh — until one proof-section word is corrupted past the BN254
+    // fresh - until one proof-section word is corrupted past the BN254
     // modulus. The backend rejects it with an Err, which must surface as a
     // user revert, never a fatal verifier error (an attacker controls every
     // byte of this tail).
@@ -854,7 +854,7 @@ fn mint_refuses_value_and_rejects_non_frozen_proof_lengths() {
     // ABI framing is Alloy's job now: a non-canonical dynamic offset is a
     // plain decode revert (alloy's own error text) and must not touch state.
     let mut bad_offset = data.clone();
-    bad_offset[4 + 6 * 32 + 31] = 8; // offset 8 ≠ 224
+    bad_offset[4 + 6 * 32 + 31] = 8; // offset 8 != 224
     let result = dispatch_mint(&mut provider, BOB, &bad_offset);
     match result {
         Err(PrecompileError::Revert(_)) => {}
@@ -1280,7 +1280,7 @@ fn chains_derive_separate_commitments_and_roots_without_stored_configuration() {
             let word = B256::new(value.to_be_bytes::<32>());
             let as_field = Field::from_be_bytes_mod_order(word.as_slice());
             // Levels 0..20 are configuration the runtime must re-derive.
-            // zeros[20] — the empty root — is legitimate protocol data: the
+            // zeros[20] - the empty root - is legitimate protocol data: the
             // root window is seeded with it at initialization.
             for zero in zeros_a
                 .iter()
@@ -1328,9 +1328,9 @@ fn stored_layout_holds_no_leaves_right_nodes_or_ladder() {
     dispatch_mint(&mut provider, BOB, &data).unwrap();
 
     // Audit the raw slots at EMIT_ADDRESS: direct writes only to the fixed
-    // slots 0, 1, 3, 4 (the maps' base slots 2, 5, 6 are never written —
+    // slots 0, 1, 3, 4 (the maps' base slots 2, 5, 6 are never written -
     // their entries live under keccak-derived keys), plus keccak-derived
-    // mapping/buffer data slots, and nothing else — no leaves, right nodes,
+    // mapping/buffer data slots, and nothing else - no leaves, right nodes,
     // or ladder entries outside those namespaces.
     let mut namespaces = std::collections::BTreeSet::new();
     for ((address, slot), _value) in provider.storage.iter() {

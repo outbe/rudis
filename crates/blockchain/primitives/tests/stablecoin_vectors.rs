@@ -14,9 +14,9 @@ const VALID: &[u8] = include_bytes!(concat!(
     env!("CARGO_MANIFEST_DIR"),
     "/testdata/stablecoin/v1/valid.json"
 ));
-const VALID_UNICODE: &[u8] = include_bytes!(concat!(
+const VALID_UNICODE_HEX: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/testdata/stablecoin/v1/valid-unicode.json"
+    "/testdata/stablecoin/v1/valid-unicode.hex"
 ));
 const INVALID_CASES: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
@@ -109,13 +109,14 @@ fn canonical_payloads_decode_and_reencode_byte_identically() {
     assert_eq!(payload.policy_id, U256::from(1));
     assert_eq!(encode_canonical_stablecoin_create(&payload).unwrap(), VALID);
 
-    let unicode = decode_canonical_stablecoin_create(VALID_UNICODE).unwrap();
-    assert_eq!(unicode.name, "Dólar 日本");
+    let valid_unicode = hex::decode(VALID_UNICODE_HEX.trim()).unwrap();
+    let unicode = decode_canonical_stablecoin_create(&valid_unicode).unwrap();
+    assert_eq!(unicode.name, "D\u{f3}lar \u{65e5}\u{672c}");
     assert_eq!(unicode.supply_cap, U256::MAX);
     assert_eq!(unicode.policy_id, U256::ZERO);
     assert_eq!(
         encode_canonical_stablecoin_create(&unicode).unwrap(),
-        VALID_UNICODE
+        valid_unicode
     );
 }
 

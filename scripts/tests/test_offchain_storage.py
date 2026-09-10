@@ -47,7 +47,7 @@ class StorageConfigTests(unittest.TestCase):
                     self.assertEqual(path.read_text(), source)
 
     def test_config_roundtrips_unicode_and_quotes(self):
-        document = STORAGE.settings({"offchain_storage": {"rocksdb": {"path": 'данные/"rocks"', "secondary_path": "читатель/😀"}}}, database="db", mongo_uri="uri")
+        document = STORAGE.settings({"offchain_storage": {"rocksdb": {"path": '\u0434\u0430\u043d\u043d\u044b\u0435/"rocks"', "secondary_path": "\u0447\u0438\u0442\u0430\u0442\u0435\u043b\u044c/\U0001f600"}}}, database="db", mongo_uri="uri")
         self.assertEqual(tomllib.loads(STORAGE.render(document)), document)
 
     def test_backends_cannot_be_mixed(self):

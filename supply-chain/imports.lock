@@ -20,7 +20,7 @@ version = "0.6.0"
 when = "2021-10-11"
 user-id = 3788
 user-login = "emilio"
-user-name = "Emilio Cobos Álvarez"
+user-name = "Emilio Cobos \u00C1lvarez"
 
 [[publisher.core-foundation]]
 version = "0.9.3"
@@ -1999,9 +1999,9 @@ criteria = "safe-to-deploy"
 version = "0.7.1"
 
 [[audits.mozilla.wildcard-audits.cexpr]]
-who = "Emilio Cobos Álvarez <emilio@crisal.io>"
+who = "Emilio Cobos \u00C1lvarez <emilio@crisal.io>"
 criteria = "safe-to-deploy"
-user-id = 3788 # Emilio Cobos Álvarez (emilio)
+user-id = 3788 # Emilio Cobos Alvarez (emilio)
 start = "2021-06-21"
 end = "2024-04-21"
 notes = "No unsafe code, rather straight-forward parser."
@@ -2081,14 +2081,14 @@ delta = "0.2.20 -> 0.2.21"
 aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.bindgen]]
-who = "Emilio Cobos Álvarez <emilio@crisal.io>"
+who = "Emilio Cobos \u00C1lvarez <emilio@crisal.io>"
 criteria = "safe-to-deploy"
 version = "0.59.2"
 notes = "I'm the primary author and maintainer of the crate."
 aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.bindgen]]
-who = "Emilio Cobos Álvarez <emilio@crisal.io>"
+who = "Emilio Cobos \u00C1lvarez <emilio@crisal.io>"
 criteria = "safe-to-deploy"
 delta = "0.59.2 -> 0.63.0"
 aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
@@ -2124,13 +2124,13 @@ delta = "0.69.1 -> 0.69.2"
 aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.bindgen]]
-who = "Emilio Cobos Álvarez <emilio@crisal.io>"
+who = "Emilio Cobos \u00C1lvarez <emilio@crisal.io>"
 criteria = "safe-to-deploy"
 delta = "0.69.2 -> 0.69.4"
 aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.bindgen]]
-who = "Emilio Cobos Álvarez <emilio@crisal.io>"
+who = "Emilio Cobos \u00C1lvarez <emilio@crisal.io>"
 criteria = "safe-to-deploy"
 delta = "0.69.4 -> 0.72.0"
 notes = "I'm the primary maintainer of this crate."

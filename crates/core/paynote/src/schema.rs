@@ -21,7 +21,7 @@ pub const PAYNOTE_TREE_DEPTH: usize = 32;
 ///
 /// Held as `u64` on purpose. The circuit's `leaf_index` is a `u32`, so the last
 /// valid index is `2^32 - 1` and the capacity itself does **not** fit in `u32`
-/// — a `u32` counter would wrap on the final append instead of reporting a full
+/// - a `u32` counter would wrap on the final append instead of reporting a full
 /// tree. [`PayNoteContract::leaf_count`] is therefore `u64` and every append
 /// guards against this bound before incrementing.
 pub const PAYNOTE_TREE_CAPACITY: u64 = 1 << PAYNOTE_TREE_DEPTH;
@@ -55,7 +55,7 @@ pub struct PayNoteContract {
     pub recent_roots: outbe_primitives::storage::dsl::CircularBuffer<B256>,
 
     // slot 5: permanent duplicate prevention, keyed on the leaf (never the
-    // serial — two notes may legitimately share a serial)
+    // serial - two notes may legitimately share a serial)
     #[attribute(order = 4)]
     pub commitments: outbe_primitives::storage::dsl::Map<B256, bool>,
 

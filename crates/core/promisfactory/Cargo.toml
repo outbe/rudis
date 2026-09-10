@@ -8,7 +8,7 @@ publish.workspace = true
 [dependencies]
 outbe-primitives = { workspace = true, features = ["test-utils"] }
 outbe-promis.workspace = true
-# The promis→gratis conversion mints through the Gratis factory's own seam, so the
+# The promis->gratis conversion mints through the Gratis factory's own seam, so the
 # acquisition Fidelity cohort is recorded exactly as for any other gratis mint.
 outbe-gratisfactory.workspace = true
 alloy-primitives.workspace = true

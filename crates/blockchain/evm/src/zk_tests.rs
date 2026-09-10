@@ -282,7 +282,7 @@ fn dispatch_groth16_unknown_circuit_returns_zero_bytes() {
     assert_eq!(out.as_ref(), &[0u8; 32]);
 }
 
-/// Real prove→verify round trip through the pinned Emit mint VK. The proof
+/// Real prove->verify round trip through the pinned Emit mint VK. The proof
 /// must verify as submitted and stop verifying when any public input word is
 /// changed, binding the combined wire to the frozen circuit identity.
 #[test]

@@ -239,7 +239,7 @@ mod tests {
     #[test]
     fn reason_encoding_is_byte_length_not_char_length() {
         // 1 char, 4 UTF-8 bytes.
-        let reason = "🦀";
+        let reason = "\u{1f980}";
         let log = build_outbe_failure_log(Address::ZERO, 107, reason.to_string());
         assert_eq!(
             log.data.data.as_ref(),
