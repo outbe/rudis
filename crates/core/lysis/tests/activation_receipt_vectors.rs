@@ -221,27 +221,35 @@ fn receipt_verifier_closes_green_and_red_conservation_equations() {
 }
 
 #[test]
-fn receipt_verifier_accepts_the_original_budget_effect_for_a_retry_attempt() {
-    let fixture = retry_activation_fixture();
-
-    let plan = verify_result(
-        fixture.intent_id,
-        fixture.job_id,
-        &fixture.intent,
-        &fixture.payload,
-        &fixture.result,
-        &fixture.limits,
-    )
-    .unwrap();
-    let receipts = owner_receipts(&plan, &fixture.limits);
-
-    verify_receipts(&plan, &fixture.request_receipt, &receipts, &fixture.limits)
-        .expect("retry must accept the exact original request-budget effect receipt");
+fn structural_verifier_rejects_nonzero_attempt_and_pending_nonce() {
+    for (attempt, pending_nonce) in [(1, 0), (0, 1), (1, 1)] {
+        let mut fixture = activation_fixture(DayType::Green);
+        fixture.intent.attempt = attempt;
+        fixture.intent.pending_nonce = pending_nonce;
+        fixture
+            .intent
+            .activation_preconditions
+            .metadosis
+            .pending_nonce = pending_nonce;
+        assert!(matches!(
+            verify_result(
+                fixture.intent_id,
+                fixture.job_id,
+                &fixture.intent,
+                &fixture.payload,
+                &fixture.result,
+                &fixture.limits,
+            ),
+            Err(outbe_ocomp_protocol::ProtocolError::InvalidInvariant(
+                "single-attempt OCOMP identity"
+            ))
+        ));
+    }
 }
 
 #[test]
-fn receipt_verifier_rejects_a_budget_effect_from_after_the_retry_attempt() {
-    let mut nonce_fixture = retry_activation_fixture();
+fn receipt_verifier_rejects_a_budget_effect_from_after_the_request() {
+    let mut nonce_fixture = activation_fixture(DayType::Green);
     nonce_fixture.request_receipt.pending_nonce = nonce_fixture.intent.pending_nonce + 1;
     nonce_fixture
         .intent
@@ -271,7 +279,7 @@ fn receipt_verifier_rejects_a_budget_effect_from_after_the_retry_attempt() {
     )
     .is_err());
 
-    let mut anchor_fixture = retry_activation_fixture();
+    let mut anchor_fixture = activation_fixture(DayType::Green);
     anchor_fixture.request_receipt.logical_anchor =
         anchor_fixture.intent.logical_evaluation_time + 1;
     let briefed_supply = anchor_fixture.request_receipt.auction_base;
@@ -539,32 +547,4 @@ fn owner_receipts(
             .unwrap(),
         },
     }
-}
-
-fn retry_activation_fixture() -> support::ActivationFixtureV1 {
-    let mut fixture = activation_fixture(DayType::Green);
-    fixture.intent.pending_nonce += 1;
-    fixture.intent.attempt += 1;
-    fixture.intent.logical_evaluation_height += 1;
-    fixture.intent.logical_evaluation_time += 1;
-    fixture
-        .intent
-        .activation_preconditions
-        .metadosis
-        .pending_nonce += 1;
-    fixture.intent_id = fixture.intent.intent_id(&fixture.limits).unwrap();
-
-    fixture.result.attempt += 1;
-    fixture.result.metadosis_completion_summary.pending_nonce += 1;
-    fixture
-        .result
-        .metadosis_completion_summary
-        .logical_evaluation_height += 1;
-    fixture
-        .result
-        .metadosis_completion_summary
-        .logical_evaluation_time += 1;
-    recommit_result(&mut fixture.result, &fixture.limits);
-    fixture.payload = fixture.result.activation_payload(&fixture.limits).unwrap();
-    fixture
 }

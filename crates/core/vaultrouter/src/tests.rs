@@ -725,10 +725,7 @@ fn add_vault_rejects_an_asset_without_a_reference_currency() {
     StorageHandle::enter(&mut storage, |storage| {
         set_owner(&storage, owner());
         let err = runtime::add_vault(storage.clone(), owner(), vault()).unwrap_err();
-        assert!(
-            err.to_string().contains("invalid reference currency"),
-            "{err}"
-        );
+        assert!(err.to_string().contains("Invalid currency code 0"), "{err}");
 
         let contract = VaultRouterContract::new(storage.clone());
         assert_eq!(contract.assets.len().unwrap(), 0);
@@ -2060,58 +2057,64 @@ fn rebalance_emits_liquidity_rebalanced_with_both_legs() {
 /// `from_iso == to_iso` short circuit would price two unrelated assets 1:1.
 #[test]
 fn rebalance_rejects_an_asset_reporting_no_reference_currency() {
-    let mut storage = HashMapStorageProvider::new(CHAIN_ID);
-    storage.stub_sub_call_at_selector(
-        vault_from(),
-        IVaultV2::assetCall::SELECTOR,
-        word_addr(asset_from()),
-    );
-    storage.stub_sub_call_at_selector(
-        vault_to(),
-        IVaultV2::assetCall::SELECTOR,
-        word_addr(asset_to()),
-    );
-    storage.stub_sub_call_at_selector(
-        asset_from(),
-        IERC20::decimalsCall::SELECTOR,
-        word(U256::from(6u8)),
-    );
-    storage.stub_sub_call_at_selector(
-        asset_to(),
-        IERC20::decimalsCall::SELECTOR,
-        word(U256::from(6u8)),
-    );
-    // Both assets report "no currency": the pair must be refused, not treated
-    // as a matching pair of currencies.
-    storage.stub_sub_call_at_selector(
-        asset_from(),
-        IReferenceCurrency::isoCodeCall::SELECTOR,
-        word(U256::ZERO),
-    );
-    storage.stub_sub_call_at_selector(
-        asset_to(),
-        IReferenceCurrency::isoCodeCall::SELECTOR,
-        word(U256::ZERO),
-    );
-    storage.enable_sub_call_stub();
-
-    StorageHandle::enter(&mut storage, |storage| {
-        register_vault(&storage, asset_from(), vault_from());
-        register_vault(&storage, asset_to(), vault_to());
-
-        let err = runtime::rebalance(
-            storage.clone(),
-            cca(),
+    for (from_iso, to_iso) in [(0, 0), (0, USD_ISO_CODE), (USD_ISO_CODE, 0)] {
+        let mut storage = HashMapStorageProvider::new(CHAIN_ID);
+        storage.stub_sub_call_at_selector(
             vault_from(),
-            vault_to(),
-            U256::from(10),
-            U256::MAX,
-        )
-        .unwrap_err();
-        assert!(
-            err.to_string().contains("invalid reference currency"),
-            "{err}"
+            IVaultV2::assetCall::SELECTOR,
+            word_addr(asset_from()),
         );
-    });
-    assert!(storage.get_events(VAULT_ROUTER_ADDRESS).is_empty());
+        storage.stub_sub_call_at_selector(
+            vault_to(),
+            IVaultV2::assetCall::SELECTOR,
+            word_addr(asset_to()),
+        );
+        storage.stub_sub_call_at_selector(
+            asset_from(),
+            IERC20::decimalsCall::SELECTOR,
+            word(U256::from(6u8)),
+        );
+        storage.stub_sub_call_at_selector(
+            asset_to(),
+            IERC20::decimalsCall::SELECTOR,
+            word(U256::from(6u8)),
+        );
+        // Reject either missing currency, including the equal-zero shortcut.
+        storage.stub_sub_call_at_selector(
+            asset_from(),
+            IReferenceCurrency::isoCodeCall::SELECTOR,
+            word(U256::from(from_iso)),
+        );
+        storage.stub_sub_call_at_selector(
+            asset_to(),
+            IReferenceCurrency::isoCodeCall::SELECTOR,
+            word(U256::from(to_iso)),
+        );
+        storage.enable_sub_call_stub();
+
+        StorageHandle::enter(&mut storage, |storage| {
+            register_vault(&storage, asset_from(), vault_from());
+            register_vault(&storage, asset_to(), vault_to());
+
+            let preview_err =
+                runtime::preview_rebalance(&storage, vault_from(), vault_to(), U256::from(10))
+                    .unwrap_err();
+            assert!(
+                preview_err.to_string().contains("Invalid currency code 0"),
+                "{preview_err}"
+            );
+
+            let err = runtime::rebalance(
+                storage.clone(),
+                cca(),
+                vault_from(),
+                vault_to(),
+                U256::from(10),
+                U256::MAX,
+            )
+            .unwrap_err();
+            assert!(err.to_string().contains("Invalid currency code 0"), "{err}");
+        });
+        assert!(storage.get_events(VAULT_ROUTER_ADDRESS).is_empty());
+    }
 }

@@ -263,7 +263,7 @@ fn body_and_index_reads_use_the_finalized_parent_repository() {
         assert!(contract
             .token_uri(&scope, &reader, first.tribute_id)
             .unwrap()
-            .contains("Outbe Tribute"));
+            .contains("Rudis Tribute"));
     });
     finish(&mut provider, &scope, &tree);
 }
