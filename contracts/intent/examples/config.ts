@@ -43,24 +43,10 @@ export const chains: Record<string, ChainConfig> = {
     chainId: parseInt(process.env.SEPOLIA_CHAIN_ID || '11155111'),
     nativeDecimals: 18,
   },
-  outbe_priv: {
-    name: 'Outbe Privnet',
-    rpc: process.env.OUTBE_PRIV_RPC || 'https://eth.p.outbe.net',
-    chainId: parseInt(process.env.OUTBE_PRIV_CHAIN_ID || '512512'),
-    nativeDecimals: 18,
-  },
-
   outbe_dev: {
     name: 'Outbe Devnet',
     rpc: process.env.OUTBE_DEV_RPC || 'https://eth.d.outbe.net',
     chainId: parseInt(process.env.OUTBE_DEV_CHAIN_ID || '424242'),
-    nativeDecimals: 18,
-  },
-
-  outbe_testnet_old: {
-    name: 'Outbe Testnet (old)',
-    rpc: process.env.OUTBE_TESTNET_OLD_RPC || 'https://eth.testnet.outbe.net',
-    chainId: parseInt(process.env.OUTBE_TESTNET_OLD_CHAIN_ID || '512215'),
     nativeDecimals: 18,
   },
 

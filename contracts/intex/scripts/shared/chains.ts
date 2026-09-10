@@ -14,12 +14,6 @@ export const OUTBE_CHAINS = {
     nativeCurrency: { decimals: 18, name: "rudis", symbol: "rudis" },
     rpcUrls: { default: { http: ["https://eth.d.outbe.net"] } },
   }),
-  outbePrivnet: defineChain({
-    id: 512512,
-    name: "Outbe Priv",
-    nativeCurrency: { decimals: 18, name: "rudis", symbol: "rudis" },
-    rpcUrls: { default: { http: ["https://eth.p.outbe.net"] } },
-  }),
   outbeTestnet: defineChain({
     id: 512215,
     name: "Outbe Testnet",
@@ -57,8 +51,6 @@ export function getEnvRpcAndPk(networkName: string): { rpc: string; pk: string }
   switch (networkName) {
     case "outbeDevnet":
       return { rpc: process.env.OUTBE_RPC_URL ?? "https://eth.d.outbe.net", pk: process.env.OUTBE_PRIVATE_KEY ?? "" };
-    case "outbePrivnet":
-      return { rpc: process.env.OUTBE_RPC_URL ?? "https://eth.p.outbe.net", pk: process.env.OUTBE_PRIVATE_KEY ?? "" };
     case "outbeTestnet":
       return { rpc: process.env.OUTBE_RPC_URL ?? "https://eth.testnet.outbe.net", pk: process.env.OUTBE_PRIVATE_KEY ?? "" };
     case "outbeTestnetNew":

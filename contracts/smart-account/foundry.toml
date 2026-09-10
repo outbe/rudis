@@ -74,9 +74,7 @@ bsc = "${BSC_RPC_URL}"
 sepolia = "${SEPOLIA_RPC_URL}"
 local = "http://127.0.0.1:8545"
 local-dev = "http://127.0.0.1:8545"
-outbe-privnet = "https://eth.p.outbe.net"
 outbe-dev = "https://eth.d.outbe.net"
-outbe-peira = "https://peira-rpc.outbe.net"
 bsc-testnet = "https://bsc-testnet.bnbchain.org"
 
 [etherscan]
