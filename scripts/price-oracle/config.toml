@@ -20,7 +20,7 @@ bind_address = "0.0.0.0:9002"
 # Mock REST price server from the test config.
 [[provider_endpoints]]
 name = "mock_http"
-rest = "https://prc.testnet.outbe.net"
+rest = "http://127.0.0.1:8080"
 
 [[currency_pairs]]
 base = "rudis"

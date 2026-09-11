@@ -6,7 +6,7 @@ embed into genesis.json via the `contracts` section of seed-testnet.json.
 
 Usage:
   python3 scripts/fetch_contract.py \
-    --rpc https://rpc.testnet.outbe.net \
+    --rpc http://127.0.0.1:8545 \
     --address 0x4e59b44847b379578588920cA78FbF26c0B4956C \
     --name create2_deployer
 

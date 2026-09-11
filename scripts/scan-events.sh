@@ -20,7 +20,7 @@
 #
 # Examples:
 #   ./scripts/scan-events.sh 1000 1050
-#   ./scripts/scan-events.sh 0x3B0AB latest http://peira-1.outbe.net:8545
+#   ./scripts/scan-events.sh 0x3B0AB latest http://127.0.0.1:8545
 #   ./scripts/scan-events.sh 1000 latest --topic0 0x00c785ee... --json
 #   ./scripts/scan-events.sh 1000 1050 --sig 'Transfer(address,address,uint256)'
 #

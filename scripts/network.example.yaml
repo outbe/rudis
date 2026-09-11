@@ -59,7 +59,7 @@ tee:
 # feeder_binary: outbe-feeder
 
 # Price source for the oracle feeder.
-# price_feed_rest: https://prc.testnet.outbe.net
+# price_feed_rest: http://127.0.0.1:8080
 # For an exchange `price_provider`, optionally override its built-in stream URL:
 # price_feed_websocket: wss://stream.binance.com:9443/ws
 

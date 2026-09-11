@@ -26,7 +26,7 @@ pub fn body(request_id: [u8; 32], validator: Address, node_id: [u8; 32]) -> Endp
         genesis_hash: GENESIS_HASH,
         validator,
         node_id,
-        addresses: vec![EndpointAddress::dns("rpc.n1.testnet.outbe.net", 8776).unwrap()],
+        addresses: vec![EndpointAddress::dns("rpc.node.example.test", 8776).unwrap()],
         anchor_number: 100,
         anchor_hash: ANCHOR_HASH,
         valid_until: 200,

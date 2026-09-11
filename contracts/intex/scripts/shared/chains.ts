@@ -12,13 +12,13 @@ export const OUTBE_CHAINS = {
     id: 424242,
     name: "Outbe Dev",
     nativeCurrency: { decimals: 18, name: "rudis", symbol: "rudis" },
-    rpcUrls: { default: { http: ["https://eth.d.outbe.net"] } },
+    rpcUrls: { default: { http: process.env.OUTBE_RPC_URL ? [process.env.OUTBE_RPC_URL] : [] } },
   }),
   outbeTestnet: defineChain({
     id: 512215,
     name: "Outbe Testnet",
     nativeCurrency: { decimals: 18, name: "rudis", symbol: "rudis" },
-    rpcUrls: { default: { http: ["https://eth.testnet.outbe.net"] } },
+    rpcUrls: { default: { http: process.env.OUTBE_RPC_URL ? [process.env.OUTBE_RPC_URL] : [] } },
   }),
   outbeTestnetNew: defineChain({
     id: 70860602,
@@ -49,11 +49,9 @@ export function getEnvRpcAndPk(networkName: string): { rpc: string; pk: string }
   }
   switch (networkName) {
     case "outbeDevnet":
-      return { rpc: process.env.OUTBE_RPC_URL ?? "https://eth.d.outbe.net", pk: process.env.OUTBE_PRIVATE_KEY ?? "" };
     case "outbeTestnet":
-      return { rpc: process.env.OUTBE_RPC_URL ?? "https://eth.testnet.outbe.net", pk: process.env.OUTBE_PRIVATE_KEY ?? "" };
     case "outbeTestnetNew":
-      if (!process.env.OUTBE_RPC_URL) throw new Error("OUTBE_RPC_URL is required for Rehearsal Network");
+      if (!process.env.OUTBE_RPC_URL) throw new Error(`OUTBE_RPC_URL is required for ${networkName}`);
       return { rpc: process.env.OUTBE_RPC_URL, pk: process.env.OUTBE_PRIVATE_KEY ?? "" };
     case "bscTestnet":
       return { rpc: process.env.BSC_TESTNET_RPC_URL ?? "https://bsc-testnet.publicnode.com", pk: process.env.BSC_TESTNET_PRIVATE_KEY ?? "" };

@@ -23,8 +23,8 @@
 #   ./scripts/inspect-block.sh                       # latest, http://localhost:18545
 #   ./scripts/inspect-block.sh 241771                # decimal block number
 #   ./scripts/inspect-block.sh 0x3B0AB                # hex block number
-#   ./scripts/inspect-block.sh latest http://peira-1.outbe.net:8545
-#   ./scripts/inspect-block.sh latest http://peira-1.outbe.net:8545 --json
+#   ./scripts/inspect-block.sh latest http://127.0.0.1:8545
+#   ./scripts/inspect-block.sh latest http://127.0.0.1:8545 --json
 #
 # Requires: curl, jq. Foundry's `cast` is optional (used for keccak if present).
 

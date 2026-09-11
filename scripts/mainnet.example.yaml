@@ -25,7 +25,7 @@ tee:
   minimum_tcb_evaluation_data_number: 0
 
 enclave_image: ghcr.io/outbe/outbe-tee-enclave-mainnet@sha256:<exact-64-hex-digest>
-price_feed_rest: https://prices.outbe.net
+price_feed_rest: https://prices.example.test
 
 # All omitted protocol and tokenomics sections come from the canonical
 # production baseline used by create_genesis.py. Do not add test-only

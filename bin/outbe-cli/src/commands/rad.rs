@@ -572,12 +572,12 @@ mod tests {
 
         let dns = P2pAddress::Asymmetric {
             ingress: P2pIngress::Dns {
-                host: "n1.testnet.outbe.net".to_string(),
+                host: "node.example.test".to_string(),
                 port: 30400,
             },
             egress,
         };
-        assert_eq!(host_of(&dns), "n1.testnet.outbe.net");
+        assert_eq!(host_of(&dns), "node.example.test");
 
         let symmetric = P2pAddress::Symmetric(egress);
         assert_eq!(host_of(&symmetric), "10.0.0.2");

@@ -44,7 +44,7 @@
   sepolia = { key = "${API_KEY_ETHERSCAN}" }
 
 [rpc_endpoints]
-  outbe-dev="https://eth.d.outbe.net"
+  outbe-dev="${OUTBE_DEV_RPC}"
   bsc-testnet="${BSC_RPC_URL}"
   outbe-testnet="${OUTBE_RPC_URL}"
 

@@ -71,13 +71,13 @@ const config: HardhatUserConfig = {
     },
     outbeDevnet: {
       type: "http",
-      url: "https://eth.d.outbe.net",
+      url: configVariable("OUTBE_RPC_URL"),
       accounts: [configVariable("OUTBE_PRIVATE_KEY")],
       chainId: 424242,
     },
     outbeTestnet: {
       type: "http",
-      url: "https://eth.testnet.outbe.net",
+      url: configVariable("OUTBE_RPC_URL"),
       accounts: [configVariable("OUTBE_PRIVATE_KEY")],
       chainId: 512215,
     },

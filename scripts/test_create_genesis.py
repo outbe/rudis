@@ -193,7 +193,7 @@ class ConfigValidationTests(unittest.TestCase):
             "chain_id": 676,
             "tee": {"mode": "dcap-required"},
             "enclave_image": "outbe-tee-enclave@sha256:" + "ab" * 32,
-            "price_feed_rest": "https://prices.outbe.net",
+            "price_feed_rest": "https://prices.example.test",
         }
         CG.validate_config(mainnet)
 
@@ -230,7 +230,7 @@ class ConfigValidationTests(unittest.TestCase):
             "chain_id": 676,
             "tee": {"mode": "dcap-required"},
             "enclave_image": "outbe-tee-enclave@sha256:" + "ab" * 32,
-            "price_feed_rest": "https://prices.outbe.net",
+            "price_feed_rest": "https://prices.example.test",
         }
 
         CG.validate_config(config)
@@ -245,7 +245,7 @@ class ConfigValidationTests(unittest.TestCase):
             "chain_id": 70860602,
             "tee": {"mode": "dcap-required"},
             "enclave_image": "outbe-tee-enclave@sha256:" + "ab" * 32,
-            "price_feed_rest": "https://prc.testnet.outbe.net",
+            "price_feed_rest": "https://prices.testnet.example.test",
         }
         with self.assertRaisesRegex(ValueError, "mainnet.*676"):
             CG.validate_config(config)
@@ -254,7 +254,7 @@ class ConfigValidationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "testnet price endpoint"):
             CG.validate_config(config)
 
-        config["price_feed_rest"] = "https://prices.outbe.net"
+        config["price_feed_rest"] = "https://prices.example.test"
         config["protocol_constants"] = {"schemaVersion": 1}
         with self.assertRaisesRegex(ValueError, "protocol_constants"):
             CG.validate_config(config)
@@ -564,7 +564,7 @@ class SeedStageTests(unittest.TestCase):
                 "chain_id": 676,
                 "tee": {"mode": "dcap-required"},
                 "enclave_image": "outbe-tee-enclave@sha256:" + "ab" * 32,
-                "price_feed_rest": "https://prices.outbe.net",
+                "price_feed_rest": "https://prices.example.test",
             }
             CG.validate_config(config)
             seeded = self.seed_once(pathlib.Path(tmp), config)

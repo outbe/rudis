@@ -18,11 +18,11 @@ Deps:  pip install web3 cryptography
 Examples:
   # auto-pick the OFFERING day, default amount 100 / currency 840 (USD)
   python3 scripts/tribute_offer.py \
-      --rpc https://rpc.testnet.outbe.net \
+      --rpc http://127.0.0.1:8545 \
       --private-key 0x<KEY>
 
   # explicit day
-  python3 scripts/tribute_offer.py --rpc https://rpc.testnet.outbe.net \
+  python3 scripts/tribute_offer.py --rpc http://127.0.0.1:8545 \
       --private-key 0x<KEY> --day 20260601 --amount 100 --currency 840
 """
 

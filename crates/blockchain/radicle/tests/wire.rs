@@ -26,7 +26,7 @@ fn response_vector() {
     let addresses = vec![
         EndpointAddress::ipv4([10, 0, 0, 1], 8776).unwrap(),
         EndpointAddress::ipv6([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], 8776).unwrap(),
-        EndpointAddress::dns("rpc.n1.testnet.outbe.net", 8776).unwrap(),
+        EndpointAddress::dns("rpc.node.example.test", 8776).unwrap(),
     ];
     let body = EndpointResponseBody {
         request_id: [1; 32],
@@ -59,7 +59,7 @@ fn response_vector() {
     expected.extend_from_slice(&[
         1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0x22, 0x48,
     ]);
-    expected.extend_from_slice(b"\x02\x18rpc.n1.testnet.outbe.net\x22\x48");
+    expected.extend_from_slice(b"\x02\x15rpc.node.example.test\x22\x48");
     expected.extend_from_slice(&100u64.to_be_bytes());
     expected.extend_from_slice(support::ANCHOR_HASH.as_slice());
     expected.extend_from_slice(&200u64.to_be_bytes());

@@ -443,7 +443,7 @@ def feeder_config(
     if price_provider == "mock_http":
         provider_endpoint = f'''[[provider_endpoints]]
 name = "mock_http"
-rest = "{config.get("price_feed_rest", "https://prc.testnet.outbe.net")}"'''
+rest = "{config.get("price_feed_rest", "http://127.0.0.1:8080")}"'''
     elif price_provider in {"binance", "kraken", "okx", "gate", "huobi", "mexc", "coinbase"}:
         websocket = str(config.get("price_feed_websocket", "")).strip()
         websocket_line = f'\nwebsocket = "{websocket}"' if websocket else ""

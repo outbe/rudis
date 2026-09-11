@@ -45,7 +45,10 @@ export const chains: Record<string, ChainConfig> = {
   },
   outbe_dev: {
     name: 'Outbe Devnet',
-    rpc: process.env.OUTBE_DEV_RPC || 'https://eth.d.outbe.net',
+    get rpc() {
+      if (!process.env.OUTBE_DEV_RPC) throw new Error('OUTBE_DEV_RPC is required for Outbe Devnet');
+      return process.env.OUTBE_DEV_RPC;
+    },
     chainId: parseInt(process.env.OUTBE_DEV_CHAIN_ID || '424242'),
     nativeDecimals: 18,
   },
