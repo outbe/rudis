@@ -60,7 +60,7 @@ def parse_error(text: str) -> str:
 
 def minimal_config(keys_dir: str) -> dict:
     return {
-        "chain_id": 424242,
+        "chain_id": 70860602,
         "validators": ["10.0.0.1", "10.0.0.2", "10.0.0.3", "10.0.0.4"],
         "keys_dir": keys_dir,
         "tee": {"mode": "gramine-direct-dev"},
@@ -173,7 +173,6 @@ class ConfigValidationTests(unittest.TestCase):
 
     def test_networks_expose_the_canonical_attestation_matrix(self):
         for network, chain_id in (
-            ("devnet", 424242),
             ("testnet", 70860602),
         ):
             for tee_mode in ("dcap-required", "gramine-direct-dev"):
@@ -188,34 +187,19 @@ class ConfigValidationTests(unittest.TestCase):
                     )
                 CG.validate_config(config)
 
-        mainnet = minimal_config("./keys") | {
-            "network": "mainnet",
-            "chain_id": 676,
-            "tee": {"mode": "dcap-required"},
-            "enclave_image": "outbe-tee-enclave@sha256:" + "ab" * 32,
-            "price_feed_rest": "https://prices.example.test",
-        }
-        CG.validate_config(mainnet)
-
-        mainnet["tee"] = {"mode": "gramine-direct-dev"}
-        with self.assertRaisesRegex(ValueError, "Mainnet requires"):
-            CG.validate_config(mainnet)
+    def test_obsolete_launch_networks_are_rejected(self):
+        for network, chain_id in (("devnet", 424242), ("mainnet", 676), ("testnet", 512215)):
+            with self.assertRaisesRegex(ValueError, "unknown Outbe chain id"):
+                CG.network_identity({"network": network, "chain_id": chain_id})
 
     def test_testnet_direct_dev_needs_no_secondary_opt_in(self):
         config = minimal_config("./keys") | {"chain_id": 70860602}
         CG.validate_config(config)
 
-    def test_mainnet_rejects_direct_dev(self):
-        config = minimal_config("./keys") | {
-            "network": "mainnet",
-            "chain_id": 676,
-        }
-        with self.assertRaisesRegex(ValueError, "Mainnet requires"):
-            CG.validate_config(config)
 
     def test_dcap_requires_a_pinned_digest_on_every_approved_network(self):
         config = minimal_config("./keys") | {
-            "chain_id": 424242,
+            "chain_id": 70860602,
             "tee": {"mode": "dcap-required"},
         }
         with self.assertRaisesRegex(ValueError, "immutable digest"):
@@ -224,40 +208,7 @@ class ConfigValidationTests(unittest.TestCase):
         config["enclave_image"] = "outbe-tee-enclave@sha256:" + "ab" * 32
         CG.validate_config(config)
 
-    def test_mainnet_profile_uses_the_canonical_identity_and_production_inputs(self):
-        config = minimal_config("./keys") | {
-            "network": "mainnet",
-            "chain_id": 676,
-            "tee": {"mode": "dcap-required"},
-            "enclave_image": "outbe-tee-enclave@sha256:" + "ab" * 32,
-            "price_feed_rest": "https://prices.example.test",
-        }
 
-        CG.validate_config(config)
-        self.assertEqual(
-            CG.network_identity(config),
-            ("mainnet", 676, "outbe-mainnet-1"),
-        )
-
-    def test_mainnet_profile_rejects_identity_and_test_shortcut_drift(self):
-        config = minimal_config("./keys") | {
-            "network": "mainnet",
-            "chain_id": 70860602,
-            "tee": {"mode": "dcap-required"},
-            "enclave_image": "outbe-tee-enclave@sha256:" + "ab" * 32,
-            "price_feed_rest": "https://prices.testnet.example.test",
-        }
-        with self.assertRaisesRegex(ValueError, "mainnet.*676"):
-            CG.validate_config(config)
-
-        config["chain_id"] = 676
-        with self.assertRaisesRegex(ValueError, "testnet price endpoint"):
-            CG.validate_config(config)
-
-        config["price_feed_rest"] = "https://prices.example.test"
-        config["protocol_constants"] = {"schemaVersion": 1}
-        with self.assertRaisesRegex(ValueError, "protocol_constants"):
-            CG.validate_config(config)
 
     def test_unknown_chain_identity_is_rejected(self):
         config = minimal_config("./keys") | {"chain_id": 999999}
@@ -373,7 +324,7 @@ class KeyDerivationTests(unittest.TestCase):
                         "--output-dir",
                         str(keys_dir / f"validator-{index}"),
                         "--chain-id",
-                        "424242",
+                        "70860602",
                     ],
                     check=True,
                     capture_output=True,
@@ -405,7 +356,7 @@ class KeyDerivationTests(unittest.TestCase):
             for index in range(4):
                 subprocess.run(
                     [keygen, "validator", "--output-dir",
-                     str(keys_dir / f"validator-{index}"), "--chain-id", "424242"],
+                     str(keys_dir / f"validator-{index}"), "--chain-id", "70860602"],
                     check=True, capture_output=True,
                 )
             config = minimal_config(tmp)
@@ -487,7 +438,7 @@ class SeedStageTests(unittest.TestCase):
             config = minimal_config(tmp) | {"prefund_coen_units": 5_000_000}
             seeded = self.seed_once(pathlib.Path(tmp), config)
 
-            self.assertEqual(seeded["config"]["chainId"], 424242)
+            self.assertEqual(seeded["config"]["chainId"], 70860602)
             self.assertEqual(seeded["config"]["epochLengthBlocks"], 300)
             alloc = seeded["alloc"]
             for validator in self.fake_validators():
@@ -557,24 +508,6 @@ class SeedStageTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "same asset"):
                 self.seed_once(pathlib.Path(tmp), config)
 
-    def test_mainnet_profile_seeds_chain_676_with_canonical_production_defaults(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            config = minimal_config(tmp) | {
-                "network": "mainnet",
-                "chain_id": 676,
-                "tee": {"mode": "dcap-required"},
-                "enclave_image": "outbe-tee-enclave@sha256:" + "ab" * 32,
-                "price_feed_rest": "https://prices.example.test",
-            }
-            CG.validate_config(config)
-            seeded = self.seed_once(pathlib.Path(tmp), config)
-
-            self.assertEqual(seeded["config"]["chainId"], 676)
-            self.assertNotIn("protocolConstants", seeded["config"])
-            baseline = CG.load_yaml(CG.BASE_PROFILE_PATH)
-            rewards_storage = seeded["alloc"][SEED_GENESIS.REWARDS_ADDRESS]["storage"]
-            self.assertTrue(rewards_storage)
-            self.assertEqual(CG.build_seed(config)["rewards"], baseline["rewards"])
 
     def test_seeded_genesis_is_reproducible_for_a_pinned_timestamp(self):
         """The OCOMP registrations sign the seeded genesis hash, so the same
@@ -724,7 +657,7 @@ class LaunchBundleTests(unittest.TestCase):
         canonical = ("00" * 33) + "ab" * 32 + "01" * 32 + "cd" * 32 + "0c" * 32
         genesis.write_text(json.dumps({
             "config": {
-                "chainId": 424242,
+                "chainId": 70860602,
                 "ocompForkInstallV1": {
                     "canonicalBytes": "0x" + canonical,
                     "installHash": "0x" + "ee" * 32,
@@ -824,7 +757,7 @@ class LaunchBundleTests(unittest.TestCase):
             # The bundle hash sits after the genesis hash and the fork id.
             self.assertIn("--protocol-bundle-hash \"$OCOMP_ACTIVE_PROTOCOL_BUNDLE_HASH\"", script)
             self.assertIn("ocomp-active.env", script)
-            self.assertIn("--chain-id 424242", script)
+            self.assertIn("--chain-id 70860602", script)
             self.assertIn("--genesis-hash 0x" + "ab" * 32, script)
             # Each host gets a distinct boot nonce, ordinal in the low bytes.
             self.assertIn("--boot-nonce 0x03" + "00" * 27 + "00000000", script)

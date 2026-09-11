@@ -56,9 +56,9 @@ pub const TESTNET_CHAIN_NAME: &str = "rudis-rehearsal";
 pub const MAINNET_CHAIN_NAME: &str = "outbe-mainnet-1";
 
 /// Default compiled chain ID.
-pub const CHAIN_ID: u64 = DEVNET_CHAIN_ID;
+pub const CHAIN_ID: u64 = TESTNET_CHAIN_ID;
 /// Default compiled chain name.
-pub const CHAIN_NAME: &str = DEVNET_CHAIN_NAME;
+pub const CHAIN_NAME: &str = TESTNET_CHAIN_NAME;
 
 /// Resolves a chain id to a known Outbe network.
 pub const fn network_for_chain_id(chain_id: u64) -> Option<OutbeNetwork> {
@@ -123,9 +123,9 @@ mod tests {
     }
 
     #[test]
-    fn compiled_default_remains_devnet() {
-        assert_eq!(CHAIN_ID, DEVNET_CHAIN_ID);
-        assert_eq!(CHAIN_NAME, DEVNET_CHAIN_NAME);
+    fn compiled_default_is_rehearsal() {
+        assert_eq!(CHAIN_ID, TESTNET_CHAIN_ID);
+        assert_eq!(CHAIN_NAME, TESTNET_CHAIN_NAME);
     }
 
     #[test]

@@ -8,7 +8,7 @@ is derived from the key directory and written into the genesis in one run.
 
     python3 scripts/create_genesis.py network.yaml
 
-    chain_id: 424242
+    chain_id: 70860602
     keys_dir: ./keys          # keys_dir/validator-N/ per founder
     validators:
       - 10.0.0.1
@@ -60,7 +60,7 @@ import launch_bundle  # noqa: E402  (sibling module, path set just above)
 # yaml format, readable and runnable on its own.
 BASE_PROFILE_PATH = SCRIPT_DIR / "testnet.yaml"
 
-DEFAULT_CHAIN_ID = 424242
+DEFAULT_CHAIN_ID = 70860602
 # Devnet and Testnet may select either `gramine-direct-dev` or `dcap-required`.
 # Mainnet requires `dcap-required`. The selected mode is bound into the genesis policy
 # and cannot change through successor-policy activation.
@@ -68,9 +68,7 @@ DEVNET_CHAIN_ID = 424242
 TESTNET_CHAIN_ID = 70860602
 MAINNET_CHAIN_ID = 676
 NETWORK_IDENTITIES = {
-    "devnet": (DEVNET_CHAIN_ID, "outbe-devnet-1"),
     "testnet": (TESTNET_CHAIN_ID, "rudis-rehearsal"),
-    "mainnet": (MAINNET_CHAIN_ID, "outbe-mainnet-1"),
 }
 DEFAULT_GAS_LIMIT = "0x1c9c380"
 DEFAULT_EPOCH_LENGTH_BLOCKS = 300

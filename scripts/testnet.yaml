@@ -10,7 +10,8 @@
 
 # --- Deployment ------------------------------------------------------------
 
-chain_id: 424242
+network: testnet
+chain_id: 70860602
 
 # One host or IP per founding validator, in order. OCOMP V1 fixes the founding
 # committee at four members. Append `:port` to give one validator a consensus

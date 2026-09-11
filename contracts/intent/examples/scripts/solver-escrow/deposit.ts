@@ -14,8 +14,8 @@ const COMPACT_ABI = [
  * Usage: tsx scripts/solver-escrow/deposit.ts <chain> <token|native> <amount>
  *
  * Example:
- *   tsx scripts/solver-escrow/deposit.ts outbe_dev 0x5cDF...Ece 100
- *   tsx scripts/solver-escrow/deposit.ts outbe_dev native 0.1
+ *   tsx scripts/solver-escrow/deposit.ts outbe_testnet 0x5cDF...Ece 100
+ *   tsx scripts/solver-escrow/deposit.ts outbe_testnet native 0.1
  */
 async function main() {
   console.log('SolverEscrow - Deposit\n');

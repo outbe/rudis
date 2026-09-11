@@ -12,7 +12,7 @@ import Table from 'cli-table3';
 async function main() {
   console.log('Router - Check Balance\n');
 
-  const [address, originChainName = 'bsc', destChainName = 'outbe_dev'] = process.argv.slice(2);
+  const [address, originChainName = 'bsc', destChainName = 'outbe_testnet'] = process.argv.slice(2);
   if (!address || !ethers.isAddress(address)) {
     console.error('Usage: tsx scripts/check_balance.ts <address> [originChain] [destChain]');
     process.exit(1);

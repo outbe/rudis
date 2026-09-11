@@ -69,18 +69,6 @@ const config: HardhatUserConfig = {
       accounts: [configVariable("BASE_SEPOLIA_PRIVATE_KEY")],
       chainId: 84532,
     },
-    outbeDevnet: {
-      type: "http",
-      url: configVariable("OUTBE_RPC_URL"),
-      accounts: [configVariable("OUTBE_PRIVATE_KEY")],
-      chainId: 424242,
-    },
-    outbeTestnet: {
-      type: "http",
-      url: configVariable("OUTBE_RPC_URL"),
-      accounts: [configVariable("OUTBE_PRIVATE_KEY")],
-      chainId: 512215,
-    },
     outbeTestnetNew: {
       type: "http",
       url: configVariable("OUTBE_RPC_URL"),

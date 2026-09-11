@@ -36,3 +36,27 @@ target-docker/
 .beads-credential-key
 .beads/proxieddb/
 .beads
+
+# Local environment settings; keep distributable examples.
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+validator.env
+
+# Local network configuration and generated deployment directories.
+/network.yaml
+/keys/
+/testnet/
+/rehearsal/
+/scripts/keys/
+/scripts/network.yaml
+/validator-*/
+/scripts/validator-*/
+
+# Validator private keys, including outputs placed outside the default directories.
+**/validator-*/evm-key.hex
+**/validator-*/signing-key.hex
+**/validator-*/reth-p2p-secret.hex
+**/validator-*/radicle/keys/radicle

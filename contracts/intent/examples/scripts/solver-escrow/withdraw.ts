@@ -10,8 +10,8 @@ import { getTokenDecimals, getTokenSymbol, isNativeToken } from '../../lib/commo
  *   amount in human-readable units (e.g. 1.5 for 1.5 ETH/tokens)
  *
  * Example:
- *   tsx scripts/solver-escrow/withdraw.ts outbe_dev 0x5cDF...Ece 1.5
- *   tsx scripts/solver-escrow/withdraw.ts outbe_dev native 0.1
+ *   tsx scripts/solver-escrow/withdraw.ts outbe_testnet 0x5cDF...Ece 1.5
+ *   tsx scripts/solver-escrow/withdraw.ts outbe_testnet native 0.1
  */
 async function main() {
   console.log('SolverEscrow - Withdraw\n');

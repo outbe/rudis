@@ -4,22 +4,10 @@
 import { createPublicClient, defineChain, http } from "viem";
 
 // =============================================================================
-// Outbe Chain Definitions (hardhat-viem doesn't know chain IDs 424242/512512)
+// Rehearsal chain definition
 // =============================================================================
 
 export const OUTBE_CHAINS = {
-  outbeDevnet: defineChain({
-    id: 424242,
-    name: "Outbe Dev",
-    nativeCurrency: { decimals: 18, name: "rudis", symbol: "rudis" },
-    rpcUrls: { default: { http: process.env.OUTBE_RPC_URL ? [process.env.OUTBE_RPC_URL] : [] } },
-  }),
-  outbeTestnet: defineChain({
-    id: 512215,
-    name: "Outbe Testnet",
-    nativeCurrency: { decimals: 18, name: "rudis", symbol: "rudis" },
-    rpcUrls: { default: { http: process.env.OUTBE_RPC_URL ? [process.env.OUTBE_RPC_URL] : [] } },
-  }),
   outbeTestnetNew: defineChain({
     id: 70860602,
     name: "Rehearsal Network",
@@ -31,8 +19,6 @@ export const OUTBE_CHAINS = {
 export const NETWORK_CHAIN_IDS: Record<string, number> = {
   bscTestnet: 97,
   bsc: 56,
-  outbeDevnet: 424242,
-  outbeTestnet: 512215,
   outbeTestnetNew: 70860602,
 };
 
@@ -48,8 +34,6 @@ export function getEnvRpcAndPk(networkName: string): { rpc: string; pk: string }
     return { rpc: process.env.WIRE_RPC_URL, pk: process.env.WIRE_PRIVATE_KEY ?? "" };
   }
   switch (networkName) {
-    case "outbeDevnet":
-    case "outbeTestnet":
     case "outbeTestnetNew":
       if (!process.env.OUTBE_RPC_URL) throw new Error(`OUTBE_RPC_URL is required for ${networkName}`);
       return { rpc: process.env.OUTBE_RPC_URL, pk: process.env.OUTBE_PRIVATE_KEY ?? "" };
