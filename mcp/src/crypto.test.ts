@@ -11,7 +11,7 @@ function decodePayload(amount_base: string): Record<string, unknown> {
 }
 
 const cases = JSON.parse(
-  readFileSync(new URL("../../testdata/tribute/canonical-amounts-v1.json", import.meta.url), "utf8"),
+  readFileSync(new URL("../../scripts/tribute/canonical-amounts-v1.json", import.meta.url), "utf8"),
 ) as { accepted_base: string[]; rejected_base: string[] };
 
 test("tribute payload emits canonical base with a zero six-decimal remainder", () => {

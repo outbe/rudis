@@ -11,7 +11,7 @@ PRODUCERS = (
     REPO_ROOT / "scripts" / "tributefactory" / "offer_tribute.py",
 )
 CASES = json.loads(
-    (REPO_ROOT / "testdata" / "tribute" / "canonical-amounts-v1.json").read_text()
+    (REPO_ROOT / "scripts" / "tribute" / "canonical-amounts-v1.json").read_text()
 )
 
 

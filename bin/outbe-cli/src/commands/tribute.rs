@@ -446,7 +446,7 @@ mod tests {
     fn canonical_base_cases() -> CanonicalBaseCases {
         serde_json::from_str(include_str!(concat!(
             env!("CARGO_MANIFEST_DIR"),
-            "/../../testdata/tribute/canonical-amounts-v1.json"
+            "/../../scripts/tribute/canonical-amounts-v1.json"
         )))
         .unwrap()
     }
