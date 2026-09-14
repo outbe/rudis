@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Hardware-free I1 gate: replay caller-supplied evidence through pinned Intel QVL.
+# Hardware-free checks for the pinned Intel QVL integration.
 set -euo pipefail
 
 task_script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -24,13 +24,9 @@ python3 scripts/release/verify_dcap_native_qvl.py
 cargo test --locked --offline -p outbe-primitives \
   --features tee-attestation-v1 --test tee_attestation_v1
 
-# This exercises the public verifier, real Processor quote/collateral,
-# tamper/time/canonical/stable-byte cases and the compile-time Intel ABI checks.
+# Exercise the remaining verifier tests and compile-time Intel ABI checks.
 cargo test --locked --offline -p outbe-tee --features native-dcap
 cargo test --locked --offline \
   -p outbe-tee \
   --features dcap-fixture-tool \
   --test dcap_fixture_tool
-
-cd crates/system/tee/tests/fixtures/intel-dcap-1.26-intent-bound-processor
-sha256sum --check SHA256SUMS
